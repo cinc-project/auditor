@@ -1,0 +1,61 @@
+image: "ruby:2.5"
+stages:
+ - patch
+ - package
+
+variables:
+  ORIGIN: https://github.com/inspec/inspec.git
+
+patch:
+  stage: patch
+  script:
+    - git clone --depth=1 $ORIGIN
+  artifacts:
+    expire_in: 1d
+    paths:
+      - inspec/
+
+package:deb:
+  stage: package
+  script:
+    - apt-get update
+    - apt-get -y install git build-essential
+    - gem install omnibus
+    - cd inspec/omnibus
+    - bundle install --without development
+    - bundle exec omnibus build inspec
+    - ls -alh */*
+    - mv pkg/*.deb $CI_PROJECT_DIR
+  artifacts:
+    expire_in: 1mo
+    paths:
+      - ./*.deb
+
+package:rpm:
+  image: "centos:centos7"
+  stage: package
+  script:
+    - yum -y update
+    - yum -y install git bzip2 which rpmbuild gpg openssl-devel readline-devel zlib-devel autoconf bison flex gcc gcc-c++ gettext kernel-devel make m4 ncurses-devel patch rpm-build rpm-sign
+    - export PATH=/usr/local/rvm/gems/ruby-$RUBY_VERSION/bin:/usr/local/rvm/gems/ruby-$RUBY_VERSION@global/bin:/usr/local/rvm/rubies/ruby-$RUBY_VERSION/bin:/usr/local/rvm/bin:$PATH
+    - export GEM_HOME=/usr/local/rvm/gems/ruby-$RUBY_VERSION
+    - export GEM_PATH=/usr/local/rvm/gems/ruby-$RUBY_VERSION:/usr/local/rvm/gems/ruby-$RUBY_VERSION@global
+    - gpg --keyserver hkp://keys.gnupg.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3
+    - curl -L get.rvm.io | bash
+    - rvm install $RUBY_VERSION
+    - yum clean all
+    - rvm use $RUBY_VERSION --default
+    - gem install bundler
+    - ruby -v
+    - gem install omnibus
+    - cd inspec/omnibus
+    - bundle install --without development
+    - bundle exec omnibus build inspec
+    - ls -alh */*
+    - mv pkg/*.rpm $CI_PROJECT_DIR
+  variables:
+    RUBY_VERSION: 2.5.5
+  artifacts:
+    expire_in: 1mo
+    paths:
+      - ./*.rpm
