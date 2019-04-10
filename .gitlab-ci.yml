@@ -1,0 +1,32 @@
+image: "ruby:2.5"
+stages:
+ - patch
+ - package
+
+variables:
+  ORIGIN: https://github.com/inspec/inspec.git
+
+patch:
+  stage: patch
+  script:
+    - git clone --depth=1 $ORIGIN
+  artifacts:
+    expire_in: 1d
+    paths:
+      - inspec/
+
+package:deb:
+  stage: package
+  script:
+    - apt-get update
+    - apt-get -y install git build-essential
+    - gem install omnibus
+    - cd inspec/omnibus
+    - bundle install --without development
+    - bundle exec omnibus build inspec
+    - ls -alh */*
+    - mv pkg/*.deb $CI_PROJECT_DIR
+  artifacts:
+    expire_in: 1mo
+    paths:
+      - ./*.deb
