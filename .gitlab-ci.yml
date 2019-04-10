@@ -2,6 +2,7 @@ image: "ruby:2.5"
 stages:
  - patch
  - package
+ - test
 
 variables:
   ORIGIN: https://github.com/inspec/inspec.git
@@ -59,3 +60,20 @@ package:rpm:
     expire_in: 1mo
     paths:
       - ./*.rpm
+
+test:deb:
+  stage: test
+  dependencies:
+    - package:deb
+  script:
+    - dpkg -i inspec*.deb
+    - inspec exec test-baseline
+
+test:rpm:
+  image: "centos:centos7"
+  stage: test
+  dependencies:
+    - package:rpm
+  script:
+    - rpm -i inspec*.rpm
+    - inspec exec test-baseline
