@@ -11,6 +11,13 @@ patch:
   stage: patch
   script:
     - git clone --depth=1 $ORIGIN
+    - apt-get update && apt-get install -y rename
+    - cd inspec/bin
+    - rename 's/inspec/outspec/' *
+    - cd ../..
+    - sed -i '/spec.executables   =/ s/inspec/outspec/g' inspec/inspec.gemspec
+    - sed -i '/binaries=/ s/inspec/outspec/g' inspec/omnibus/package-scripts/inspec/postinst inspec/omnibus/package-scripts/inspec/postrm
+    - sed -i '/echo /s/InSpec/OutSpec/g' inspec/omnibus/package-scripts/inspec/postinst inspec/omnibus/package-scripts/inspec/postrm inspec/omnibus/package-scripts/inspec/preinst
   artifacts:
     expire_in: 1d
     paths:
@@ -67,7 +74,7 @@ test:deb:
     - package:deb
   script:
     - dpkg -i inspec*.deb
-    - inspec exec test-baseline
+    - outspec exec test-baseline
 
 test:rpm:
   image: "centos:centos7"
@@ -76,4 +83,4 @@ test:rpm:
     - package:rpm
   script:
     - rpm -i inspec*.rpm
-    - inspec exec test-baseline
+    - outspec exec test-baseline
