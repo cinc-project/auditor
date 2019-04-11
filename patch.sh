@@ -9,5 +9,15 @@ cd inspec/bin
 rename 's/inspec/outspec/' *
 cd ../..
 sed -i '/spec.executables   =/ s/inspec/outspec/g' inspec/inspec.gemspec
-sed -i '/binaries=/ s/inspec/outspec/g' inspec/omnibus/package-scripts/inspec/postinst inspec/omnibus/package-scripts/inspec/postrm
-sed -i '/echo /s/InSpec/OutSpec/g' inspec/omnibus/package-scripts/inspec/postinst inspec/omnibus/package-scripts/inspec/postrm inspec/omnibus/package-scripts/inspec/preinst
+
+cd inspec/omnibus/package-scripts
+cp -r inspec outspec
+cd ../../..
+
+sed -i '/binaries=/ s/inspec/outspec/g' inspec/omnibus/package-scripts/outspec/postinst inspec/omnibus/package-scripts/outspec/postrm
+sed -i '/echo /s/InSpec/OutSpec/g' inspec/omnibus/package-scripts/outspec/postinst inspec/omnibus/package-scripts/outspec/postrm inspec/omnibus/package-scripts/outspec/preinst
+sed -i '/INSTALLER_DIR=/s/inspec/outspec/g' inspec/omnibus/package-scripts/outspec/postinst
+
+sed -i '/name / s/inspec/outspec/g' inspec/omnibus/config/projects/inspec.rb
+sed -i '/friendly_name / s/InSpec/OutSpec/g' inspec/omnibus/config/projects/inspec.rb
+sed -i "s/maintainer .*/maintainer 'Community <community@example.com>'/g" inspec/omnibus/config/projects/inspec.rb

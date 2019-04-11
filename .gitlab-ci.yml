@@ -68,7 +68,7 @@ test:deb:
   dependencies:
     - package:deb
   script:
-    - dpkg -i inspec*.deb
+    - dpkg -i outspec*.deb
     - outspec exec test-baseline
 
 test:rpm:
@@ -77,5 +77,5 @@ test:rpm:
   dependencies:
     - package:rpm
   script:
-    - rpm -i inspec*.rpm
+    - rpm -i outspec*.rpm
     - outspec exec test-baseline
