@@ -5,21 +5,34 @@ git reset --hard
 git clean -f -d
 cd ..
 
+# patching executable names
 cd inspec/bin
 rename 's/inspec/outspec/' *
 cd ../..
 sed -i '/spec.executables   =/ s/inspec/outspec/g' inspec/inspec.gemspec
 
-cd inspec/omnibus/package-scripts
-cp -r inspec outspec
-cd ../../..
+# apply all other patches
+# 1. find all patches in the patch directory
+# 2. using the path of patch determine the source file/dir path
+# 3. build the target file/dir path by replacing inspec with outspec in the source path
+# 4. copy the source file/dir to the target file/dir
+# 5. apply the patch
+for p in $(cd patch && find . -type f -name "*.patch" && cd ..); do
+  dir="inspec/$(dirname $p)"
+  src_name=$(basename -s .patch $p)
+  tgt_name=$(echo $src_name | sed 's/inspec/outspec/g')
+  cdir=$(pwd)
+  patch="$cdir/patch/$p"
 
-sed -i '/binaries=/ s/inspec/outspec/g' inspec/omnibus/package-scripts/outspec/postinst inspec/omnibus/package-scripts/outspec/postrm
-sed -i '/echo /s/InSpec/OutSpec/g' inspec/omnibus/package-scripts/outspec/postinst inspec/omnibus/package-scripts/outspec/postrm inspec/omnibus/package-scripts/outspec/preinst
-sed -i '/INSTALLER_DIR=/s/inspec/outspec/g' inspec/omnibus/package-scripts/outspec/postinst
+  cd $dir
+  cp -r $src_name $tgt_name
 
-cp inspec/omnibus/config/projects/inspec.rb inspec/omnibus/config/projects/outspec.rb
+  if [ -d $tgt_name ]; then
+    cd $tgt_name
+    patch < $patch
+  else
+    patch $tgt_name $patch
+  fi
 
-sed -i '/name / s/inspec/outspec/g' inspec/omnibus/config/projects/outspec.rb
-sed -i '/friendly_name / s/InSpec/OutSpec/g' inspec/omnibus/config/projects/outspec.rb
-sed -i "s/maintainer .*/maintainer 'Community <community@example.com>'/g" inspec/omnibus/config/projects/outspec.rb
+  cd $cdir
+done

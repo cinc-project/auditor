@@ -1,0 +1,15 @@
+--- inspec.rb	2019-04-11 09:55:23.000000000 +0000
++++ outspec.rb	2019-04-11 09:55:26.000000000 +0000
+@@ -18,9 +18,9 @@
+ 
+ require_relative '../../../lib/inspec/version.rb'
+ 
+-name 'inspec'
+-friendly_name 'InSpec'
+-maintainer 'Chef Software, Inc <maintainers@chef.io>'
++name 'outspec'
++friendly_name 'OutSpec'
++maintainer 'Community <community@example.com>'
+ homepage 'https://github.com/inspec/inspec'
+ 
+ license 'Apache-2.0'

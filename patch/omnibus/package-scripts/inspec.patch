@@ -1,0 +1,58 @@
+diff -u inspec/postinst outspec/postinst
+--- inspec/postinst	2019-04-11 09:55:23.000000000 +0000
++++ outspec/postinst	2019-04-11 09:55:26.000000000 +0000
+@@ -5,7 +5,7 @@
+ #
+ 
+ PROGNAME=`basename $0`
+-INSTALLER_DIR=/opt/inspec
++INSTALLER_DIR=/opt/outspec
+ CONFIG_DIR=/etc/inspec
+ USAGE="usage: $0"
+ 
+@@ -27,7 +27,7 @@
+     PREFIX="/usr"
+ fi
+ 
+-binaries="inspec"
++binaries="outspec"
+ for binary in $binaries; do
+   rm -f $PREFIX/bin/$binary
+ done
+@@ -41,6 +41,6 @@
+ # be manually fixed.
+ chown -Rh 0:0 $INSTALLER_DIR
+ 
+-echo "Thank you for installing InSpec!"
++echo "Thank you for installing OutSpec!"
+ 
+ exit 0
+diff -u inspec/postrm outspec/postrm
+--- inspec/postrm	2019-04-11 09:55:23.000000000 +0000
++++ outspec/postrm	2019-04-11 09:55:26.000000000 +0000
+@@ -16,7 +16,7 @@
+ fi
+ 
+ cleanup_symlinks() {
+-  binaries="inspec"
++  binaries="outspec"
+   for binary in $binaries; do
+     rm -f $PREFIX/bin/$binary
+   done
+@@ -32,6 +32,6 @@
+   cleanup_symlinks
+ fi
+ 
+-echo "InSpec has been uninstalled!"
++echo "OutSpec has been uninstalled!"
+ 
+ exit 0
+diff -u inspec/preinst outspec/preinst
+--- inspec/preinst	2019-04-11 09:55:23.000000000 +0000
++++ outspec/preinst	2019-04-11 09:55:26.000000000 +0000
+@@ -4,4 +4,4 @@
+ # before package is installed.
+ #
+ 
+-echo "You're about to install InSpec!"
++echo "You're about to install OutSpec!"
