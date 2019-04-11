@@ -5,12 +5,11 @@ stages:
  - test
 
 variables:
-  ORIGIN: https://github.com/inspec/inspec.git
+  GIT_SUBMODULE_STRATEGY: normal
 
 patch:
   stage: patch
   script:
-    - git clone --depth=1 $ORIGIN
     - apt-get update && apt-get install -y rename
     - sh patch.sh
   artifacts:
