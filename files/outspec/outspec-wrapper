@@ -1,0 +1,5 @@
+#!/bin/sh
+
+echo "Redirecting to outspec..."
+
+exec /opt/outspec/bin/outspec $@

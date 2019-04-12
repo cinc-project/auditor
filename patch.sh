@@ -36,3 +36,6 @@ for p in $(cd patch && find . -type f -name "*.patch" && cd ..); do
 
   cd $cdir
 done
+
+# copy additional files
+cp -rp files/* inspec/
