@@ -1,6 +1,6 @@
-diff -u inspec/postinst outspec/postinst
---- inspec/postinst	2019-04-11 09:55:23.000000000 +0000
-+++ outspec/postinst	2019-04-11 09:55:26.000000000 +0000
+diff -ur inspec/postinst outspec/postinst
+--- inspec/postinst	2019-04-12 17:01:24.000000000 +0200
++++ outspec/postinst	2019-04-15 14:53:11.000000000 +0200
 @@ -5,7 +5,7 @@
  #
  
@@ -19,7 +19,20 @@ diff -u inspec/postinst outspec/postinst
  for binary in $binaries; do
    rm -f $PREFIX/bin/$binary
  done
-@@ -41,6 +41,6 @@
+@@ -36,11 +36,19 @@
+   ln -sf $INSTALLER_DIR/bin/$binary $PREFIX/bin || error_exit "Cannot link $binary to $PREFIX/bin"
+ done
+ 
++wrapper_links="inspec"
++link_target="outspec-wrapper"
++for link in $wrapper_links; do
++  if [ ! -e $PREFIX/bin/$link ]; then
++    ln -sf $INSTALLER_DIR/bin/$link_target $PREFIX/bin/$link || error_exit "Cannot link $link_target to $PREFIX/bin/$link"
++  fi
++done
++
+ # Ensure all files/directories in $INSTALLER_DIR are owned by root. This
+ # has been fixed on new installs but upgrades from old installs need to
  # be manually fixed.
  chown -Rh 0:0 $INSTALLER_DIR
  
@@ -27,10 +40,19 @@ diff -u inspec/postinst outspec/postinst
 +echo "Thank you for installing OutSpec!"
  
  exit 0
-diff -u inspec/postrm outspec/postrm
---- inspec/postrm	2019-04-11 09:55:23.000000000 +0000
-+++ outspec/postrm	2019-04-11 09:55:26.000000000 +0000
-@@ -16,7 +16,7 @@
+diff -ur inspec/postrm outspec/postrm
+--- inspec/postrm	2019-04-12 17:01:24.000000000 +0200
++++ outspec/postrm	2019-04-15 15:29:43.000000000 +0200
+@@ -4,6 +4,8 @@
+ # after package is uninstalled.
+ #
+ 
++INSTALLER_DIR=/opt/outspec
++
+ is_darwin()
+ {
+   uname -v | grep "^Darwin" 2>&1 >/dev/null
+@@ -16,10 +18,18 @@
  fi
  
  cleanup_symlinks() {
@@ -39,7 +61,18 @@ diff -u inspec/postrm outspec/postrm
    for binary in $binaries; do
      rm -f $PREFIX/bin/$binary
    done
-@@ -32,6 +32,6 @@
++
++  wrapper_links="inspec"
++  link_target="outspec-wrapper"
++  for link in $wrapper_links; do
++    if [ -L $PREFIX/bin/$link -a "$(readlink $PREFIX/bin/$link)" = "$INSTALLER_DIR/bin/$link_target" ]; then
++      rm -f $PREFIX/bin/$link
++    fi
++  done
+ }
+ 
+ # Clean up binary symlinks if they exist
+@@ -32,6 +42,6 @@
    cleanup_symlinks
  fi
  
@@ -47,9 +80,9 @@ diff -u inspec/postrm outspec/postrm
 +echo "OutSpec has been uninstalled!"
  
  exit 0
-diff -u inspec/preinst outspec/preinst
---- inspec/preinst	2019-04-11 09:55:23.000000000 +0000
-+++ outspec/preinst	2019-04-11 09:55:26.000000000 +0000
+diff -ur inspec/preinst outspec/preinst
+--- inspec/preinst	2019-04-12 17:01:24.000000000 +0200
++++ outspec/preinst	2019-04-12 17:01:28.000000000 +0200
 @@ -4,4 +4,4 @@
  # before package is installed.
  #
