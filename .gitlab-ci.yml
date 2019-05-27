@@ -10,7 +10,7 @@ variables:
 patch:
   stage: patch
   script:
-    - apt-get update && apt-get install -y rename
+    - apt-get update
     - sh patch.sh
   artifacts:
     expire_in: 1d
