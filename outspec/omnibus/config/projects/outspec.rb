@@ -1,5 +1,6 @@
 # encoding: utf-8
 #
+# Copyright:: Copyright 2019, Cinc Community
 # Copyright:: Copyright 2016-2018, Chef Software Inc.
 # License:: Apache License, Version 2.0
 #
@@ -20,8 +21,8 @@ require_relative '../../../lib/inspec/version.rb'
 
 name 'outspec'
 friendly_name 'OutSpec'
-maintainer 'Community <community@example.com>'
-homepage 'https://github.com/inspec/inspec'
+maintainer 'Cinc Community <cc-build@gmail.com>'
+homepage 'https://gitlab.com/cc-build/outspec'
 
 license 'Apache-2.0'
 license_file '../LICENSE'
@@ -37,18 +38,12 @@ end
 build_version Inspec::VERSION
 build_iteration 1
 
-override 'ruby', version: '2.5.3'
-# RubyGems 2.7.0 caused issues in the Jenkins pipelines, trouble installing bundler.
-# This issue is not evident in 2.6.x, hence the pin.
-override 'rubygems', version: '2.6.14'
-
-# grab the current train release from rubygems.org
-train_stable = /^train \((.*)\)/.match(`gem list ^train$ --remote`)[1]
-override 'train', version: "v#{train_stable}"
+# Load dynamically updated overrides
+overrides_path = File.expand_path('../../../../omnibus_overrides.rb', __FILE__)
+instance_eval(File.read(overrides_path), overrides_path)
 
 dependency 'preparation'
 
-dependency 'inspec'
 dependency 'outspec'
 
 # Mark all directories world readable.
@@ -63,29 +58,13 @@ dependency 'clean-static-libs'
 dependency 'ruby-cleanup'
 
 package :rpm do
-  signing_passphrase ENV['OMNIBUS_RPM_SIGNING_PASSPHRASE']
-  unless rhel? && platform_version.satisfies?('< 6')
-    compression_level 1
-    compression_type :xz
-  end
+  compression_level 1
+  compression_type :xz
 end
 
 package :deb do
   compression_level 1
   compression_type :xz
-end
-
-package :pkg do
-  identifier 'com.getchef.pkg.inspec'
-  signing_identity 'Developer ID Installer: Chef Software, Inc. (EU3VF8YLX2)'
-end
-compress :dmg
-
-package :msi do
-  fast_msi true
-  upgrade_code 'DFCD452F-31E5-4236-ACD1-253F4720250B'
-  wix_light_extension 'WixUtilExtension'
-  signing_identity 'E05FF095D07F233B78EB322132BFF0F035E11B5B', machine_store: true
 end
 
 exclude '**/.git'
