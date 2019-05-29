@@ -27,6 +27,7 @@ cleanup_symlinks() {
   link_target="outspec-wrapper"
   for link in $wrapper_links; do
     if [ -L $PREFIX/bin/$link -a "$(readlink $PREFIX/bin/$link)" = "$INSTALLER_DIR/bin/$link_target" ]; then
+      echo "Removing inspec compatibility symlink..."
       rm -f $PREFIX/bin/$link
     fi
   done
