@@ -3,6 +3,7 @@ stages:
  - patch
  - package
  - test
+ - deploy
 
 variables:
   GIT_SUBMODULE_STRATEGY: normal
@@ -78,3 +79,14 @@ test:rpm:
   script:
     - rpm -i outspec*.rpm
     - outspec exec test-baseline
+
+deploy:
+  stage: deploy
+  only:
+    - master
+  dependencies:
+    - package:deb
+    - package:rpm
+  script:
+    - bundle install
+    - sh deploy.sh
