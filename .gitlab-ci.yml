@@ -1,92 +1,192 @@
-image: "ruby:2.5"
+image: ccbuild/omnibus-debian
 stages:
  - patch
  - package
  - test
  - deploy
+ - publish
 
 variables:
   GIT_SUBMODULE_STRATEGY: normal
 
 patch:
   stage: patch
+  tags:
+    - osuosl
   script:
-    - apt-get update
     - sh patch.sh
   artifacts:
     expire_in: 1d
     paths:
       - inspec/
 
-package:deb:
+.package:
   stage: package
+  tags:
+    - osuosl
+  dependencies:
+    - patch
   script:
-    - apt-get update
-    - apt-get -y install git build-essential
-    - gem install omnibus
+    - source /home/omnibus/load-omnibus-toolchain.sh
     - cd inspec/omnibus
-    - bundle install --without development
-    - bundle exec omnibus build outspec
-    - ls -alh */*
-    - mv pkg/*.deb $CI_PROJECT_DIR
+    - bundle install --without development --path ${CI_PROJECT_DIR}/bundle/vendor
+    - bundle exec omnibus build outspec --override append_timestamp:false
+    - mkdir ${CI_PROJECT_DIR}/data
+    - mv -v pkg/outspec* ${CI_PROJECT_DIR}/data/
+  cache:
+    paths:
+      - cache/*
+      - bundle/vendor/*
   artifacts:
     expire_in: 1mo
     paths:
-      - ./*.deb
+      - data/*
 
-package:rpm:
-  image: "centos:centos7"
-  stage: package
-  script:
-    - yum -y update
-    - yum -y install git bzip2 which rpmbuild gpg openssl-devel readline-devel zlib-devel autoconf bison flex gcc gcc-c++ gettext kernel-devel make m4 ncurses-devel patch rpm-build rpm-sign
-    - export PATH=/usr/local/rvm/gems/ruby-$RUBY_VERSION/bin:/usr/local/rvm/gems/ruby-$RUBY_VERSION@global/bin:/usr/local/rvm/rubies/ruby-$RUBY_VERSION/bin:/usr/local/rvm/bin:$PATH
-    - export GEM_HOME=/usr/local/rvm/gems/ruby-$RUBY_VERSION
-    - export GEM_PATH=/usr/local/rvm/gems/ruby-$RUBY_VERSION:/usr/local/rvm/gems/ruby-$RUBY_VERSION@global
-    - gpg --keyserver hkp://keys.gnupg.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3
-    - curl -L get.rvm.io | bash
-    - rvm install $RUBY_VERSION
-    - yum clean all
-    - rvm use $RUBY_VERSION --default
-    - gem install bundler
-    - ruby -v
-    - gem install omnibus
-    - cd inspec/omnibus
-    - bundle install --without development
-    - bundle exec omnibus build outspec
-    - ls -alh */*
-    - mv pkg/*.rpm $CI_PROJECT_DIR
-  variables:
-    RUBY_VERSION: 2.5.5
-  artifacts:
-    expire_in: 1mo
-    paths:
-      - ./*.rpm
+package:debian-8:
+  extends: .package
+  image: ccbuild/omnibus-debian:8
+  cache:
+    key: debian:8
+  after_script:
+    - mkdir -p ${CI_PROJECT_DIR}/data/debian/8
+    - mv -v ${CI_PROJECT_DIR}/data/*.{rpm,deb,json} ${CI_PROJECT_DIR}/data/debian/8/
 
-test:deb:
+package:debian-9:
+  extends: .package
+  image: ccbuild/omnibus-debian:9
+  cache:
+    key: debian:9
+  after_script:
+    - mkdir -p ${CI_PROJECT_DIR}/data/debian/9
+    - mv -v ${CI_PROJECT_DIR}/data/*.{rpm,deb,json} ${CI_PROJECT_DIR}/data/debian/9/
+
+package:ubuntu-16.04:
+  extends: .package
+  image: ccbuild/omnibus-ubuntu:16.04
+  cache:
+    key: ubuntu:16.04
+  after_script:
+    - mkdir -p ${CI_PROJECT_DIR}/data/ubuntu/16.04
+    - mv -v ${CI_PROJECT_DIR}/data/*.{rpm,deb,json} ${CI_PROJECT_DIR}/data/ubuntu/16.04/
+
+package:ubuntu-18.04:
+  extends: .package
+  image: ccbuild/omnibus-ubuntu:18.04
+  cache:
+    key: ubuntu:18.04
+  after_script:
+    - mkdir -p ${CI_PROJECT_DIR}/data/ubuntu/18.04
+    - mv -v ${CI_PROJECT_DIR}/data/*.{rpm,deb,json} ${CI_PROJECT_DIR}/data/ubuntu/18.04/
+
+package:centos-6:
+  extends: .package
+  image: ccbuild/omnibus-centos:6
+  cache:
+    key: centos:6
+  after_script:
+    - mkdir -p ${CI_PROJECT_DIR}/data/centos/6
+    - mv -v ${CI_PROJECT_DIR}/data/*.{rpm,deb,json} ${CI_PROJECT_DIR}/data/centos/6/
+
+package:centos-7:
+  extends: .package
+  image: ccbuild/omnibus-centos:7
+  cache:
+    key: centos:7
+  after_script:
+    - mkdir -p ${CI_PROJECT_DIR}/data/centos/7
+    - mv -v ${CI_PROJECT_DIR}/data/*.{rpm,deb,json} ${CI_PROJECT_DIR}/data/centos/7/
+
+.test:
   stage: test
-  dependencies:
-    - package:deb
+  tags:
+    - osuosl
   script:
-    - dpkg -i outspec*.deb
     - outspec exec test-baseline
 
-test:rpm:
-  image: "centos:centos7"
-  stage: test
+test:debian-8:
+  extends: .test
+  image: ccbuild/omnibus-debian:8
   dependencies:
-    - package:rpm
-  script:
-    - rpm -i outspec*.rpm
-    - outspec exec test-baseline
+    - package:debian-8
+  before_script:
+    - dpkg -i data/debian/8/outspec*.deb
+
+test:debian-9:
+  extends: .test
+  image: ccbuild/omnibus-debian:9
+  dependencies:
+    - package:debian-9
+  before_script:
+    - dpkg -i data/debian/9/outspec*.deb
+
+test:ubuntu-16.04:
+  extends: .test
+  image: ccbuild/omnibus-ubuntu:16.04
+  dependencies:
+    - package:ubuntu-16.04
+  before_script:
+    - dpkg -i data/ubuntu/16.04/outspec*.deb
+
+test:ubuntu-18.04:
+  extends: .test
+  image: ccbuild/omnibus-ubuntu:18.04
+  dependencies:
+    - package:ubuntu-18.04
+  before_script:
+    - dpkg -i data/ubuntu/18.04/outspec*.deb
+
+test:centos-6:
+  extends: .test
+  image: ccbuild/omnibus-centos:6
+  dependencies:
+    - package:centos-6
+  before_script:
+    - yum -y install data/centos/6/outspec*.rpm
+
+test:centos-7:
+  extends: .test
+  image: ccbuild/omnibus-centos:7
+  dependencies:
+    - package:centos-7
+  before_script:
+    - yum -y install data/centos/7/outspec*.rpm
+
+.ssh-setup:
+  before_script:
+    - eval $(ssh-agent -s)
+    - echo "${SSH_PRIVATE_KEY}" | tr -d '\r' | ssh-add - > /dev/null
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - echo "${SSH_KNOWN_HOSTS}" > ~/.ssh/known_hosts
+    - chmod 644 ~/.ssh/known_hosts
 
 deploy:
+  when: manual
   stage: deploy
-  only:
-    - master
+  extends: .ssh-setup
+  tags:
+    - osuosl
   dependencies:
-    - package:deb
-    - package:rpm
+    - package:debian-8
+    - package:debian-9
+    - package:ubuntu-16.04
+    - package:ubuntu-18.04
+    - package:centos-6
+    - package:centos-7
+  script:
+    - ssh cc-build@${DOWNLOADS_HOST} "mkdir -p /data/incoming/outspec/files"
+    - rsync -avH --delete data/ cc-build@${DOWNLOADS_HOST}:/data/incoming/outspec/files/
+    - ssh cc-build@${DOWNLOADS_HOST} "chmod 755 /data/incoming/outspec/files"
+
+publish:
+  when: manual
+  stage: publish
+  extends: .ssh-setup
+  dependencies: []
+  tags:
+    - downloads
   script:
     - bundle install
     - sh deploy.sh
+    - sudo /usr/bin/rsync -avH /data/incoming/outspec/files/ /data/mirror/outspec/files/
+    - ssh -q cc-build@${MIRROR_HOST} "~/sync-from-master"
