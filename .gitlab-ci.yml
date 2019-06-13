@@ -186,5 +186,7 @@ publish:
   tags:
     - downloads
   script:
+    - bundle install
+    - sh deploy.sh
     - sudo /usr/bin/rsync -avH /data/incoming/outspec/files/ /data/mirror/outspec/files/
     - ssh -q cc-build@${MIRROR_HOST} "~/sync-from-master"
