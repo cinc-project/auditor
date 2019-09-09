@@ -5,7 +5,7 @@ git reset --hard
 git clean -f -d
 cd ..
 
-cp -rp outspec/* inspec/
+cp -rp cinc-auditor/* inspec/
 
 cd inspec/
 patch < ../patch/Gemfile.patch

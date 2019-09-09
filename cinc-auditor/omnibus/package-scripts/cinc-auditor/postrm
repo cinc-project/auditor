@@ -4,7 +4,7 @@
 # after package is uninstalled.
 #
 
-INSTALLER_DIR=/opt/outspec
+INSTALLER_DIR=/opt/cinc-auditor
 
 is_darwin()
 {
@@ -18,13 +18,13 @@ else
 fi
 
 cleanup_symlinks() {
-  binaries="outspec"
+  binaries="cinc-auditor"
   for binary in $binaries; do
     rm -f $PREFIX/bin/$binary
   done
 
   wrapper_links="inspec"
-  link_target="outspec-wrapper"
+  link_target="cinc-auditor-wrapper"
   for link in $wrapper_links; do
     if [ -L $PREFIX/bin/$link -a "$(readlink $PREFIX/bin/$link)" = "$INSTALLER_DIR/bin/$link_target" ]; then
       echo "Removing inspec compatibility symlink..."
@@ -43,6 +43,6 @@ elif [ "x$1" = "x0" ]; then
   cleanup_symlinks
 fi
 
-echo "OutSpec has been uninstalled!"
+echo "cinc-auditor has been uninstalled!"
 
 exit 0

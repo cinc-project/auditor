@@ -18,7 +18,7 @@
 #
 require_relative '../../../lib/inspec/version.rb'
 
-name 'outspec'
+name 'cinc-auditor'
 
 license :project_license
 
@@ -40,14 +40,14 @@ build do
   gem "build inspec.gemspec", env: env
   gem "install inspec-*.gem --no-document", env: env
 
-  gem 'build outspec-bin.gemspec', env: env, cwd: "#{project_dir}/outspec-bin"
-  gem 'install outspec-bin-*.gem --no-document', env: env, cwd: "#{project_dir}/outspec-bin"
+  gem 'build cinc-auditor-bin.gemspec', env: env, cwd: "#{project_dir}/cinc-auditor-bin"
+  gem 'install cinc-auditor-bin-*.gem --no-document', env: env, cwd: "#{project_dir}/cinc-auditor-bin"
 
   block do
-    if Dir.exist?("#{project_dir}/outspec-bin")
-      appbundle 'outspec', lockdir: project_dir, gem: 'outspec-bin', env: env
+    if Dir.exist?("#{project_dir}/cinc-auditor-bin")
+      appbundle 'cinc-auditor', lockdir: project_dir, gem: 'cinc-auditor-bin', env: env
     else
-      appbundle 'outspec', env: env
+      appbundle 'cinc-auditor', env: env
     end
   end
 
