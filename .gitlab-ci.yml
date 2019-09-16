@@ -30,9 +30,9 @@ patch:
     - source /home/omnibus/load-omnibus-toolchain.sh
     - cd inspec/omnibus
     - bundle install --without development --path ${CI_PROJECT_DIR}/bundle/vendor
-    - bundle exec omnibus build outspec --override append_timestamp:false
+    - bundle exec omnibus build cinc-auditor --override append_timestamp:false
     - mkdir ${CI_PROJECT_DIR}/data
-    - mv -v pkg/outspec* ${CI_PROJECT_DIR}/data/
+    - mv -v pkg/cinc-auditor* ${CI_PROJECT_DIR}/data/
   cache:
     paths:
       - cache/*
@@ -101,7 +101,7 @@ package:centos-7:
   tags:
     - osuosl
   script:
-    - outspec exec test-baseline
+    - cinc-auditor exec test-baseline
 
 test:debian-8:
   extends: .test
@@ -109,7 +109,7 @@ test:debian-8:
   dependencies:
     - package:debian-8
   before_script:
-    - dpkg -i data/debian/8/outspec*.deb
+    - dpkg -i data/debian/8/cinc-auditor*.deb
 
 test:debian-9:
   extends: .test
@@ -117,7 +117,7 @@ test:debian-9:
   dependencies:
     - package:debian-9
   before_script:
-    - dpkg -i data/debian/9/outspec*.deb
+    - dpkg -i data/debian/9/cinc-auditor*.deb
 
 test:ubuntu-16.04:
   extends: .test
@@ -125,7 +125,7 @@ test:ubuntu-16.04:
   dependencies:
     - package:ubuntu-16.04
   before_script:
-    - dpkg -i data/ubuntu/16.04/outspec*.deb
+    - dpkg -i data/ubuntu/16.04/cinc-auditor*.deb
 
 test:ubuntu-18.04:
   extends: .test
@@ -133,7 +133,7 @@ test:ubuntu-18.04:
   dependencies:
     - package:ubuntu-18.04
   before_script:
-    - dpkg -i data/ubuntu/18.04/outspec*.deb
+    - dpkg -i data/ubuntu/18.04/cinc-auditor*.deb
 
 test:centos-6:
   extends: .test
@@ -141,7 +141,7 @@ test:centos-6:
   dependencies:
     - package:centos-6
   before_script:
-    - yum -y install data/centos/6/outspec*.rpm
+    - yum -y install data/centos/6/cinc-auditor*.rpm
 
 test:centos-7:
   extends: .test
@@ -149,7 +149,7 @@ test:centos-7:
   dependencies:
     - package:centos-7
   before_script:
-    - yum -y install data/centos/7/outspec*.rpm
+    - yum -y install data/centos/7/cinc-auditor*.rpm
 
 .ssh-setup:
   before_script:
@@ -174,9 +174,9 @@ deploy:
     - package:centos-6
     - package:centos-7
   script:
-    - ssh cinc@${DOWNLOADS_HOST} "mkdir -p /data/incoming/outspec/files"
-    - rsync -avH --delete data/ cinc@${DOWNLOADS_HOST}:/data/incoming/outspec/files/
-    - ssh cinc@${DOWNLOADS_HOST} "chmod 755 /data/incoming/outspec/files"
+    - ssh cinc@${DOWNLOADS_HOST} "mkdir -p /data/incoming/cinc-auditor/files"
+    - rsync -avH --delete data/ cinc@${DOWNLOADS_HOST}:/data/incoming/cinc-auditor/files/
+    - ssh cinc@${DOWNLOADS_HOST} "chmod 755 /data/incoming/cinc-auditor/files"
 
 publish:
   when: manual
@@ -188,5 +188,5 @@ publish:
   script:
     - bundle install
     - sh deploy.sh
-    - sudo /usr/bin/rsync -avH /data/incoming/outspec/files/ /data/mirror/outspec/files/
+    - sudo /usr/bin/rsync -avH /data/incoming/cinc-auditor/files/ /data/mirror/cinc-auditor/files/
     - ssh -q cinc@${MIRROR_HOST} "~/sync-from-master"

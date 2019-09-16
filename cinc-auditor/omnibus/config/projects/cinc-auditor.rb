@@ -19,8 +19,8 @@
 
 require_relative '../../../lib/inspec/version.rb'
 
-name 'outspec'
-friendly_name 'OutSpec'
+name 'cinc-auditor'
+friendly_name 'CinC-Auditor'
 maintainer 'Cinc Community <cc-build@gmail.com>'
 homepage 'https://gitlab.com/cinc-project/organization-subjects/wikis/home'
 
@@ -44,7 +44,7 @@ instance_eval(File.read(overrides_path), overrides_path)
 
 dependency 'preparation'
 
-dependency 'outspec'
+dependency 'cinc-auditor'
 
 # Mark all directories world readable.
 dependency 'gem-permissions'
@@ -52,8 +52,6 @@ dependency 'gem-permissions'
 dependency 'shebang-cleanup'
 # Ensure our SSL cert files are accessible to ruby.
 dependency 'openssl-customization'
-# Remove all .dll.a and .a files needed for static linkage.
-dependency 'clean-static-libs'
 
 dependency 'ruby-cleanup'
 

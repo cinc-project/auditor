@@ -10,16 +10,16 @@ end
 
 describe command('inspec --version') do
   its(:exit_status) { should eq 0 }
-  its(:stdout) { should include 'Redirecting to outspec...' }
+  its(:stdout) { should include 'Redirecting to cinc-auditor...' }
 end
 
-describe file('/opt/outspec/bin/outspec-wrapper') do
+describe file('/opt/cinc-auditor/bin/cinc-auditor-wrapper') do
   it { should be_file }
   its(:mode) { should cmp '0755' }
-  its(:content) { should include 'Redirecting to outspec...' }
+  its(:content) { should include 'Redirecting to cinc-auditor...' }
 end
 
 describe file('/usr/bin/inspec') do
   it { should be_symlink }
-  its(:link_path) { should eq '/opt/outspec/bin/outspec-wrapper' }
+  its(:link_path) { should eq '/opt/cinc-auditor/bin/cinc-auditor-wrapper' }
 end
