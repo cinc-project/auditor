@@ -1,4 +1,4 @@
-image: ccbuild/omnibus-debian
+image: cincproject/omnibus-debian
 stages:
  - patch
  - package
@@ -44,7 +44,7 @@ patch:
 
 package:debian-8:
   extends: .package
-  image: ccbuild/omnibus-debian:8
+  image: cincproject/omnibus-debian:8
   cache:
     key: debian:8
   after_script:
@@ -53,7 +53,7 @@ package:debian-8:
 
 package:debian-9:
   extends: .package
-  image: ccbuild/omnibus-debian:9
+  image: cincproject/omnibus-debian:9
   cache:
     key: debian:9
   after_script:
@@ -62,7 +62,7 @@ package:debian-9:
 
 package:ubuntu-16.04:
   extends: .package
-  image: ccbuild/omnibus-ubuntu:16.04
+  image: cincproject/omnibus-ubuntu:16.04
   cache:
     key: ubuntu:16.04
   after_script:
@@ -71,7 +71,7 @@ package:ubuntu-16.04:
 
 package:ubuntu-18.04:
   extends: .package
-  image: ccbuild/omnibus-ubuntu:18.04
+  image: cincproject/omnibus-ubuntu:18.04
   cache:
     key: ubuntu:18.04
   after_script:
@@ -80,7 +80,7 @@ package:ubuntu-18.04:
 
 package:centos-6:
   extends: .package
-  image: ccbuild/omnibus-centos:6
+  image: cincproject/omnibus-centos:6
   cache:
     key: centos:6
   after_script:
@@ -89,7 +89,7 @@ package:centos-6:
 
 package:centos-7:
   extends: .package
-  image: ccbuild/omnibus-centos:7
+  image: cincproject/omnibus-centos:7
   cache:
     key: centos:7
   after_script:
@@ -105,7 +105,7 @@ package:centos-7:
 
 test:debian-8:
   extends: .test
-  image: ccbuild/omnibus-debian:8
+  image: cincproject/omnibus-debian:8
   dependencies:
     - package:debian-8
   before_script:
@@ -113,7 +113,7 @@ test:debian-8:
 
 test:debian-9:
   extends: .test
-  image: ccbuild/omnibus-debian:9
+  image: cincproject/omnibus-debian:9
   dependencies:
     - package:debian-9
   before_script:
@@ -121,7 +121,7 @@ test:debian-9:
 
 test:ubuntu-16.04:
   extends: .test
-  image: ccbuild/omnibus-ubuntu:16.04
+  image: cincproject/omnibus-ubuntu:16.04
   dependencies:
     - package:ubuntu-16.04
   before_script:
@@ -129,7 +129,7 @@ test:ubuntu-16.04:
 
 test:ubuntu-18.04:
   extends: .test
-  image: ccbuild/omnibus-ubuntu:18.04
+  image: cincproject/omnibus-ubuntu:18.04
   dependencies:
     - package:ubuntu-18.04
   before_script:
@@ -137,7 +137,7 @@ test:ubuntu-18.04:
 
 test:centos-6:
   extends: .test
-  image: ccbuild/omnibus-centos:6
+  image: cincproject/omnibus-centos:6
   dependencies:
     - package:centos-6
   before_script:
@@ -145,7 +145,7 @@ test:centos-6:
 
 test:centos-7:
   extends: .test
-  image: ccbuild/omnibus-centos:7
+  image: cincproject/omnibus-centos:7
   dependencies:
     - package:centos-7
   before_script:
@@ -174,9 +174,9 @@ deploy:
     - package:centos-6
     - package:centos-7
   script:
-    - ssh cc-build@${DOWNLOADS_HOST} "mkdir -p /data/incoming/outspec/files"
-    - rsync -avH --delete data/ cc-build@${DOWNLOADS_HOST}:/data/incoming/outspec/files/
-    - ssh cc-build@${DOWNLOADS_HOST} "chmod 755 /data/incoming/outspec/files"
+    - ssh cinc@${DOWNLOADS_HOST} "mkdir -p /data/incoming/outspec/files"
+    - rsync -avH --delete data/ cinc@${DOWNLOADS_HOST}:/data/incoming/outspec/files/
+    - ssh cinc@${DOWNLOADS_HOST} "chmod 755 /data/incoming/outspec/files"
 
 publish:
   when: manual
@@ -189,4 +189,4 @@ publish:
     - bundle install
     - sh deploy.sh
     - sudo /usr/bin/rsync -avH /data/incoming/outspec/files/ /data/mirror/outspec/files/
-    - ssh -q cc-build@${MIRROR_HOST} "~/sync-from-master"
+    - ssh -q cinc@${MIRROR_HOST} "~/sync-from-master"
