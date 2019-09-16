@@ -9,7 +9,7 @@ Gem::Specification.new do |spec|
   spec.email         = ['cc-build@gmail.com']
   spec.summary       = 'Infrastructure and compliance testing'
   spec.description   = 'OutSpec executable'
-  spec.homepage      = 'https://gitlab.com/cc-build/outspec'
+  spec.homepage      = 'https://gitlab.com/cinc-project/organization-subjects/wikis/home'
   spec.license       = 'Apache-2.0'
 
   spec.require_paths = ['lib']

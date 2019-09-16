@@ -22,7 +22,7 @@ require_relative '../../../lib/inspec/version.rb'
 name 'outspec'
 friendly_name 'OutSpec'
 maintainer 'Cinc Community <cc-build@gmail.com>'
-homepage 'https://gitlab.com/cc-build/outspec'
+homepage 'https://gitlab.com/cinc-project/organization-subjects/wikis/home'
 
 license 'Apache-2.0'
 license_file '../LICENSE'
