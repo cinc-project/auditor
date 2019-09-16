@@ -52,8 +52,6 @@ dependency 'gem-permissions'
 dependency 'shebang-cleanup'
 # Ensure our SSL cert files are accessible to ruby.
 dependency 'openssl-customization'
-# Remove all .dll.a and .a files needed for static linkage.
-dependency 'clean-static-libs'
 
 dependency 'ruby-cleanup'
 

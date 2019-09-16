@@ -1,3 +1,3 @@
 module CincAuditorBin
-  VERSION = '4.4.49'.freeze
+  VERSION = '4.16.14'.freeze
 end
