@@ -167,7 +167,7 @@ deploy to packagecloud:
   only:
     - master
   tags:
-    - osuosl
+    - downloads
   script:
     - bundle install
     - sh deploy.sh
