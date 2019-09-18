@@ -8,6 +8,7 @@ stages:
 
 variables:
   GIT_SUBMODULE_STRATEGY: normal
+  CHANNEL: unstable
 
 patch:
   stage: patch
@@ -174,9 +175,9 @@ deploy:
     - package:centos-6
     - package:centos-7
   script:
-    - ssh cinc@${DOWNLOADS_HOST} "mkdir -p /data/incoming/cinc-auditor/files"
-    - rsync -avH --delete data/ cinc@${DOWNLOADS_HOST}:/data/incoming/cinc-auditor/files/
-    - ssh cinc@${DOWNLOADS_HOST} "chmod 755 /data/incoming/cinc-auditor/files"
+    - ssh cinc@${DOWNLOADS_HOST} "mkdir -p /data/incoming/files/${CHANNEL}/cinc-auditor"
+    - rsync -avH --delete data/ cinc@${DOWNLOADS_HOST}:/data/incoming/files/${CHANNEL}/cinc-auditor/
+    - ssh cinc@${DOWNLOADS_HOST} "chmod 755 /data/incoming/files/${CHANNEL}/cinc-auditor"
 
 publish:
   when: manual
@@ -188,5 +189,6 @@ publish:
   script:
     - bundle install
     - sh deploy.sh
-    - sudo /usr/bin/rsync -avH /data/incoming/cinc-auditor/files/ /data/mirror/cinc-auditor/files/
+    - sudo mkdir -p /data/mirror/files/${CHANNEL}/cinc-auditor
+    - sudo /usr/bin/rsync -avH /data/incoming/files/${CHANNEL}/cinc-auditor /data/mirror/files/${CHANNEL}/cinc-auditor
     - ssh -q cinc@${MIRROR_HOST} "~/sync-from-master"
