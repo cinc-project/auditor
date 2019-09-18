@@ -161,6 +161,17 @@ test:centos-7:
     - echo "${SSH_KNOWN_HOSTS}" > ~/.ssh/known_hosts
     - chmod 644 ~/.ssh/known_hosts
 
+deploy to packagecloud:
+  stage: deploy
+  allow_failure: true
+  only:
+    - master
+  tags:
+    - osuosl
+  script:
+    - bundle install
+    - sh deploy.sh
+
 deploy:
   when: manual
   stage: deploy
@@ -187,8 +198,6 @@ publish:
   tags:
     - downloads
   script:
-    - bundle install
-    - sh deploy.sh
     - sudo mkdir -p /data/mirror/files/${CHANNEL}/cinc-auditor
     - sudo /usr/bin/rsync -avH /data/incoming/files/${CHANNEL}/cinc-auditor /data/mirror/files/${CHANNEL}/cinc-auditor
     - ssh -q cinc@${MIRROR_HOST} "~/sync-from-master"
