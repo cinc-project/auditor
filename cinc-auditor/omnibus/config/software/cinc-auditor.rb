@@ -31,6 +31,7 @@ build do
   env = with_standard_compiler_flags(with_embedded_path)
 
   patch source: 'Gemfile.patch'
+  patch source: 'dist.rb.patch'
 
   # Remove existing built gems in case they exist in the current dir
   delete "#{name}-*.gem"

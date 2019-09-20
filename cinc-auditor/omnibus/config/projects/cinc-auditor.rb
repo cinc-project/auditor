@@ -18,7 +18,7 @@
 #
 
 name 'cinc-auditor'
-friendly_name 'CinC-Auditor'
+friendly_name 'Cinc-Auditor'
 maintainer 'Cinc Community <cc-build@gmail.com>'
 homepage 'https://gitlab.com/cinc-project/organization-subjects/wikis/home'
 
