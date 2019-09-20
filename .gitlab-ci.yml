@@ -199,5 +199,5 @@ publish:
     - downloads
   script:
     - sudo mkdir -p /data/mirror/files/${CHANNEL}/cinc-auditor
-    - sudo /usr/bin/rsync -avH /data/incoming/files/${CHANNEL}/cinc-auditor /data/mirror/files/${CHANNEL}/cinc-auditor
+    - sudo /usr/bin/rsync -avH /data/incoming/files/${CHANNEL}/cinc-auditor/ /data/mirror/files/${CHANNEL}/cinc-auditor/
     - ssh -q cinc@${MIRROR_HOST} "~/sync-from-master"
