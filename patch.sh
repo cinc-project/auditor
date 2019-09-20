@@ -10,7 +10,3 @@ git clone --depth=10 https://github.com/inspec/inspec.git
 #cd ..
 
 cp -rp cinc-auditor/* inspec/
-
-cd inspec/
-patch < ../patch/Gemfile.patch
-cd ..
