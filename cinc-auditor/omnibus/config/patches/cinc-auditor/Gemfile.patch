@@ -1,10 +1,9 @@
---- Gemfile.bak	2019-09-16 13:56:11.000000000 +0200
-+++ Gemfile	2019-09-16 13:56:18.000000000 +0200
+--- a/Gemfile	2019-09-16 13:56:11.000000000 +0200
++++ b/Gemfile	2019-09-16 13:56:18.000000000 +0200
 @@ -8,6 +8,7 @@
  # However, AppBundler requires a top-level Gemfile.lock with inspec-bin
  # in it in order to package the executable. Hence the odd backwards dependency.
  gem "inspec-bin", path: "./inspec-bin"
 +gem 'cinc-auditor-bin', path: './cinc-auditor-bin'
- 
+
  gem "ffi", ">= 1.9.14"
- 

@@ -1,3 +1,0 @@
-[submodule "inspec"]
-	path = inspec
-	url = https://github.com/inspec/inspec.git

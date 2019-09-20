@@ -17,15 +17,21 @@
 # limitations under the License.
 #
 
-require_relative '../../../lib/inspec/version.rb'
-
 name 'cinc-auditor'
-friendly_name 'CinC-Auditor'
+friendly_name 'Cinc-Auditor'
 maintainer 'Cinc Community <cc-build@gmail.com>'
 homepage 'https://gitlab.com/cinc-project/organization-subjects/wikis/home'
 
 license 'Apache-2.0'
 license_file '../LICENSE'
+
+build_iteration 1
+# Do not use __FILE__ after this point, use current_file. If you use __FILE__
+# after this point, any dependent defs (ex: angrychef) that use instance_eval
+# will fail to work correctly.
+current_file ||= __FILE__
+version_file = File.expand_path("../../../../VERSION", current_file)
+build_version IO.read(version_file).strip
 
 # Defaults to C:/opscode/inspec on Windows
 # and /opt/inspec on all other platforms.
@@ -34,9 +40,6 @@ if windows?
 else
   install_dir "#{default_root}/#{name}"
 end
-
-build_version Inspec::VERSION
-build_iteration 1
 
 # Load dynamically updated overrides
 overrides_path = File.expand_path('../../../../omnibus_overrides.rb', __FILE__)
