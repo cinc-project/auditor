@@ -68,5 +68,12 @@ package :deb do
   compression_type :xz
 end
 
+proj_to_work_around_cleanroom = self
+package :pkg do
+  identifier "com.cinc-project.pkg.#{proj_to_work_around_cleanroom.name}"
+  signing_identity nil
+end
+compress :dmg
+
 exclude '**/.git'
 exclude '**/bundler/git'

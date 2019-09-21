@@ -113,6 +113,24 @@ package:centos-7:
     - mkdir -p ${CI_PROJECT_DIR}/data/centos/7
     - mv -v ${CI_PROJECT_DIR}/data/*.{rpm,deb,json} ${CI_PROJECT_DIR}/data/centos/7/
 
+package:macos-10.14:
+  extends: .package
+  tags:
+    - macos-10.14
+  script:
+    - source /Users/omnibus/load-omnibus-toolchain.sh
+    - cd inspec/omnibus
+    - bundle install --without development --path ${CI_PROJECT_DIR}/bundle/vendor
+    - sudo rm -rf /var/cache/omnibus/pkg/*
+    - sudo bundle exec omnibus build cinc-auditor --override append_timestamp:false
+    - mkdir -p ${CI_PROJECT_DIR}/data/macos/10.14
+    - sudo chown -R omnibus:omnibus pkg
+    - mv -v pkg/cinc*dmg* ${CI_PROJECT_DIR}/data/macos/10.14/
+    - sudo bundle exec omnibus clean cinc-auditor
+    - sudo rm -rf /opt/cinc-auditor/*
+  cache:
+    key: macos:10.14
+
 .test:
   stage: test
   tags:
@@ -178,6 +196,16 @@ test:centos-7:
   before_script:
     - yum -y install data/centos/7/cinc-auditor*.rpm
 
+test:macos-10.14:
+  extends: .test
+  tags:
+    - macos-10.14
+  dependencies:
+    - package:macos-10.14
+  script:
+    - sudo scripts/install-cinc-auditor-macos.sh
+    - sudo scripts/uninstall-cinc-auditor-macos.sh
+
 .ssh-setup:
   before_script:
     - eval $(ssh-agent -s)
@@ -212,6 +240,7 @@ deploy:
     - package:ubuntu-18.04
     - package:centos-6
     - package:centos-7
+    - package:macos-10.14
   script:
     - ssh cinc@${DOWNLOADS_HOST} "mkdir -p /data/incoming/files/${CHANNEL}/cinc-auditor"
     - rsync -avH --delete data/ cinc@${DOWNLOADS_HOST}:/data/incoming/files/${CHANNEL}/cinc-auditor/
