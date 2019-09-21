@@ -75,5 +75,11 @@ package :pkg do
 end
 compress :dmg
 
+package :msi do
+  fast_msi true
+  upgrade_code "DFCD452F-31E5-4236-ACD1-253F4720250B"
+  wix_light_extension "WixUtilExtension"
+end
+
 exclude '**/.git'
 exclude '**/bundler/git'
