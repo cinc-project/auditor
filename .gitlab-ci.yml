@@ -236,6 +236,9 @@ test:macos-10.14:
     - package:macos-10.14
   script:
     - sudo scripts/install-cinc-auditor-macos.sh
+    - cinc-auditor version
+    - cinc-auditor detect
+    - cinc-auditor exec test-baseline
     - sudo scripts/uninstall-cinc-auditor-macos.sh
 
 test:windows-2012r2:
