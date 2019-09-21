@@ -5,6 +5,7 @@ stages:
  - test
  - deploy
  - publish
+ - cleanup
 
 variables:
   ORIGIN: https://github.com/inspec/inspec.git
@@ -257,3 +258,14 @@ publish:
     - sudo mkdir -p /data/mirror/files/${CHANNEL}/cinc-auditor
     - sudo /usr/bin/rsync -avH /data/incoming/files/${CHANNEL}/cinc-auditor/ /data/mirror/files/${CHANNEL}/cinc-auditor/
     - ssh -q cinc@${MIRROR_HOST} "~/sync-from-master"
+
+cleanup:
+  stage: cleanup
+  dependencies: []
+  variables:
+    GIT_CHECKOUT: "false"
+  tags:
+    - macos-10.14
+  when: always
+  script:
+    - sudo rm -rf inspec/
