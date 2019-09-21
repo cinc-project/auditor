@@ -7,7 +7,8 @@ stages:
  - publish
 
 variables:
-  GIT_SUBMODULE_STRATEGY: normal
+  ORIGIN: https://github.com/inspec/inspec.git
+  REF: master
   CHANNEL: unstable
 
 patch:
@@ -15,7 +16,13 @@ patch:
   tags:
     - osuosl
   script:
-    - sh patch.sh
+    - echo "Cloning from $ORIGIN"
+    - git clone --depth=1 -b $REF $ORIGIN
+    - cp -R cinc-auditor/* inspec/
+    - mkdir -p ${CI_PROJECT_DIR}/{cache,cache/git_cache}
+    - echo "cache_dir '${CI_PROJECT_DIR}/cache'" >> inspec/omnibus/omnibus.rb
+    - echo "git_cache_dir '${CI_PROJECT_DIR}/cache/git_cache'" >> inspec/omnibus/omnibus.rb
+    - sed -i -e 's/^use_git_caching false/use_git_caching true/g' inspec/omnibus/omnibus.rb
   artifacts:
     expire_in: 1d
     paths:
