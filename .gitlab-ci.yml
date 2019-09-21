@@ -132,6 +132,22 @@ package:macos-10.14:
   cache:
     key: macos:10.14
 
+package:windows-2012r2:
+  extends: .package
+  tags:
+    - windows-x64
+  script:
+    - $ErrorActionPreference = "Stop"
+    - C:\omnibus\load-omnibus-toolchain.ps1
+    - cd inspec\omnibus
+    - bundle install --without development --path ${CI_PROJECT_DIR}/bundle/vendor
+    - bundle exec omnibus build cinc-auditor --override append_timestamp:false
+    - mkdir.exe -p ${CI_PROJECT_DIR}/data/windows/2012r2
+    - mv.exe -v pkg/cinc-auditor* ${CI_PROJECT_DIR}/data/windows/2012r2
+    - bundle exec omnibus clean cinc-auditor
+  cache:
+    key: windows:2012r2
+
 .test:
   stage: test
   tags:
@@ -140,6 +156,21 @@ package:macos-10.14:
     - cinc-auditor version
     - cinc-auditor detect
     - cinc-auditor exec test-baseline
+
+.test-windows:
+  tags:
+    - windows-x64
+  before_script:
+    - ./scripts/install-cinc-auditor.ps1
+  script:
+    - $ErrorActionPreference = "Stop"
+    - $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
+    - echo $env:PATH
+    - cinc-auditor version
+    - cinc-auditor detect
+    - cinc-auditor exec test-baseline
+  after_script:
+    - ./scripts/uninstall-cinc-auditor.ps1
 
 test:debian-8:
   extends: .test
@@ -207,6 +238,11 @@ test:macos-10.14:
     - sudo scripts/install-cinc-auditor-macos.sh
     - sudo scripts/uninstall-cinc-auditor-macos.sh
 
+test:windows-2012r2:
+  extends: .test-windows
+  dependencies:
+    - package:windows-2012r2
+
 .ssh-setup:
   before_script:
     - eval $(ssh-agent -s)
@@ -242,6 +278,7 @@ deploy:
     - package:centos-6
     - package:centos-7
     - package:macos-10.14
+    - package:windows-2012r2
   script:
     - ssh cinc@${DOWNLOADS_HOST} "mkdir -p /data/incoming/files/${CHANNEL}/cinc-auditor"
     - rsync -avH --delete data/ cinc@${DOWNLOADS_HOST}:/data/incoming/files/${CHANNEL}/cinc-auditor/
