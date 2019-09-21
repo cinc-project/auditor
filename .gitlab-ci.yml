@@ -61,6 +61,15 @@ package:debian-9:
     - mkdir -p ${CI_PROJECT_DIR}/data/debian/9
     - mv -v ${CI_PROJECT_DIR}/data/*.{rpm,deb,json} ${CI_PROJECT_DIR}/data/debian/9/
 
+package:debian-10:
+  extends: .package
+  image: cincproject/omnibus-debian:10
+  cache:
+    key: debian:9
+  after_script:
+    - mkdir -p ${CI_PROJECT_DIR}/data/debian/10
+    - mv -v ${CI_PROJECT_DIR}/data/*.{rpm,deb,json} ${CI_PROJECT_DIR}/data/debian/10/
+
 package:ubuntu-16.04:
   extends: .package
   image: cincproject/omnibus-ubuntu:16.04
@@ -119,6 +128,14 @@ test:debian-9:
     - package:debian-9
   before_script:
     - dpkg -i data/debian/9/cinc-auditor*.deb
+
+test:debian-10:
+  extends: .test
+  image: cincproject/omnibus-debian:10
+  dependencies:
+    - package:debian-10
+  before_script:
+    - dpkg -i data/debian/10/cinc-auditor*.deb
 
 test:ubuntu-16.04:
   extends: .test
@@ -181,6 +198,7 @@ deploy:
   dependencies:
     - package:debian-8
     - package:debian-9
+    - package:debian-10
     - package:ubuntu-16.04
     - package:ubuntu-18.04
     - package:centos-6
