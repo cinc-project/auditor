@@ -118,6 +118,8 @@ package:centos-7:
   tags:
     - osuosl
   script:
+    - cinc-auditor version
+    - cinc-auditor detect
     - cinc-auditor exec test-baseline
 
 test:debian-8:
