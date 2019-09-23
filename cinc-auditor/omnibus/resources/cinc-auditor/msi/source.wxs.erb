@@ -37,7 +37,7 @@
     -->
     <% if fastmsi %>
     <SetProperty Id="FastUnzip"
-                 Value="FASTZIPDIR=[INSTALLLOCATION];FASTZIPAPPNAME=inspec"
+                 Value="FASTZIPDIR=[INSTALLLOCATION];FASTZIPAPPNAME=cinc-auditor"
                  Sequence="execute"
                  Before="FastUnzip" />
 
@@ -53,7 +53,7 @@
 
     <CustomAction Id="Cleanup"
                   Directory="INSTALLLOCATION"
-                  ExeCommand="cmd /C &quot;rd /S /Q inspec&quot;"
+                  ExeCommand="cmd /C &quot;rd /S /Q cinc-auditor&quot;"
                   Execute="deferred"
                   Impersonate="no"
                   Return="ignore" />
@@ -73,8 +73,8 @@
 
     <Directory Id="TARGETDIR" Name="SourceDir">
       <Directory Id="WindowsVolume">
-        <Directory Id="INSTALLLOCATION" Name="opscode">
-          <Directory Id="PROJECTLOCATION" Name="inspec">
+        <Directory Id="INSTALLLOCATION" Name="cinc-project">
+          <Directory Id="PROJECTLOCATION" Name="cinc-auditor">
             <Directory Id="PROJECTLOCATIONBIN" Name="bin">
               <Component Id="CincAuditorPath" Guid="{6169A1CB-D9E8-4C7b-ABB8-B6303A9A319A}" >
                 <Environment Id="Environment"
@@ -99,7 +99,7 @@
     <Icon Id="inspec32.ico" SourceFile="Resources\assets\inspec_32x32.ico"/>
     <Icon Id="inspec.ico" SourceFile="Resources\assets\inspec.ico"/>
     <Property Id="ARPPRODUCTICON" Value="inspec16.ico" />
-    <Property Id="ARPHELPLINK" Value="http://www.getchef.com/support/" />
+    <Property Id="ARPHELPLINK" Value="http://www.cinc.sh/" />
     <Property Id="WIXUI_INSTALLDIR" Value="INSTALLLOCATION" />
 
     <UIRef Id="CincAuditorUI_InstallDir"/>
