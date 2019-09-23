@@ -19,7 +19,14 @@ describe file('/opt/cinc-auditor/bin/cinc-auditor-wrapper') do
   its(:content) { should include 'Redirecting to cinc-auditor...' }
 end
 
-describe file('/usr/bin/inspec') do
-  it { should be_symlink }
-  its(:link_path) { should eq '/opt/cinc-auditor/bin/cinc-auditor-wrapper' }
+if os.name == 'mac_os_x'
+  describe file('/usr/local/bin/inspec') do
+    it { should be_symlink }
+    its(:link_path) { should eq '/opt/cinc-auditor/bin/cinc-auditor-wrapper' }
+  end
+else
+  describe file('/usr/bin/inspec') do
+    it { should be_symlink }
+    its(:link_path) { should eq '/opt/cinc-auditor/bin/cinc-auditor-wrapper' }
+  end
 end
