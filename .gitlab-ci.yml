@@ -72,7 +72,7 @@ package:debian-10:
   extends: .package
   image: cincproject/omnibus-debian:10
   cache:
-    key: debian:9
+    key: debian:10
   after_script:
     - mkdir -p ${CI_PROJECT_DIR}/data/debian/10
     - mv -v ${CI_PROJECT_DIR}/data/*.{rpm,deb,json} ${CI_PROJECT_DIR}/data/debian/10/
