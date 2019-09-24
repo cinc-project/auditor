@@ -18,9 +18,9 @@
 #
 
 name 'cinc-auditor'
-friendly_name 'Cinc-Auditor'
-maintainer 'Cinc Community <cc-build@gmail.com>'
-homepage 'https://gitlab.com/cinc-project/organization-subjects/wikis/home'
+friendly_name 'Cinc Auditor'
+maintainer 'Cinc Project'
+homepage 'https://www.cinc.sh'
 
 license 'Apache-2.0'
 license_file '../LICENSE'
@@ -47,7 +47,7 @@ instance_eval(File.read(overrides_path), overrides_path)
 
 dependency 'preparation'
 
-dependency 'cinc-auditor'
+dependency 'inspec'
 
 # Mark all directories world readable.
 dependency 'gem-permissions'
