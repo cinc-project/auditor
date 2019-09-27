@@ -1,12 +1,5 @@
 #!/bin/sh -e
 
 rm -rf inspec
-
-git clone --depth=10 https://github.com/inspec/inspec.git
-
-#cd inspec
-#git reset --hard
-#git clean -f -d
-#cd ..
-
+git clone --depth=1 -b ${REF:-master} ${ORIGIN:-https://github.com/inspec/inspec.git}
 cp -rp cinc-auditor/* inspec/
