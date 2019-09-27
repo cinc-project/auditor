@@ -68,5 +68,18 @@ package :deb do
   compression_type :xz
 end
 
+proj_to_work_around_cleanroom = self
+package :pkg do
+  identifier "com.cinc-project.pkg.#{proj_to_work_around_cleanroom.name}"
+  signing_identity nil
+end
+compress :dmg
+
+package :msi do
+  fast_msi true
+  upgrade_code "DFCD452F-31E5-4236-ACD1-253F4720250B"
+  wix_light_extension "WixUtilExtension"
+end
+
 exclude '**/.git'
 exclude '**/bundler/git'

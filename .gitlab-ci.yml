@@ -5,9 +5,11 @@ stages:
  - test
  - deploy
  - publish
+ - cleanup
 
 variables:
-  GIT_SUBMODULE_STRATEGY: normal
+  ORIGIN: https://github.com/inspec/inspec.git
+  REF: master
   CHANNEL: unstable
 
 patch:
@@ -15,7 +17,12 @@ patch:
   tags:
     - osuosl
   script:
+    - echo "Cloning from $ORIGIN"
     - sh patch.sh
+    - mkdir -p ${CI_PROJECT_DIR}/{cache,cache/git_cache}
+    - echo "cache_dir '${CI_PROJECT_DIR}/cache'" >> inspec/omnibus/omnibus.rb
+    - echo "git_cache_dir '${CI_PROJECT_DIR}/cache/git_cache'" >> inspec/omnibus/omnibus.rb
+    - sed -i -e 's/^use_git_caching false/use_git_caching true/g' inspec/omnibus/omnibus.rb
   artifacts:
     expire_in: 1d
     paths:
@@ -61,6 +68,15 @@ package:debian-9:
     - mkdir -p ${CI_PROJECT_DIR}/data/debian/9
     - mv -v ${CI_PROJECT_DIR}/data/*.{rpm,deb,json} ${CI_PROJECT_DIR}/data/debian/9/
 
+package:debian-10:
+  extends: .package
+  image: cincproject/omnibus-debian:10
+  cache:
+    key: debian:10
+  after_script:
+    - mkdir -p ${CI_PROJECT_DIR}/data/debian/10
+    - mv -v ${CI_PROJECT_DIR}/data/*.{rpm,deb,json} ${CI_PROJECT_DIR}/data/debian/10/
+
 package:ubuntu-16.04:
   extends: .package
   image: cincproject/omnibus-ubuntu:16.04
@@ -97,12 +113,63 @@ package:centos-7:
     - mkdir -p ${CI_PROJECT_DIR}/data/centos/7
     - mv -v ${CI_PROJECT_DIR}/data/*.{rpm,deb,json} ${CI_PROJECT_DIR}/data/centos/7/
 
+package:macos-10.14:
+  extends: .package
+  tags:
+    - macos-10.14
+  script:
+    - source /Users/omnibus/load-omnibus-toolchain.sh
+    - cd inspec/omnibus
+    - bundle install --without development --path ${CI_PROJECT_DIR}/bundle/vendor
+    - sudo rm -rf /var/cache/omnibus/pkg/*
+    - sudo bundle exec omnibus build cinc-auditor --override append_timestamp:false
+    - mkdir -p ${CI_PROJECT_DIR}/data/macos/10.14
+    - sudo chown -R omnibus:omnibus pkg
+    - mv -v pkg/cinc*dmg* ${CI_PROJECT_DIR}/data/macos/10.14/
+    - sudo bundle exec omnibus clean cinc-auditor
+    - sudo rm -rf /opt/cinc-auditor/*
+  cache:
+    key: macos:10.14
+
+package:windows-2012r2:
+  extends: .package
+  tags:
+    - windows-x64
+  script:
+    - $ErrorActionPreference = "Stop"
+    - C:\omnibus\load-omnibus-toolchain.ps1
+    - cd inspec\omnibus
+    - bundle install --without development --path ${CI_PROJECT_DIR}/bundle/vendor
+    - bundle exec omnibus build cinc-auditor --override append_timestamp:false
+    - mkdir.exe -p ${CI_PROJECT_DIR}/data/windows/2012r2
+    - mv.exe -v pkg/cinc-auditor* ${CI_PROJECT_DIR}/data/windows/2012r2
+    - bundle exec omnibus clean cinc-auditor
+  cache:
+    key: windows:2012r2
+
 .test:
   stage: test
   tags:
     - osuosl
   script:
+    - cinc-auditor version
+    - cinc-auditor detect
     - cinc-auditor exec test-baseline
+
+.test-windows:
+  tags:
+    - windows-x64
+  before_script:
+    - ./scripts/install-cinc-auditor.ps1
+  script:
+    - $ErrorActionPreference = "Stop"
+    - $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
+    - echo $env:PATH
+    - cinc-auditor version
+    - cinc-auditor detect
+    - cinc-auditor exec test-baseline
+  after_script:
+    - ./scripts/uninstall-cinc-auditor.ps1
 
 test:debian-8:
   extends: .test
@@ -119,6 +186,14 @@ test:debian-9:
     - package:debian-9
   before_script:
     - dpkg -i data/debian/9/cinc-auditor*.deb
+
+test:debian-10:
+  extends: .test
+  image: cincproject/omnibus-debian:10
+  dependencies:
+    - package:debian-10
+  before_script:
+    - dpkg -i data/debian/10/cinc-auditor*.deb
 
 test:ubuntu-16.04:
   extends: .test
@@ -152,6 +227,24 @@ test:centos-7:
   before_script:
     - yum -y install data/centos/7/cinc-auditor*.rpm
 
+test:macos-10.14:
+  extends: .test
+  tags:
+    - macos-10.14
+  dependencies:
+    - package:macos-10.14
+  script:
+    - sudo scripts/install-cinc-auditor-macos.sh
+    - cinc-auditor version
+    - cinc-auditor detect
+    - cinc-auditor exec test-baseline
+    - sudo scripts/uninstall-cinc-auditor-macos.sh
+
+test:windows-2012r2:
+  extends: .test-windows
+  dependencies:
+    - package:windows-2012r2
+
 .ssh-setup:
   before_script:
     - eval $(ssh-agent -s)
@@ -181,10 +274,13 @@ deploy:
   dependencies:
     - package:debian-8
     - package:debian-9
+    - package:debian-10
     - package:ubuntu-16.04
     - package:ubuntu-18.04
     - package:centos-6
     - package:centos-7
+    - package:macos-10.14
+    - package:windows-2012r2
   script:
     - ssh cinc@${DOWNLOADS_HOST} "mkdir -p /data/incoming/files/${CHANNEL}/cinc-auditor"
     - rsync -avH --delete data/ cinc@${DOWNLOADS_HOST}:/data/incoming/files/${CHANNEL}/cinc-auditor/
@@ -199,5 +295,16 @@ publish:
     - downloads
   script:
     - sudo mkdir -p /data/mirror/files/${CHANNEL}/cinc-auditor
-    - sudo /usr/bin/rsync -avH /data/incoming/files/${CHANNEL}/cinc-auditor /data/mirror/files/${CHANNEL}/cinc-auditor
+    - sudo /usr/bin/rsync -avH /data/incoming/files/${CHANNEL}/cinc-auditor/ /data/mirror/files/${CHANNEL}/cinc-auditor/
     - ssh -q cinc@${MIRROR_HOST} "~/sync-from-master"
+
+cleanup:
+  stage: cleanup
+  dependencies: []
+  variables:
+    GIT_CHECKOUT: "false"
+  tags:
+    - macos-10.14
+  when: always
+  script:
+    - sudo rm -rf inspec/
