@@ -103,8 +103,8 @@ package:centos-6:
   cache:
     key: centos:6
   after_script:
-    - mkdir -p ${CI_PROJECT_DIR}/data/centos/6
-    - mv -v ${CI_PROJECT_DIR}/data/*.{rpm,deb,json} ${CI_PROJECT_DIR}/data/centos/6/
+    - mkdir -p ${CI_PROJECT_DIR}/data/el/6
+    - mv -v ${CI_PROJECT_DIR}/data/*.{rpm,deb,json} ${CI_PROJECT_DIR}/data/el/6/
 
 package:centos-7:
   extends: .package
@@ -112,8 +112,8 @@ package:centos-7:
   cache:
     key: centos:7
   after_script:
-    - mkdir -p ${CI_PROJECT_DIR}/data/centos/7
-    - mv -v ${CI_PROJECT_DIR}/data/*.{rpm,deb,json} ${CI_PROJECT_DIR}/data/centos/7/
+    - mkdir -p ${CI_PROJECT_DIR}/data/el/7
+    - mv -v ${CI_PROJECT_DIR}/data/*.{rpm,deb,json} ${CI_PROJECT_DIR}/data/el/7/
 
 package:macos-10.14:
   extends: .package
@@ -125,9 +125,9 @@ package:macos-10.14:
     - bundle install --without development --path ${CI_PROJECT_DIR}/bundle/vendor
     - sudo rm -rf /var/cache/omnibus/pkg/*
     - sudo bundle exec omnibus build cinc-auditor --override append_timestamp:false
-    - mkdir -p ${CI_PROJECT_DIR}/data/macos/10.14
+    - mkdir -p ${CI_PROJECT_DIR}/data/mac_os_x/10.14
     - sudo chown -R omnibus:omnibus pkg
-    - mv -v pkg/cinc*dmg* ${CI_PROJECT_DIR}/data/macos/10.14/
+    - mv -v pkg/cinc*dmg* ${CI_PROJECT_DIR}/data/mac_os_x/10.14/
     - sudo bundle exec omnibus clean cinc-auditor
     - sudo rm -rf /opt/cinc-auditor/*
   cache:
@@ -219,7 +219,7 @@ test:centos-6:
   dependencies:
     - package:centos-6
   before_script:
-    - yum -y install data/centos/6/cinc-auditor*.rpm
+    - yum -y install data/el/6/cinc-auditor*.rpm
 
 test:centos-7:
   extends: .test
@@ -227,7 +227,7 @@ test:centos-7:
   dependencies:
     - package:centos-7
   before_script:
-    - yum -y install data/centos/7/cinc-auditor*.rpm
+    - yum -y install data/el/7/cinc-auditor*.rpm
 
 test:macos-10.14:
   extends: .test
