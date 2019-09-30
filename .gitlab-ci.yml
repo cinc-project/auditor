@@ -41,6 +41,7 @@ patch:
     - bundle exec omnibus build cinc-auditor --override append_timestamp:false
     - mkdir ${CI_PROJECT_DIR}/data
     - mv -v pkg/cinc-auditor* ${CI_PROJECT_DIR}/data/
+    - cp ../VERSION ${CI_PROJECT_DIR}/
   cache:
     paths:
       - cache/*
@@ -49,6 +50,7 @@ patch:
     expire_in: 1mo
     paths:
       - data/*
+      - VERSION
 
 package:debian-8:
   extends: .package
@@ -282,9 +284,9 @@ deploy:
     - package:macos-10.14
     - package:windows-2012r2
   script:
-    - ssh cinc@${DOWNLOADS_HOST} "mkdir -p /data/incoming/files/${CHANNEL}/cinc-auditor"
-    - rsync -avH --delete data/ cinc@${DOWNLOADS_HOST}:/data/incoming/files/${CHANNEL}/cinc-auditor/
-    - ssh cinc@${DOWNLOADS_HOST} "chmod 755 /data/incoming/files/${CHANNEL}/cinc-auditor"
+    - ssh cinc@${DOWNLOADS_HOST} "mkdir -p /data/incoming/files/${CHANNEL}/cinc-auditor/$(cat VERSION)/"
+    - rsync -avH --delete data/ cinc@${DOWNLOADS_HOST}:/data/incoming/files/${CHANNEL}/cinc-auditor/$(cat VERSION)/
+    - ssh cinc@${DOWNLOADS_HOST} "chmod 755 /data/incoming/files/${CHANNEL}/cinc-auditor/$(cat VERSION)/"
 
 publish:
   when: manual
