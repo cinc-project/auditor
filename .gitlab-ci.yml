@@ -115,6 +115,15 @@ package:centos-7:
     - mkdir -p ${CI_PROJECT_DIR}/data/el/7
     - mv -v ${CI_PROJECT_DIR}/data/*.{rpm,deb,json} ${CI_PROJECT_DIR}/data/el/7/
 
+package:centos-8:
+  extends: .package
+  image: cincproject/omnibus-centos:8
+  cache:
+    key: centos:8
+  after_script:
+    - mkdir -p ${CI_PROJECT_DIR}/data/el/8
+    - mv -v ${CI_PROJECT_DIR}/data/*.{rpm,deb,json} ${CI_PROJECT_DIR}/data/el/8/
+
 package:macos-10.14:
   extends: .package
   tags:
@@ -229,6 +238,14 @@ test:centos-7:
   before_script:
     - yum -y install data/el/7/cinc-auditor*.rpm
 
+test:centos-8:
+  extends: .test
+  image: cincproject/omnibus-centos:8
+  dependencies:
+    - package:centos-8
+  before_script:
+    - yum -y install data/el/8/cinc-auditor*.rpm
+
 test:macos-10.14:
   extends: .test
   tags:
@@ -281,6 +298,7 @@ deploy:
     - package:ubuntu-18.04
     - package:centos-6
     - package:centos-7
+    - package:centos-8
     - package:macos-10.14
     - package:windows-2012r2
   script:
