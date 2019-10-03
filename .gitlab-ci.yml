@@ -360,7 +360,7 @@ rubygems:
   dependencies:
     - patch
   script:
-    - sh rubygems.sh
+    - bash rubygems.sh
 
 .cleanup:
   stage: cleanup

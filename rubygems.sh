@@ -1,4 +1,4 @@
-#!/bin/sh -e
+#!/bin/bash -e
 mkdir -p $HOME/.gem
 touch $HOME/.gem/credentials
 chmod 0600 $HOME/.gem/credentials
