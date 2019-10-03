@@ -1,4 +1,4 @@
-From fd1cab6c4dcf70232eb17a1c99516717f68517ad Mon Sep 17 00:00:00 2001
+From 0454861d3986a02904f7e5b101340b7eb9060598 Mon Sep 17 00:00:00 2001
 From: Lance Albertson <lance@osuosl.org>
 Date: Wed, 2 Oct 2019 20:11:43 -0700
 Subject: [PATCH 3/3] Rename inspec gems to cinc-auditor gems
@@ -8,16 +8,38 @@ how many of the other products (Cinc Client, Cinc Workstation, etc) rely on gems
 for the omnibus installation. This provides a proper rename of all four gems
 currently in use in InSpec.
 ---
- inspec-core.gemspec => cinc-auditor-core.gemspec   | 12 ++++++------
- inspec.gemspec => cinc-auditor.gemspec             | 12 ++++++------
- ...inspec-bin.gemspec => cinc-auditor-bin.gemspec} | 12 ++++++------
- ...e-bin.gemspec => cinc-auditor-core-bin.gemspec} | 14 +++++++-------
- 4 files changed, 25 insertions(+), 25 deletions(-)
+ Gemfile                                                    |  4 ++--
+ inspec-core.gemspec => cinc-auditor-core.gemspec           | 12 ++++++------
+ inspec.gemspec => cinc-auditor.gemspec                     | 12 ++++++------
+ inspec-bin/Gemfile                                         |  6 +++---
+ .../{inspec-bin.gemspec => cinc-auditor-bin.gemspec}       | 12 ++++++------
+ ...spec-core-bin.gemspec => cinc-auditor-core-bin.gemspec} | 14 +++++++-------
+ 6 files changed, 30 insertions(+), 30 deletions(-)
  rename inspec-core.gemspec => cinc-auditor-core.gemspec (78%)
  rename inspec.gemspec => cinc-auditor.gemspec (74%)
  rename inspec-bin/{inspec-bin.gemspec => cinc-auditor-bin.gemspec} (60%)
  rename inspec-bin/{inspec-core-bin.gemspec => cinc-auditor-core-bin.gemspec} (57%)
 
+diff --git a/Gemfile b/Gemfile
+index a590218d..bb487f85 100644
+--- a/Gemfile
++++ b/Gemfile
+@@ -1,13 +1,13 @@
+ source "https://rubygems.org"
+ 
+-gem "inspec", path: "."
++gem "cinc-auditor", path: "."
+ 
+ # This dependency is NOT used for normal gem deployment
+ # - instead, inspec-bin gemspec-depends on inspec
+ #
+ # However, AppBundler requires a top-level Gemfile.lock with inspec-bin
+ # in it in order to package the executable. Hence the odd backwards dependency.
+-gem "inspec-bin", path: "./inspec-bin"
++gem "cinc-auditor-bin", path: "./inspec-bin"
+ 
+ gem "ffi", ">= 1.9.14"
+ 
 diff --git a/inspec-core.gemspec b/cinc-auditor-core.gemspec
 similarity index 78%
 rename from inspec-core.gemspec
@@ -76,6 +98,21 @@ index 6041d325..f5148979 100644
      "{bin,lib,etc}/**/*", File::FNM_DOTMATCH
    ).reject { |f| File.directory?(f) }
  
+diff --git a/inspec-bin/Gemfile b/inspec-bin/Gemfile
+index 4ec425ac..a70e125a 100644
+--- a/inspec-bin/Gemfile
++++ b/inspec-bin/Gemfile
+@@ -1,7 +1,7 @@
+ source "https://rubygems.org"
+-main_gemspec = File.expand_path("../inspec-bin.gemspec", __FILE__)
++main_gemspec = File.expand_path("../cinc-auditor-bin.gemspec", __FILE__)
+ if File.exist?(main_gemspec)
+-  gemspec name: "inspec-bin"
++  gemspec name: "cinc-auditor-bin"
+ else
+-  gemspec name: "inspec-core-bin"
++  gemspec name: "cinc-auditor-core-bin"
+ end
 diff --git a/inspec-bin/inspec-bin.gemspec b/inspec-bin/cinc-auditor-bin.gemspec
 similarity index 60%
 rename from inspec-bin/inspec-bin.gemspec
@@ -147,5 +184,5 @@ index f791be2a..3444b9d4 100644
  
    spec.bindir = "bin"
 -- 
-2.20.1
+2.11.0
 
