@@ -1,0 +1,177 @@
+From f635cbda87fb5202c116fe7bcd3c777ddb403218 Mon Sep 17 00:00:00 2001
+From: Lance Albertson <lance@osuosl.org>
+Date: Sat, 19 Oct 2019 18:30:27 -0700
+Subject: [PATCH] Rename inspec-bin gems to cinc-auditor-bin
+
+We need the ability to publish our own rubygems which include the cinc-auditor
+binary. This will also assist in allowing us easily to install this into other
+products (Cinc Client, Cinc Workstation, etc) which rely on gems for their
+omnibus installation.
+
+In addition, this pulls in our lib/inspec/dist.rb which provides fixes for the
+Chef trademarks.
+---
+ Gemfile                                         |  2 +-
+ inspec-bin/Gemfile                              |  6 +++---
+ ...pec-bin.gemspec => cinc-auditor-bin.gemspec} | 10 +++++-----
+ ...in.gemspec => cinc-auditor-core-bin.gemspec} | 12 ++++++------
+ omnibus/config/projects/cinc-auditor.rb         |  2 +-
+ .../software/{inspec.rb => cinc-auditor.rb}     | 17 +++++++++--------
+ 6 files changed, 25 insertions(+), 24 deletions(-)
+ rename inspec-bin/{inspec-bin.gemspec => cinc-auditor-bin.gemspec} (66%)
+ rename inspec-bin/{inspec-core-bin.gemspec => cinc-auditor-core-bin.gemspec} (63%)
+ rename omnibus/config/software/{inspec.rb => cinc-auditor.rb} (75%)
+
+diff --git a/Gemfile b/Gemfile
+index a590218d1..979ae88b6 100644
+--- a/Gemfile
++++ b/Gemfile
+@@ -7,7 +7,7 @@ gem "inspec", path: "."
+ #
+ # However, AppBundler requires a top-level Gemfile.lock with inspec-bin
+ # in it in order to package the executable. Hence the odd backwards dependency.
+-gem "inspec-bin", path: "./inspec-bin"
++gem "cinc-auditor-bin", path: "./inspec-bin"
+ 
+ gem "ffi", ">= 1.9.14"
+ 
+diff --git a/inspec-bin/Gemfile b/inspec-bin/Gemfile
+index 4ec425ac2..a70e125a1 100644
+--- a/inspec-bin/Gemfile
++++ b/inspec-bin/Gemfile
+@@ -1,7 +1,7 @@
+ source "https://rubygems.org"
+-main_gemspec = File.expand_path("../inspec-bin.gemspec", __FILE__)
++main_gemspec = File.expand_path("../cinc-auditor-bin.gemspec", __FILE__)
+ if File.exist?(main_gemspec)
+-  gemspec name: "inspec-bin"
++  gemspec name: "cinc-auditor-bin"
+ else
+-  gemspec name: "inspec-core-bin"
++  gemspec name: "cinc-auditor-core-bin"
+ end
+diff --git a/inspec-bin/inspec-bin.gemspec b/inspec-bin/cinc-auditor-bin.gemspec
+similarity index 66%
+rename from inspec-bin/inspec-bin.gemspec
+rename to inspec-bin/cinc-auditor-bin.gemspec
+index 0a387ea6b..a5ebba736 100644
+--- a/inspec-bin/inspec-bin.gemspec
++++ b/inspec-bin/cinc-auditor-bin.gemspec
+@@ -3,13 +3,13 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
+ require "inspec-bin/version"
+ 
+ Gem::Specification.new do |spec|
+-  spec.name          = "inspec-bin"
++  spec.name          = "cinc-auditor-bin"
+   spec.version       = InspecBin::VERSION
+-  spec.authors       = ["Chef InSpec Core Engineering "]
+-  spec.email         = ["inspec@chef.io"]
++  spec.authors       = ["Chef InSpec Core Engineering", "Cinc Project"]
++  spec.email         = ["inspec@chef.io", "maintainers@cinc.sh"]
+   spec.summary       = "Infrastructure and compliance testing."
+-  spec.description   = "InSpec executable for inspec gem. Use of this executable may require accepting a license agreement."
+-  spec.homepage      = "https://github.com/inspec/inspec/tree/master/inspec-bin"
++  spec.description   = "Cinc Auditor (a community distribution of InSpec) executable for inspec gem."
++  spec.homepage      = "https://gitlab.com/cinc-project/auditor"
+   spec.license       = "Apache-2.0"
+ 
+   spec.require_paths = ["lib"]
+diff --git a/inspec-bin/inspec-core-bin.gemspec b/inspec-bin/cinc-auditor-core-bin.gemspec
+similarity index 63%
+rename from inspec-bin/inspec-core-bin.gemspec
+rename to inspec-bin/cinc-auditor-core-bin.gemspec
+index f791be2a2..a0933e162 100644
+--- a/inspec-bin/inspec-core-bin.gemspec
++++ b/inspec-bin/cinc-auditor-core-bin.gemspec
+@@ -6,13 +6,13 @@ require "inspec-bin/version"
+ # inspec-core is a stripped-down version of the inspec gem with fewer exotic dependencies
+ 
+ Gem::Specification.new do |spec|
+-  spec.name          = "inspec-core-bin" # dallas multi-pass
++  spec.name          = "cinc-auditor-core-bin" # dallas multi-pass
+   spec.version       = InspecBin::VERSION
+-  spec.authors       = ["Chef InSpec Core Engineering "]
+-  spec.email         = ["inspec@chef.io"]
++  spec.authors       = ["Chef InSpec Core Engineering", "Cinc Project"]
++  spec.email         = ["inspec@chef.io", "maintainers@cinc.sh"]
+   spec.summary       = "Infrastructure and compliance testing."
+-  spec.description   = "InSpec executable for inspec-core gem. Use of this executable may require accepting a license agreement."
+-  spec.homepage      = "https://github.com/inspec/inspec/tree/master/inspec-bin"
++  spec.description   = "Cinc Auditor (a community distribution of InSpec) executable for inspec-core gem."
++  spec.homepage      = "https://gitlab.com/cinc-project/auditor"
+   spec.license       = "Apache-2.0"
+ 
+   spec.require_paths = ["lib"]
+@@ -21,7 +21,7 @@ Gem::Specification.new do |spec|
+   spec.add_dependency "inspec-core", "= #{InspecBin::VERSION}"
+   spec.add_development_dependency "rake"
+ 
+-  spec.files = %w{README.md LICENSE Gemfile} + ["inspec-core-bin.gemspec"] +
++  spec.files = %w{README.md LICENSE Gemfile} + ["cinc-auditor-core-bin.gemspec"] +
+     Dir.glob("{lib,bin}/**/*", File::FNM_DOTMATCH).reject { |f| File.directory?(f) }
+ 
+   spec.bindir = "bin"
+diff --git a/omnibus/config/projects/cinc-auditor.rb b/omnibus/config/projects/cinc-auditor.rb
+index 23acf66d0..9ac3d91c9 100644
+--- a/omnibus/config/projects/cinc-auditor.rb
++++ b/omnibus/config/projects/cinc-auditor.rb
+@@ -43,7 +43,7 @@ instance_eval(File.read(overrides_path), overrides_path)
+ 
+ dependency "preparation"
+ 
+-dependency "inspec"
++dependency "cinc-auditor"
+ 
+ # Mark all directories world readable.
+ dependency "gem-permissions"
+diff --git a/omnibus/config/software/inspec.rb b/omnibus/config/software/cinc-auditor.rb
+similarity index 75%
+rename from omnibus/config/software/inspec.rb
+rename to omnibus/config/software/cinc-auditor.rb
+index dd640d36c..6b8996466 100644
+--- a/omnibus/config/software/inspec.rb
++++ b/omnibus/config/software/cinc-auditor.rb
+@@ -17,7 +17,7 @@
+ #
+ require_relative "../../../lib/inspec/version.rb"
+ 
+-name "inspec"
++name "cinc-auditor"
+ 
+ dependency "ruby"
+ dependency "rubygems"
+@@ -34,23 +34,24 @@ build do
+   env = with_standard_compiler_flags(with_embedded_path)
+ 
+   # Remove existing built gems in case they exist in the current dir
+-  delete "#{name}-*.gem"
++  delete "inspec-*.gem"
++  delete "inspec-bin/#{name}-*.gem"
+ 
+   # We bundle install to ensure the versions of gems we are going to
+   # appbundle-lock to are definitely installed
+   bundle "install --without test integration tools maintenance", env: env
+ 
+-  gem "build #{name}.gemspec", env: env
+-  gem "install #{name}-*.gem --no-document", env: env
++  gem "build inspec.gemspec", env: env
++  gem "install inspec-*.gem --no-document", env: env
+ 
+-  gem "build inspec-bin.gemspec", env: env, cwd: "#{project_dir}/inspec-bin"
+-  gem "install inspec-bin-*.gem --no-document", env: env, cwd: "#{project_dir}/inspec-bin"
++  gem "build cinc-auditor-bin.gemspec", env: env, cwd: "#{project_dir}/inspec-bin"
++  gem "install cinc-auditor-bin-*.gem --no-document", env: env, cwd: "#{project_dir}/inspec-bin"
+ 
+   block do
+     if Dir.exist?("#{project_dir}/inspec-bin")
+-      appbundle "inspec", lockdir: project_dir, gem: "inspec-bin", env: env
++      appbundle "cinc-auditor", lockdir: project_dir, gem: "cinc-auditor-bin", env: env
+     else
+-      appbundle "inspec", env: env
++      appbundle "cinc-auditor", env: env
+     end
+   end
+ 
+-- 
+2.20.1
+

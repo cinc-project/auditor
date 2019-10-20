@@ -6,5 +6,7 @@ cd inspec
 for patch in $(find ../patches/ -type f | sort) ; do
   patch -p1 < $patch
 done
+mkdir -p inspec-bin/lib/inspec
+cp lib/inspec/dist.rb inspec-bin/lib/inspec/
 cd ../
 cp -rp cinc-auditor/* inspec/
