@@ -142,6 +142,26 @@ package:macos-10.14:
   cache:
     key: macos:10.14
 
+package:macos-10.15:
+  extends: .package
+  tags:
+    - macos-10.15
+  script:
+    - source /Users/omnibus/load-omnibus-toolchain.sh
+    - cd inspec/omnibus
+    - bundle install --without development --path ${CI_PROJECT_DIR}/bundle/vendor
+    - sudo rm -rf /var/cache/omnibus/pkg/*
+    - /usr/local/bin/gsed -i "s:^cache_dir.*:cache_dir '/var/cache/omnibus/cache':" omnibus.rb
+    - /usr/local/bin/gsed -i "s:^git_cache_dir.*:git_cache_dir '/var/cache/omnibus/git_cache':" omnibus.rb
+    - sudo bundle exec omnibus build cinc-auditor --override append_timestamp:false
+    - mkdir -p ${CI_PROJECT_DIR}/data/mac_os_x/10.15
+    - sudo chown -R omnibus:omnibus pkg
+    - mv -v pkg/cinc*dmg* ${CI_PROJECT_DIR}/data/mac_os_x/10.15/
+    - sudo bundle exec omnibus clean cinc-auditor
+    - sudo rm -rf /opt/cinc-auditor/*
+  cache:
+    key: macos:10.15
+
 package:windows-2012r2:
   extends: .package
   tags:
@@ -259,6 +279,19 @@ test:macos-10.14:
     - cinc-auditor exec test-baseline
     - sudo scripts/uninstall-cinc-auditor-macos.sh
 
+test:macos-10.15:
+  extends: .test
+  tags:
+    - macos-10.15
+  dependencies:
+    - package:macos-10.15
+  script:
+    - sudo scripts/install-cinc-auditor-macos.sh
+    - cinc-auditor version
+    - cinc-auditor detect
+    - cinc-auditor exec test-baseline
+    - sudo scripts/uninstall-cinc-auditor-macos.sh
+
 test:windows-2012r2:
   extends: .test-windows
   dependencies:
@@ -300,6 +333,7 @@ deploy:
     - package:centos-7
     - package:centos-8
     - package:macos-10.14
+    - package:macos-10.15
     - package:windows-2012r2
   script:
     - ssh cinc@${DOWNLOADS_HOST} "mkdir -p /data/incoming/files/${CHANNEL}/cinc-auditor/$(cat VERSION)/"
@@ -318,13 +352,21 @@ publish:
     - sudo /usr/bin/rsync -avH /data/incoming/files/${CHANNEL}/cinc-auditor/ /data/mirror/files/${CHANNEL}/cinc-auditor/
     - ssh -q cinc@${MIRROR_HOST} "~/sync-from-master"
 
-cleanup:
+.cleanup:
   stage: cleanup
   dependencies: []
   variables:
     GIT_CHECKOUT: "false"
-  tags:
-    - macos-10.14
   when: always
   script:
     - sudo rm -rf inspec/
+
+cleanup:macos-10.14:
+  extends: .cleanup
+  tags:
+    - macos-10.14
+
+cleanup:macos-10.15:
+  extends: .cleanup
+  tags:
+    - macos-10.15
