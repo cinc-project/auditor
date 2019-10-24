@@ -1,14 +1,14 @@
-From 994d36b34450d4a1fe2c9f6507f8059072ab7577 Mon Sep 17 00:00:00 2001
+From 536579d3fa535be59851c41cc472be9096e6fa8c Mon Sep 17 00:00:00 2001
 From: Lance Albertson <lance@osuosl.org>
 Date: Mon, 23 Sep 2019 21:34:59 -0700
-Subject: [PATCH 1/2] Cinc stable patches
+Subject: [PATCH] Cinc stable patches
 
 ---
  lib/inspec/dist.rb | 8 ++++----
  1 file changed, 4 insertions(+), 4 deletions(-)
 
 diff --git a/lib/inspec/dist.rb b/lib/inspec/dist.rb
-index a85163b3..ac9be6a0 100644
+index a85163b35..ac9be6a06 100644
 --- a/lib/inspec/dist.rb
 +++ b/lib/inspec/dist.rb
 @@ -3,16 +3,16 @@
