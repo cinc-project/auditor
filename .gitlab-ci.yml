@@ -18,7 +18,7 @@ patch:
     - osuosl
   script:
     - echo "Cloning from $ORIGIN"
-    - sh patch.sh
+    - ./patch.sh
     - mkdir -p ${CI_PROJECT_DIR}/{cache,cache/git_cache}
     - echo "cache_dir '${CI_PROJECT_DIR}/cache'" >> inspec/omnibus/omnibus.rb
     - echo "git_cache_dir '${CI_PROJECT_DIR}/cache/git_cache'" >> inspec/omnibus/omnibus.rb
@@ -315,7 +315,7 @@ deploy to packagecloud:
     - downloads
   script:
     - bundle install
-    - sh deploy.sh
+    - ./deploy.sh
 
 deploy:
   when: manual
@@ -360,7 +360,7 @@ rubygems:
   dependencies:
     - patch
   script:
-    - bash rubygems.sh
+    - ./rubygems.sh
 
 .cleanup:
   stage: cleanup
