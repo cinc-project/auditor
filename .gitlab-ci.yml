@@ -281,7 +281,7 @@ test:opensuse-15:
   dependencies:
     - package:opensuse-15
   before_script:
-    - zypper in -y data/sles/15/cinc-auditor*.rpm
+    - rpm -iU data/sles/15/cinc-auditor*.rpm
 
 test:macos-10.14:
   extends: .test
