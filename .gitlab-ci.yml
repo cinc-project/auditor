@@ -124,6 +124,15 @@ package:centos-8:
     - mkdir -p ${CI_PROJECT_DIR}/data/el/8
     - mv -v ${CI_PROJECT_DIR}/data/*.{rpm,deb,json} ${CI_PROJECT_DIR}/data/el/8/
 
+package:opensuse-15:
+  extends: .package
+  image: cincproject/omnibus-opensuse:15
+  cache:
+    key: opensuse:15
+  after_script:
+    - mkdir -p ${CI_PROJECT_DIR}/data/sles/15
+    - mv -v ${CI_PROJECT_DIR}/data/*.{rpm,deb,json} ${CI_PROJECT_DIR}/data/sles/15/
+
 package:macos-10.14:
   extends: .package
   tags:
@@ -266,6 +275,14 @@ test:centos-8:
   before_script:
     - yum -y install data/el/8/cinc-auditor*.rpm
 
+test:opensuse-15:
+  extends: .test
+  image: cincproject/omnibus-opensuse:15
+  dependencies:
+    - package:opensuse-15
+  before_script:
+    - rpm -iU data/sles/15/cinc-auditor*.rpm
+
 test:macos-10.14:
   extends: .test
   tags:
@@ -332,6 +349,7 @@ deploy:
     - package:centos-6
     - package:centos-7
     - package:centos-8
+    - package:opensuse-15
     - package:macos-10.14
     - package:macos-10.15
     - package:windows-2012r2
