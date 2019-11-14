@@ -18,7 +18,7 @@ patch:
     - osuosl
   script:
     - echo "Cloning from $ORIGIN"
-    - sh patch.sh
+    - ./patch.sh
     - mkdir -p ${CI_PROJECT_DIR}/{cache,cache/git_cache}
     - echo "cache_dir '${CI_PROJECT_DIR}/cache'" >> inspec/omnibus/omnibus.rb
     - echo "git_cache_dir '${CI_PROJECT_DIR}/cache/git_cache'" >> inspec/omnibus/omnibus.rb
@@ -315,7 +315,7 @@ deploy to packagecloud:
     - downloads
   script:
     - bundle install
-    - sh deploy.sh
+    - ./deploy.sh
 
 deploy:
   when: manual
@@ -351,6 +351,16 @@ publish:
     - sudo mkdir -p /data/mirror/files/${CHANNEL}/cinc-auditor
     - sudo /usr/bin/rsync -avH /data/incoming/files/${CHANNEL}/cinc-auditor/ /data/mirror/files/${CHANNEL}/cinc-auditor/
     - ssh -q cinc@${MIRROR_HOST} "~/sync-from-master"
+
+rubygems:
+  when: manual
+  stage: publish
+  tags:
+    - osuosl
+  dependencies:
+    - patch
+  script:
+    - ./rubygems.sh
 
 .cleanup:
   stage: cleanup
