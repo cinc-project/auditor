@@ -1,7 +1,11 @@
-# outspec experiment
+# Cinc Auditor
 
-With the recent announcement that Chef is opensourcing all it's software the community has started this effort to create a distribution that's built in collaboration with Chef and in compliance with the Chef Trademarks Policy.
-This repo contains the initial proof of concept for modifying the name of the binaries associated with Chef to achieve compliance.
+A 100% free distribution of Chef Inspec&trade; by the Cinc Project.
+
+## Migrating from Inspec
+
+Since Auditor is built from the same code, migrating is as simple as installing Auditor and feeding it your existing profiles as-is!
 
 ## Contributing
-Guidelines TBD, come see us on Chef's Community Slack in #community-distros to talk about how you can help!
+
+See our [website](https://cinc.sh/contributing/) for general Cinc project guidelines or visit us in #community-distro on chefcommunity.slack.com
