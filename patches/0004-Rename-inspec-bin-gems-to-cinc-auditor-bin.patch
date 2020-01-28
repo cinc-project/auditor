@@ -1,7 +1,7 @@
-From f635cbda87fb5202c116fe7bcd3c777ddb403218 Mon Sep 17 00:00:00 2001
+From 2d68373f1a36f7c7618b4e22f930ab175ebe3bdc Mon Sep 17 00:00:00 2001
 From: Lance Albertson <lance@osuosl.org>
 Date: Sat, 19 Oct 2019 18:30:27 -0700
-Subject: [PATCH] Rename inspec-bin gems to cinc-auditor-bin
+Subject: [PATCH 4/4] Rename inspec-bin gems to cinc-auditor-bin
 
 We need the ability to publish our own rubygems which include the cinc-auditor
 binary. This will also assist in allowing us easily to install this into other
@@ -20,10 +20,10 @@ Chef trademarks.
  6 files changed, 25 insertions(+), 24 deletions(-)
  rename inspec-bin/{inspec-bin.gemspec => cinc-auditor-bin.gemspec} (66%)
  rename inspec-bin/{inspec-core-bin.gemspec => cinc-auditor-core-bin.gemspec} (63%)
- rename omnibus/config/software/{inspec.rb => cinc-auditor.rb} (75%)
+ rename omnibus/config/software/{inspec.rb => cinc-auditor.rb} (77%)
 
 diff --git a/Gemfile b/Gemfile
-index a590218d1..979ae88b6 100644
+index d46320ef..8b9d1490 100644
 --- a/Gemfile
 +++ b/Gemfile
 @@ -7,7 +7,7 @@ gem "inspec", path: "."
@@ -36,7 +36,7 @@ index a590218d1..979ae88b6 100644
  gem "ffi", ">= 1.9.14"
  
 diff --git a/inspec-bin/Gemfile b/inspec-bin/Gemfile
-index 4ec425ac2..a70e125a1 100644
+index 4ec425ac..a70e125a 100644
 --- a/inspec-bin/Gemfile
 +++ b/inspec-bin/Gemfile
 @@ -1,7 +1,7 @@
@@ -54,7 +54,7 @@ diff --git a/inspec-bin/inspec-bin.gemspec b/inspec-bin/cinc-auditor-bin.gemspec
 similarity index 66%
 rename from inspec-bin/inspec-bin.gemspec
 rename to inspec-bin/cinc-auditor-bin.gemspec
-index 0a387ea6b..a5ebba736 100644
+index 0a387ea6..a5ebba73 100644
 --- a/inspec-bin/inspec-bin.gemspec
 +++ b/inspec-bin/cinc-auditor-bin.gemspec
 @@ -3,13 +3,13 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
@@ -80,7 +80,7 @@ diff --git a/inspec-bin/inspec-core-bin.gemspec b/inspec-bin/cinc-auditor-core-b
 similarity index 63%
 rename from inspec-bin/inspec-core-bin.gemspec
 rename to inspec-bin/cinc-auditor-core-bin.gemspec
-index f791be2a2..a0933e162 100644
+index f791be2a..a0933e16 100644
 --- a/inspec-bin/inspec-core-bin.gemspec
 +++ b/inspec-bin/cinc-auditor-core-bin.gemspec
 @@ -6,13 +6,13 @@ require "inspec-bin/version"
@@ -112,7 +112,7 @@ index f791be2a2..a0933e162 100644
  
    spec.bindir = "bin"
 diff --git a/omnibus/config/projects/cinc-auditor.rb b/omnibus/config/projects/cinc-auditor.rb
-index 23acf66d0..9ac3d91c9 100644
+index 23acf66d..9ac3d91c 100644
 --- a/omnibus/config/projects/cinc-auditor.rb
 +++ b/omnibus/config/projects/cinc-auditor.rb
 @@ -43,7 +43,7 @@ instance_eval(File.read(overrides_path), overrides_path)
@@ -125,10 +125,10 @@ index 23acf66d0..9ac3d91c9 100644
  # Mark all directories world readable.
  dependency "gem-permissions"
 diff --git a/omnibus/config/software/inspec.rb b/omnibus/config/software/cinc-auditor.rb
-similarity index 75%
+similarity index 77%
 rename from omnibus/config/software/inspec.rb
 rename to omnibus/config/software/cinc-auditor.rb
-index dd640d36c..6b8996466 100644
+index d3859843..eec219d5 100644
 --- a/omnibus/config/software/inspec.rb
 +++ b/omnibus/config/software/cinc-auditor.rb
 @@ -17,7 +17,7 @@
@@ -173,5 +173,5 @@ index dd640d36c..6b8996466 100644
    end
  
 -- 
-2.20.1
+2.17.1
 

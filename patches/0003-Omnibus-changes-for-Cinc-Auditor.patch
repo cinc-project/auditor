@@ -1,7 +1,7 @@
-From e5621474b64534281573497b7854c22a7fa02feb Mon Sep 17 00:00:00 2001
+From 4c89b1b555166e8433208b171f90beda9569661a Mon Sep 17 00:00:00 2001
 From: Lance Albertson <lance@osuosl.org>
 Date: Fri, 4 Oct 2019 21:44:21 -0700
-Subject: [PATCH] Omnibus changes for Cinc Auditor
+Subject: [PATCH 3/4] Omnibus changes for Cinc Auditor
 
 ---
  omnibus/cinc-auditor/cinc-auditor-wrapper     | 21 +++++++++++++++++
@@ -21,7 +21,7 @@ Subject: [PATCH] Omnibus changes for Cinc Auditor
 
 diff --git a/omnibus/cinc-auditor/cinc-auditor-wrapper b/omnibus/cinc-auditor/cinc-auditor-wrapper
 new file mode 100755
-index 000000000..413b83ac8
+index 00000000..413b83ac
 --- /dev/null
 +++ b/omnibus/cinc-auditor/cinc-auditor-wrapper
 @@ -0,0 +1,21 @@
@@ -50,7 +50,7 @@ diff --git a/omnibus/config/projects/inspec.rb b/omnibus/config/projects/cinc-au
 similarity index 77%
 rename from omnibus/config/projects/inspec.rb
 rename to omnibus/config/projects/cinc-auditor.rb
-index 36c18629a..23acf66d0 100644
+index 827f61bc..23acf66d 100644
 --- a/omnibus/config/projects/inspec.rb
 +++ b/omnibus/config/projects/cinc-auditor.rb
 @@ -1,5 +1,6 @@
@@ -100,7 +100,7 @@ index 36c18629a..23acf66d0 100644
  
  package :pkg do
 -  identifier "com.getchef.pkg.inspec"
--  signing_identity "Developer ID Installer: Chef Software, Inc. (EU3VF8YLX2)"
+-  signing_identity "Chef Software, Inc. (EU3VF8YLX2)"
 +  identifier "com.cinc-project.pkg.cinc-auditor"
 +  signing_identity nil
  end
@@ -116,7 +116,7 @@ index 36c18629a..23acf66d0 100644
  
  exclude "**/.git"
 diff --git a/omnibus/config/software/inspec.rb b/omnibus/config/software/inspec.rb
-index 5cd4a0d22..dd640d36c 100644
+index 7c0091c8..d3859843 100644
 --- a/omnibus/config/software/inspec.rb
 +++ b/omnibus/config/software/inspec.rb
 @@ -1,5 +1,6 @@
@@ -126,9 +126,9 @@ index 5cd4a0d22..dd640d36c 100644
  # License:: Apache License, Version 2.0
  #
  # Licensed under the Apache License, Version 2.0 (the "License");
-@@ -52,4 +53,6 @@ build do
-       appbundle "inspec", env: env
-     end
+@@ -58,4 +59,6 @@ build do
+     gem_install_dir = shellout!("#{install_dir}/embedded/bin/gem open rubyzip", env: env).stdout.chomp
+     remove_directory "#{gem_install_dir}/test"
    end
 +
 +  copy "#{project_dir}/cinc-auditor/cinc-auditor-wrapper", "#{install_dir}/bin/"
@@ -137,7 +137,7 @@ diff --git a/omnibus/package-scripts/inspec/postinst b/omnibus/package-scripts/c
 similarity index 61%
 rename from omnibus/package-scripts/inspec/postinst
 rename to omnibus/package-scripts/cinc-auditor/postinst
-index a72e60859..dd46db027 100755
+index a72e6085..dd46db02 100755
 --- a/omnibus/package-scripts/inspec/postinst
 +++ b/omnibus/package-scripts/cinc-auditor/postinst
 @@ -5,8 +5,8 @@
@@ -186,7 +186,7 @@ diff --git a/omnibus/package-scripts/inspec/postrm b/omnibus/package-scripts/cin
 similarity index 62%
 rename from omnibus/package-scripts/inspec/postrm
 rename to omnibus/package-scripts/cinc-auditor/postrm
-index 94f9ddcfe..58d79d0c4 100755
+index 94f9ddcf..58d79d0c 100755
 --- a/omnibus/package-scripts/inspec/postrm
 +++ b/omnibus/package-scripts/cinc-auditor/postrm
 @@ -4,6 +4,8 @@
@@ -231,7 +231,7 @@ diff --git a/omnibus/package-scripts/inspec/preinst b/omnibus/package-scripts/ci
 similarity index 65%
 rename from omnibus/package-scripts/inspec/preinst
 rename to omnibus/package-scripts/cinc-auditor/preinst
-index 320429b93..f74efe65c 100755
+index 320429b9..f74efe65 100755
 --- a/omnibus/package-scripts/inspec/preinst
 +++ b/omnibus/package-scripts/cinc-auditor/preinst
 @@ -4,4 +4,4 @@
@@ -245,5 +245,5 @@ similarity index 100%
 rename from omnibus/package-scripts/inspec/prerm
 rename to omnibus/package-scripts/cinc-auditor/prerm
 -- 
-2.20.1
+2.17.1
 

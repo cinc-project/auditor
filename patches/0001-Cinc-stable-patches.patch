@@ -1,14 +1,14 @@
-From 536579d3fa535be59851c41cc472be9096e6fa8c Mon Sep 17 00:00:00 2001
+From f3082bf310b9f9dbbf21464d6310cc8658094301 Mon Sep 17 00:00:00 2001
 From: Lance Albertson <lance@osuosl.org>
 Date: Mon, 23 Sep 2019 21:34:59 -0700
-Subject: [PATCH] Cinc stable patches
+Subject: [PATCH 1/4] Cinc stable patches
 
 ---
  lib/inspec/dist.rb | 8 ++++----
  1 file changed, 4 insertions(+), 4 deletions(-)
 
 diff --git a/lib/inspec/dist.rb b/lib/inspec/dist.rb
-index a85163b35..ac9be6a06 100644
+index a85163b3..ac9be6a0 100644
 --- a/lib/inspec/dist.rb
 +++ b/lib/inspec/dist.rb
 @@ -3,16 +3,16 @@
@@ -33,5 +33,5 @@ index a85163b35..ac9be6a06 100644
      # name of the compliance product
      COMPLIANCE_PRODUCT_NAME = "Chef Compliance"
 -- 
-2.20.1
+2.17.1
 
