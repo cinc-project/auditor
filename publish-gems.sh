@@ -16,20 +16,23 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+export PATH="/opt/omnibus-toolchain/embedded/bin/:${PATH}"
+
 package_cloud_push () {
-  bundle exec package_cloud push cinc-project/${CHANNEL} $@
+  package_cloud push cinc-project/${CHANNEL:unstable} $@
 }
 
 source /home/omnibus/load-omnibus-toolchain.sh
 set -x
-bundle install
+gem install -N package_cloud
 cd inspec
 gem build inspec-core.gemspec
 gem build inspec.gemspec
-package_cloud_push inspec-core-[0-9]*.gem
-package_cloud_push inspec-[0-9]*.gem
-cd inspec/inspec-bin
+cd inspec-bin
 gem build cinc-auditor-bin.gemspec
 gem build cinc-auditor-core-bin.gemspec
-package_cloud_push cinc-auditor-bin-[0-9]*.gem
-package_cloud_push cinc-auditor-core-bin-[0-9]*.gem
+cd $TOP_DIR
+package_cloud_push inspec/inspec-core-[0-9]*.gem
+package_cloud_push inspec/inspec-[0-9]*.gem
+package_cloud_push inspec/inspec-bin/cinc-auditor-bin-[0-9]*.gem
+package_cloud_push inspec/inspec-bin/cinc-auditor-core-bin-[0-9]*.gem
