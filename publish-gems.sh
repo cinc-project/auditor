@@ -19,6 +19,10 @@
 package_cloud_push () {
   bundle exec package_cloud push cinc-project/${CHANNEL} $@
 }
+
+source /home/omnibus/load-omnibus-toolchain.sh
+set -x
+bundle install
 cd inspec
 gem build inspec-core.gemspec
 gem build inspec.gemspec

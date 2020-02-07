@@ -359,7 +359,7 @@ publish:
     - sudo /usr/bin/rsync -avH /data/incoming/files/${CHANNEL}/cinc-auditor/ /data/mirror/files/${CHANNEL}/cinc-auditor/
     - ssh -q cinc@${MIRROR_HOST} "~/sync-from-master"
 
-rubygems:
+publish-gems:
   when: manual
   stage: publish
   tags:
@@ -367,8 +367,7 @@ rubygems:
   dependencies:
     - patch
   script:
-    - bundle install
-    - ./rubygems.sh
+    - ./publish-gems.sh
 
 .cleanup:
   stage: cleanup
