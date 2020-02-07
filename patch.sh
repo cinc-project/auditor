@@ -41,3 +41,5 @@ cd inspec
 git_patch inspec
 mkdir -p inspec-bin/lib/inspec
 cp lib/inspec/dist.rb inspec-bin/lib/inspec/
+cd $TOP_DIR
+cp -rp cinc-auditor/* inspec/
