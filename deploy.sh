@@ -16,18 +16,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-gem_push () {
+package_cloud_push () {
   bundle exec package_cloud push cinc-project/${CHANNEL} $@
 }
-
 cd inspec
 gem build inspec-core.gemspec
 gem build inspec.gemspec
-gem_push inspec-core-[0-9]*.gem
-gem_push inspec-[0-9]*.gem
+package_cloud_push inspec-core-[0-9]*.gem
+package_cloud_push inspec-[0-9]*.gem
 cd inspec/inspec-bin
 gem build cinc-auditor-bin.gemspec
 gem build cinc-auditor-core-bin.gemspec
-gem_push cinc-auditor-bin-[0-9]*.gem
-gem_push cinc-auditor-core-bin-[0-9]*.gem
-rm -rf $HOME/.gem
+package_cloud_push cinc-auditor-bin-[0-9]*.gem
+package_cloud_push cinc-auditor-core-bin-[0-9]*.gem
