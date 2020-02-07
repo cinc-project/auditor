@@ -323,17 +323,6 @@ test:windows-2012r2:
     - echo "${SSH_KNOWN_HOSTS}" > ~/.ssh/known_hosts
     - chmod 644 ~/.ssh/known_hosts
 
-deploy to packagecloud:
-  stage: deploy
-  allow_failure: true
-  only:
-    - master
-  tags:
-    - downloads
-  script:
-    - bundle install
-    - ./deploy.sh
-
 deploy:
   when: manual
   stage: deploy
@@ -378,6 +367,7 @@ rubygems:
   dependencies:
     - patch
   script:
+    - bundle install
     - ./rubygems.sh
 
 .cleanup:

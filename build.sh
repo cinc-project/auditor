@@ -16,18 +16,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-gem_push () {
-  bundle exec package_cloud push cinc-project/${CHANNEL} $@
-}
-
-cd inspec
-gem build inspec-core.gemspec
-gem build inspec.gemspec
-gem_push inspec-core-[0-9]*.gem
-gem_push inspec-[0-9]*.gem
-cd inspec/inspec-bin
-gem build cinc-auditor-bin.gemspec
-gem build cinc-auditor-core-bin.gemspec
-gem_push cinc-auditor-bin-[0-9]*.gem
-gem_push cinc-auditor-core-bin-[0-9]*.gem
-rm -rf $HOME/.gem
+TOP_DIR="$(pwd)"
+export CI_PROJECT_DIR=${CI_PROJECT_DIR:-${TOP_DIR}}
+source /home/omnibus/load-omnibus-toolchain.sh
+set -ex
+cd inspec/omnibus
+bundle install --without development --path ${CI_PROJECT_DIR}/bundle/vendor
+bundle exec omnibus build cinc-auditor --override append_timestamp:false
