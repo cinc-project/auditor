@@ -1,3 +1,5 @@
 inspec.lock
 /Gemfile.lock
-/inspec
+/inspec/*
+/bundle/*
+/cache/*

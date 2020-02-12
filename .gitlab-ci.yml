@@ -323,17 +323,6 @@ test:windows-2012r2:
     - echo "${SSH_KNOWN_HOSTS}" > ~/.ssh/known_hosts
     - chmod 644 ~/.ssh/known_hosts
 
-deploy to packagecloud:
-  stage: deploy
-  allow_failure: true
-  only:
-    - master
-  tags:
-    - downloads
-  script:
-    - bundle install
-    - ./deploy.sh
-
 deploy:
   when: manual
   stage: deploy
@@ -370,7 +359,7 @@ publish:
     - sudo /usr/bin/rsync -avH /data/incoming/files/${CHANNEL}/cinc-auditor/ /data/mirror/files/${CHANNEL}/cinc-auditor/
     - ssh -q cinc@${MIRROR_HOST} "~/sync-from-master"
 
-rubygems:
+publish-gems:
   when: manual
   stage: publish
   tags:
@@ -378,7 +367,7 @@ rubygems:
   dependencies:
     - patch
   script:
-    - ./rubygems.sh
+    - ./publish-gems.sh
 
 .cleanup:
   stage: cleanup
