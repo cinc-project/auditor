@@ -331,6 +331,8 @@ deploy:
   allow_failure: false
   stage: deploy
   extends: .ssh-setup
+  only:
+    - master
   tags:
     - osuosl
   dependencies:
@@ -355,6 +357,8 @@ publish:
   stage: publish
   extends: .ssh-setup
   dependencies: []
+  only:
+    - master
   tags:
     - downloads
   script:
@@ -365,6 +369,8 @@ publish:
 
 publish-gems:
   stage: publish
+  only:
+    - master
   tags:
     - osuosl
   dependencies:
