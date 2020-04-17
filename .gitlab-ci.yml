@@ -11,6 +11,7 @@ variables:
   ORIGIN: https://github.com/inspec/inspec.git
   REF: master
   CHANNEL: unstable
+  CINC_PRODUCT: cinc-auditor
 
 patch:
   stage: patch
@@ -348,24 +349,25 @@ deploy:
     - ssh cinc@${DOWNLOADS_HOST} "chmod 755 /data/incoming/files/${CHANNEL}/cinc-auditor/$(cat VERSION)/"
 
 publish:
-  when: manual
   stage: publish
   extends: .ssh-setup
-  dependencies: []
+  dependencies:
+    - deploy
   tags:
     - downloads
   script:
     - sudo mkdir -p /data/mirror/files/${CHANNEL}/cinc-auditor
     - sudo /usr/bin/rsync -avH /data/incoming/files/${CHANNEL}/cinc-auditor/ /data/mirror/files/${CHANNEL}/cinc-auditor/
+    - sudo -E -u cinc /usr/local/bin/update-cinc-api
     - ssh -q cinc@${MIRROR_HOST} "~/sync-from-master"
 
 publish-gems:
-  when: manual
   stage: publish
   tags:
     - osuosl
   dependencies:
     - patch
+    - deploy
   script:
     - ./publish-gems.sh
 
