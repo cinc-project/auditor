@@ -353,8 +353,7 @@ deploy:
 publish:
   stage: publish
   extends: .ssh-setup
-  dependencies:
-    - deploy
+  dependencies: []
   tags:
     - downloads
   script:
@@ -369,7 +368,6 @@ publish-gems:
     - osuosl
   dependencies:
     - patch
-    - deploy
   script:
     - ./publish-gems.sh
 
