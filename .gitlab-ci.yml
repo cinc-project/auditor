@@ -328,6 +328,7 @@ test:windows-2012r2:
 
 deploy:
   when: manual
+  allow_failure: false
   stage: deploy
   extends: .ssh-setup
   tags:
