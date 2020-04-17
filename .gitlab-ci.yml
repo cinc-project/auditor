@@ -28,6 +28,8 @@ patch:
     expire_in: 1d
     paths:
       - inspec/
+  except:
+    - master
 
 .package:
   stage: package
