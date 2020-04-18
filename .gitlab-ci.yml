@@ -54,6 +54,8 @@ patch:
     paths:
       - data/*
       - VERSION
+  except:
+    - master
 
 package:debian-8:
   extends: .package
@@ -198,6 +200,8 @@ package:windows-2012r2:
     - cinc-auditor version
     - cinc-auditor detect
     - cinc-auditor exec test-baseline
+  except:
+    - master
 
 .test-windows:
   tags:
@@ -213,6 +217,8 @@ package:windows-2012r2:
     - cinc-auditor exec test-baseline
   after_script:
     - ./scripts/uninstall-cinc-auditor.ps1
+  except:
+    - master
 
 test:debian-8:
   extends: .test
@@ -386,6 +392,8 @@ publish-gems:
   when: always
   script:
     - sudo rm -rf inspec/
+  except:
+    - master
 
 cleanup:macos-10.14:
   extends: .cleanup
