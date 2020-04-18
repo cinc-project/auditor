@@ -13,6 +13,13 @@ variables:
   CHANNEL: unstable
   CINC_PRODUCT: cinc-auditor
 
+workflow:
+  rules:
+    # Run if we trigger a pipeline from the web
+    - if: $CI_PIPELINE_SOURCE == "web"
+    # Run if this is a merge request
+    - if: $CI_MERGE_REQUEST_ID
+
 patch:
   stage: patch
   tags:
@@ -28,8 +35,6 @@ patch:
     expire_in: 1d
     paths:
       - inspec/
-  except:
-    - master
 
 .package:
   stage: package
@@ -54,8 +59,6 @@ patch:
     paths:
       - data/*
       - VERSION
-  except:
-    - master
 
 package:debian-8:
   extends: .package
@@ -200,8 +203,6 @@ package:windows-2012r2:
     - cinc-auditor version
     - cinc-auditor detect
     - cinc-auditor exec test-baseline
-  except:
-    - master
 
 .test-windows:
   tags:
@@ -217,8 +218,6 @@ package:windows-2012r2:
     - cinc-auditor exec test-baseline
   after_script:
     - ./scripts/uninstall-cinc-auditor.ps1
-  except:
-    - master
 
 test:debian-8:
   extends: .test
@@ -333,12 +332,14 @@ test:windows-2012r2:
     - chmod 644 ~/.ssh/known_hosts
 
 deploy:
-  when: manual
   allow_failure: false
   stage: deploy
   extends: .ssh-setup
-  only:
-    - master
+  # Only run if this is triggered from the web
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "web"
+      when: manual
+    - when: never
   tags:
     - osuosl
   dependencies:
@@ -363,8 +364,11 @@ publish:
   stage: publish
   extends: .ssh-setup
   dependencies: []
-  only:
-    - master
+  # Only run if this is triggered from the web
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "web"
+      when: on_success
+    - when: never
   tags:
     - downloads
   script:
@@ -375,8 +379,11 @@ publish:
 
 publish-gems:
   stage: publish
-  only:
-    - master
+  # Only run if this is triggered from the web
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "web"
+      when: on_success
+    - when: never
   tags:
     - osuosl
   dependencies:
@@ -392,8 +399,6 @@ publish-gems:
   when: always
   script:
     - sudo rm -rf inspec/
-  except:
-    - master
 
 cleanup:macos-10.14:
   extends: .cleanup
