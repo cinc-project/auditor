@@ -23,7 +23,7 @@ rm -rf /tmp/docker-token
 set -x
 cd inspec
 VERSION="$(cat VERSION)"
-docker build -t cincproject/auditor:${VERSION} .
+docker build --pull --no-cache -t cincproject/auditor:${VERSION} .
 docker tag cincproject/auditor:${VERSION} cincproject/auditor:latest
 docker push cincproject/auditor:${VERSION}
 docker push cincproject/auditor:latest
