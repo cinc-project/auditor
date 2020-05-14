@@ -365,7 +365,7 @@ deploy-gems:
   # Only run if this is triggered from the web
   rules:
     - if: $CI_PIPELINE_SOURCE == "web"
-      when: on_success
+      when: manual
     - when: never
   tags:
     - osuosl
