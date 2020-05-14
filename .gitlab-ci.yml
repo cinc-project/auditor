@@ -360,6 +360,20 @@ deploy:
     - rsync -avH --delete data/ cinc@${DOWNLOADS_HOST}:/data/incoming/files/${CHANNEL}/cinc-auditor/$(cat VERSION)/
     - ssh cinc@${DOWNLOADS_HOST} "chmod 755 /data/incoming/files/${CHANNEL}/cinc-auditor/$(cat VERSION)/"
 
+deploy-gems:
+  stage: deploy
+  # Only run if this is triggered from the web
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "web"
+      when: on_success
+    - when: never
+  tags:
+    - osuosl
+  dependencies:
+    - patch
+  script:
+    - ./deploy-gems.sh
+
 publish:
   stage: publish
   extends: .ssh-setup
@@ -376,20 +390,6 @@ publish:
     - sudo /usr/bin/rsync -avH /data/incoming/files/${CHANNEL}/cinc-auditor/ /data/mirror/files/${CHANNEL}/cinc-auditor/
     - sudo -E -u cinc /usr/local/bin/update-cinc-api
     - ssh -q cinc@${MIRROR_HOST} "~/sync-from-master"
-
-publish-gems:
-  stage: publish
-  # Only run if this is triggered from the web
-  rules:
-    - if: $CI_PIPELINE_SOURCE == "web"
-      when: on_success
-    - when: never
-  tags:
-    - osuosl
-  dependencies:
-    - patch
-  script:
-    - ./publish-gems.sh
 
 publish-docker:
   image: docker:latest
