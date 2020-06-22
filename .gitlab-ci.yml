@@ -42,6 +42,26 @@ patch:
 
 # Package stage
 
+package:amazonlinux-2:x86_64:
+  extends: .package:amazonlinux
+  image: cincproject/omnibus-amazonlinux:2
+  cache:
+    key: amazonlinux:2:x86_64
+  tags:
+    - docker-x86_64
+  variables:
+    PLATFORM_VER: "2"
+
+package:amazonlinux-2:aarch64:
+  extends: .package:amazonlinux
+  image: cincproject/omnibus-amazonlinux:2
+  cache:
+    key: amazonlinux:2:aarch64
+  tags:
+    - docker-aarch64
+  variables:
+    PLATFORM_VER: "2"
+
 package:centos-6:x86_64:
   extends: .package:centos
   image: cincproject/omnibus-centos:6
@@ -190,6 +210,26 @@ package:ubuntu-20.04:x86_64:
     PLATFORM_VER: "20.04"
 
 # Test stage
+
+test:amazonlinux-2:x86_64:
+  extends: .test:amazonlinux
+  image: cincproject/omnibus-amazonlinux:2
+  dependencies:
+    - package:amazonlinux-2:x86_64
+  tags:
+    - docker-x86_64
+  variables:
+    PLATFORM_VER: "2"
+
+test:amazonlinux-2:aarch64:
+  extends: .test:amazonlinux
+  image: cincproject/omnibus-amazonlinux:2
+  dependencies:
+    - package:amazonlinux-2:aarch64
+  tags:
+    - docker-aarch64
+  variables:
+    PLATFORM_VER: "2"
 
 test:centos-6:x86_64:
   extends: .test:centos
@@ -357,6 +397,8 @@ deploy:
   tags:
     - docker-x86_64
   dependencies:
+    - package:amazonlinux-2:x86_64
+    - package:amazonlinux-2:aarch64
     - package:centos-6:x86_64
     - package:centos-7:x86_64
     - package:centos-7:aarch64
