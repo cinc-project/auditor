@@ -42,61 +42,81 @@ patch:
 
 # Package stage
 
-package:centos-6:
+package:centos-6:x86_64:
   extends: .package:centos
   image: cincproject/omnibus-centos:6
   cache:
-    key: centos:6
+    key: centos:6:x86_64
   tags:
     - docker-x86_64
   variables:
     PLATFORM_VER: "6"
 
-package:centos-7:
+package:centos-7:x86_64:
   extends: .package:centos
   image: cincproject/omnibus-centos:7
   cache:
-    key: centos:7
+    key: centos:7:x86_64
   tags:
     - docker-x86_64
   variables:
     PLATFORM_VER: "7"
 
-package:centos-8:
+package:centos-7:aarch64:
+  extends: .package:centos
+  image: cincproject/omnibus-centos:7
+  cache:
+    key: centos:7:aarch64
+  tags:
+    - docker-aarch64
+  variables:
+    PLATFORM_VER: "7"
+
+package:centos-8:x86_64:
   extends: .package:centos
   image: cincproject/omnibus-centos:8
   cache:
-    key: centos:8
+    key: centos:8:x86_64
   tags:
     - docker-x86_64
   variables:
     PLATFORM_VER: "8"
 
-package:debian-8:
+package:centos-8:aarch64:
+  extends: .package:centos
+  image: cincproject/omnibus-centos:8
+  cache:
+    key: centos:8:aarch64
+  tags:
+    - docker-aarch64
+  variables:
+    PLATFORM_VER: "8"
+
+package:debian-8:x86_64:
   extends: .package:debian
   image: cincproject/omnibus-debian:8
   cache:
-    key: debian:8
+    key: debian:8:x86_64
   tags:
     - docker-x86_64
   variables:
     PLATFORM_VER: "8"
 
-package:debian-9:
+package:debian-9:x86_64:
   extends: .package:debian
   image: cincproject/omnibus-debian:9
   cache:
-    key: debian:9
+    key: debian:9:x86_64
   tags:
     - docker-x86_64
   variables:
     PLATFORM_VER: "9"
 
-package:debian-10:
+package:debian-10:x86_64:
   extends: .package:debian
   image: cincproject/omnibus-debian:10
   cache:
-    key: debian:10
+    key: debian:10:x86_64
   tags:
     - docker-x86_64
   variables:
@@ -120,11 +140,11 @@ package:macos-10.15:
   variables:
     PLATFORM_VER: "10.15"
 
-package:opensuse-15:
+package:opensuse-15:x86_64:
   extends: .package:opensuse
   image: cincproject/omnibus-opensuse:15
   cache:
-    key: opensuse:15
+    key: opensuse:15:x86_64
   tags:
     - docker-x86_64
   variables:
@@ -139,31 +159,31 @@ package:windows-2012r2:
   variables:
     PLATFORM_VER: "2012r2"
 
-package:ubuntu-16.04:
+package:ubuntu-16.04:x86_64:
   extends: .package:ubuntu
   image: cincproject/omnibus-ubuntu:16.04
   cache:
-    key: ubuntu:16.04
+    key: ubuntu:16.04:x86_64
   tags:
     - docker-x86_64
   variables:
     PLATFORM_VER: "16.04"
 
-package:ubuntu-18.04:
+package:ubuntu-18.04:x86_64:
   extends: .package:ubuntu
   image: cincproject/omnibus-ubuntu:18.04
   cache:
-    key: ubuntu:18.04
+    key: ubuntu:18.04:x86_64
   tags:
     - docker-x86_64
   variables:
     PLATFORM_VER: "18.04"
 
-package:ubuntu-20.04:
+package:ubuntu-20.04:x86_64:
   extends: .package:ubuntu
   image: cincproject/omnibus-ubuntu:20.04
   cache:
-    key: ubuntu:20.04
+    key: ubuntu:20.04:x86_64
   tags:
     - docker-x86_64
   variables:
@@ -171,61 +191,81 @@ package:ubuntu-20.04:
 
 # Test stage
 
-test:centos-6:
+test:centos-6:x86_64:
   extends: .test:centos
   image: cincproject/omnibus-centos:6
   dependencies:
-    - package:centos-6
+    - package:centos-6:x86_64
   tags:
     - docker-x86_64
   variables:
     PLATFORM_VER: "6"
 
-test:centos-7:
+test:centos-7:x86_64:
   extends: .test:centos
   image: cincproject/omnibus-centos:7
   dependencies:
-    - package:centos-7
+    - package:centos-7:x86_64
   tags:
     - docker-x86_64
   variables:
     PLATFORM_VER: "7"
 
-test:centos-8:
+test:centos-7:aarch64:
+  extends: .test:centos
+  image: cincproject/omnibus-centos:7
+  dependencies:
+    - package:centos-7:aarch64
+  tags:
+    - docker-aarch64
+  variables:
+    PLATFORM_VER: "7"
+
+test:centos-8:x86_64:
   extends: .test:centos
   image: cincproject/omnibus-centos:8
   dependencies:
-    - package:centos-8
+    - package:centos-8:x86_64
   tags:
     - docker-x86_64
   variables:
     PLATFORM_VER: "8"
 
-test:debian-8:
+test:centos-8:aarch64:
+  extends: .test:centos
+  image: cincproject/omnibus-centos:8
+  dependencies:
+    - package:centos-8:aarch64
+  tags:
+    - docker-aarch64
+  variables:
+    PLATFORM_VER: "8"
+
+test:debian-8:x86_64:
   extends: .test:debian
   image: cincproject/omnibus-debian:8
   dependencies:
-    - package:debian-8
+    - package:debian-8:x86_64
   tags:
     - docker-x86_64
   variables:
     PLATFORM_VER: "8"
 
-test:debian-9:
+test:debian-9:x86_64:
   extends: .test:debian
   image: cincproject/omnibus-debian:9
   dependencies:
-    - package:debian-9
+    - package:debian-9:x86_64
   tags:
     - docker-x86_64
   variables:
     PLATFORM_VER: "9"
 
-test:debian-10:
+test:debian-10:x86_64:
   extends: .test:debian
   image: cincproject/omnibus-debian:10
   dependencies:
-    - package:debian-10
+    - package:debian-10:x86_64
   tags:
     - docker-x86_64
   variables:
@@ -249,41 +289,41 @@ test:macos-10.15:
   variables:
     PLATFORM_VER: "10.15"
 
-test:opensuse-15:
+test:opensuse-15:x86_64:
   extends: .test:opensuse
   image: cincproject/omnibus-opensuse:15
   dependencies:
-    - package:opensuse-15
+    - package:opensuse-15:x86_64
   tags:
     - docker-x86_64
   variables:
     PLATFORM_VER: "15"
 
-test:ubuntu-16.04:
+test:ubuntu-16.04:x86_64:
   extends: .test:ubuntu
   image: cincproject/omnibus-ubuntu:16.04
   dependencies:
-    - package:ubuntu-16.04
+    - package:ubuntu-16.04:x86_64
   tags:
     - docker-x86_64
   variables:
     PLATFORM_VER: "16.04"
 
-test:ubuntu-18.04:
+test:ubuntu-18.04:x86_64:
   extends: .test:ubuntu
   image: cincproject/omnibus-ubuntu:18.04
   dependencies:
-    - package:ubuntu-18.04
+    - package:ubuntu-18.04:x86_64
   tags:
     - docker-x86_64
   variables:
     PLATFORM_VER: "18.04"
 
-test:ubuntu-20.04:
+test:ubuntu-20.04:x86_64:
   extends: .test:ubuntu
   image: cincproject/omnibus-ubuntu:20.04
   dependencies:
-    - package:ubuntu-20.04
+    - package:ubuntu-20.04:x86_64
   tags:
     - docker-x86_64
   variables:
@@ -317,18 +357,20 @@ deploy:
   tags:
     - docker-x86_64
   dependencies:
-    - package:centos-6
-    - package:centos-7
-    - package:centos-8
-    - package:debian-8
-    - package:debian-9
-    - package:debian-10
+    - package:centos-6:x86_64
+    - package:centos-7:x86_64
+    - package:centos-7:aarch64
+    - package:centos-8:x86_64
+    - package:centos-8:aarch64
+    - package:debian-8:x86_64
+    - package:debian-9:x86_64
+    - package:debian-10:x86_64
     - package:macos-10.14
     - package:macos-10.15
-    - package:opensuse-15
-    - package:ubuntu-16.04
-    - package:ubuntu-18.04
-    - package:ubuntu-20.04
+    - package:opensuse-15:x86_64
+    - package:ubuntu-16.04:x86_64
+    - package:ubuntu-18.04:x86_64
+    - package:ubuntu-20.04:x86_64
     - package:windows-2012r2
   script:
     - ssh cinc@${DOWNLOADS_HOST} "mkdir -p /data/incoming/files/${CHANNEL}/cinc-auditor/$(cat VERSION)/"
