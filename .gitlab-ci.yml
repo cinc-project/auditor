@@ -20,10 +20,14 @@ workflow:
     # Run if this is a merge request
     - if: $CI_MERGE_REQUEST_ID
 
+include:
+  - local: .gitlab/package.yml
+  - local: .gitlab/test.yml
+
 patch:
   stage: patch
   tags:
-    - osuosl
+    - docker-x86_64
   script:
     - echo "Cloning from $ORIGIN"
     - ./patch.sh
@@ -32,312 +36,345 @@ patch:
     - echo "git_cache_dir '${CI_PROJECT_DIR}/cache/git_cache'" >> inspec/omnibus/omnibus.rb
     - sed -i -e 's/^use_git_caching false/use_git_caching true/g' inspec/omnibus/omnibus.rb
   artifacts:
-    expire_in: 1d
+    expire_in: 1mo
     paths:
       - inspec/
 
-.package:
-  stage: package
+# Package stage
+
+package:amazonlinux-2:x86_64:
+  extends: .package:amazonlinux
+  image: cincproject/omnibus-amazonlinux:2
+  cache:
+    key: amazonlinux:2:x86_64
   tags:
-    - osuosl
-  dependencies:
-    - patch
-  script:
-    - source /home/omnibus/load-omnibus-toolchain.sh
-    - cd inspec/omnibus
-    - bundle install --without development --path ${CI_PROJECT_DIR}/bundle/vendor
-    - bundle exec omnibus build cinc-auditor --override append_timestamp:false
-    - mkdir ${CI_PROJECT_DIR}/data
-    - mv -v pkg/cinc-auditor* ${CI_PROJECT_DIR}/data/
-    - cp ../VERSION ${CI_PROJECT_DIR}/
-  cache:
-    paths:
-      - cache/*
-      - bundle/vendor/*
-  artifacts:
-    expire_in: 1mo
-    paths:
-      - data/*
-      - VERSION
+    - docker-x86_64
+  variables:
+    PLATFORM_VER: "2"
 
-package:debian-8:
-  extends: .package
-  image: cincproject/omnibus-debian:8
+package:amazonlinux-2:aarch64:
+  extends: .package:amazonlinux
+  image: cincproject/omnibus-amazonlinux:2
   cache:
-    key: debian:8
-  after_script:
-    - mkdir -p ${CI_PROJECT_DIR}/data/debian/8
-    - mv -v ${CI_PROJECT_DIR}/data/*.{rpm,deb,json} ${CI_PROJECT_DIR}/data/debian/8/
+    key: amazonlinux:2:aarch64
+  tags:
+    - docker-aarch64
+  variables:
+    PLATFORM_VER: "2"
 
-package:debian-9:
-  extends: .package
-  image: cincproject/omnibus-debian:9
-  cache:
-    key: debian:9
-  after_script:
-    - mkdir -p ${CI_PROJECT_DIR}/data/debian/9
-    - mv -v ${CI_PROJECT_DIR}/data/*.{rpm,deb,json} ${CI_PROJECT_DIR}/data/debian/9/
-
-package:debian-10:
-  extends: .package
-  image: cincproject/omnibus-debian:10
-  cache:
-    key: debian:10
-  after_script:
-    - mkdir -p ${CI_PROJECT_DIR}/data/debian/10
-    - mv -v ${CI_PROJECT_DIR}/data/*.{rpm,deb,json} ${CI_PROJECT_DIR}/data/debian/10/
-
-package:ubuntu-16.04:
-  extends: .package
-  image: cincproject/omnibus-ubuntu:16.04
-  cache:
-    key: ubuntu:16.04
-  after_script:
-    - mkdir -p ${CI_PROJECT_DIR}/data/ubuntu/16.04
-    - mv -v ${CI_PROJECT_DIR}/data/*.{rpm,deb,json} ${CI_PROJECT_DIR}/data/ubuntu/16.04/
-
-package:ubuntu-18.04:
-  extends: .package
-  image: cincproject/omnibus-ubuntu:18.04
-  cache:
-    key: ubuntu:18.04
-  after_script:
-    - mkdir -p ${CI_PROJECT_DIR}/data/ubuntu/18.04
-    - mv -v ${CI_PROJECT_DIR}/data/*.{rpm,deb,json} ${CI_PROJECT_DIR}/data/ubuntu/18.04/
-
-package:ubuntu-20.04:
-  extends: .package
-  image: cincproject/omnibus-ubuntu:20.04
-  cache:
-    key: ubuntu:20.04
-  after_script:
-    - mkdir -p ${CI_PROJECT_DIR}/data/ubuntu/20.04
-    - mv -v ${CI_PROJECT_DIR}/data/*.{rpm,deb,json} ${CI_PROJECT_DIR}/data/ubuntu/20.04/
-
-package:centos-6:
-  extends: .package
+package:centos-6:x86_64:
+  extends: .package:centos
   image: cincproject/omnibus-centos:6
   cache:
-    key: centos:6
-  after_script:
-    - mkdir -p ${CI_PROJECT_DIR}/data/el/6
-    - mv -v ${CI_PROJECT_DIR}/data/*.{rpm,deb,json} ${CI_PROJECT_DIR}/data/el/6/
+    key: centos:6:x86_64
+  tags:
+    - docker-x86_64
+  variables:
+    PLATFORM_VER: "6"
 
-package:centos-7:
-  extends: .package
+package:centos-7:x86_64:
+  extends: .package:centos
   image: cincproject/omnibus-centos:7
   cache:
-    key: centos:7
-  after_script:
-    - mkdir -p ${CI_PROJECT_DIR}/data/el/7
-    - mv -v ${CI_PROJECT_DIR}/data/*.{rpm,deb,json} ${CI_PROJECT_DIR}/data/el/7/
+    key: centos:7:x86_64
+  tags:
+    - docker-x86_64
+  variables:
+    PLATFORM_VER: "7"
 
-package:centos-8:
-  extends: .package
+package:centos-7:aarch64:
+  extends: .package:centos
+  image: cincproject/omnibus-centos:7
+  cache:
+    key: centos:7:aarch64
+  tags:
+    - docker-aarch64
+  variables:
+    PLATFORM_VER: "7"
+
+package:centos-8:x86_64:
+  extends: .package:centos
   image: cincproject/omnibus-centos:8
   cache:
-    key: centos:8
-  after_script:
-    - mkdir -p ${CI_PROJECT_DIR}/data/el/8
-    - mv -v ${CI_PROJECT_DIR}/data/*.{rpm,deb,json} ${CI_PROJECT_DIR}/data/el/8/
+    key: centos:8:x86_64
+  tags:
+    - docker-x86_64
+  variables:
+    PLATFORM_VER: "8"
 
-package:opensuse-15:
-  extends: .package
-  image: cincproject/omnibus-opensuse:15
+package:centos-8:aarch64:
+  extends: .package:centos
+  image: cincproject/omnibus-centos:8
   cache:
-    key: opensuse:15
-  after_script:
-    - mkdir -p ${CI_PROJECT_DIR}/data/sles/15
-    - mv -v ${CI_PROJECT_DIR}/data/*.{rpm,deb,json} ${CI_PROJECT_DIR}/data/sles/15/
+    key: centos:8:aarch64
+  tags:
+    - docker-aarch64
+  variables:
+    PLATFORM_VER: "8"
+
+package:debian-8:x86_64:
+  extends: .package:debian
+  image: cincproject/omnibus-debian:8
+  cache:
+    key: debian:8:x86_64
+  tags:
+    - docker-x86_64
+  variables:
+    PLATFORM_VER: "8"
+
+package:debian-9:x86_64:
+  extends: .package:debian
+  image: cincproject/omnibus-debian:9
+  cache:
+    key: debian:9:x86_64
+  tags:
+    - docker-x86_64
+  variables:
+    PLATFORM_VER: "9"
+
+package:debian-10:x86_64:
+  extends: .package:debian
+  image: cincproject/omnibus-debian:10
+  cache:
+    key: debian:10:x86_64
+  tags:
+    - docker-x86_64
+  variables:
+    PLATFORM_VER: "10"
 
 package:macos-10.14:
-  extends: .package
-  tags:
-    - macos-10.14
-  script:
-    - source /Users/omnibus/load-omnibus-toolchain.sh
-    - cd inspec/omnibus
-    - bundle install --without development --path ${CI_PROJECT_DIR}/bundle/vendor
-    - sudo rm -rf /var/cache/omnibus/pkg/*
-    - sudo bundle exec omnibus build cinc-auditor --override append_timestamp:false
-    - mkdir -p ${CI_PROJECT_DIR}/data/mac_os_x/10.14
-    - sudo chown -R omnibus:omnibus pkg
-    - mv -v pkg/cinc*dmg* ${CI_PROJECT_DIR}/data/mac_os_x/10.14/
-    - sudo bundle exec omnibus clean cinc-auditor
-    - sudo rm -rf /opt/cinc-auditor/*
+  extends: .package:macos
   cache:
     key: macos:10.14
+  tags:
+    - macos-10.14
+  variables:
+    PLATFORM_VER: "10.14"
 
 package:macos-10.15:
-  extends: .package
-  tags:
-    - macos-10.15
-  script:
-    - source /Users/omnibus/load-omnibus-toolchain.sh
-    - cd inspec/omnibus
-    - bundle install --without development --path ${CI_PROJECT_DIR}/bundle/vendor
-    - sudo rm -rf /var/cache/omnibus/pkg/*
-    - /usr/local/bin/gsed -i "s:^cache_dir.*:cache_dir '/var/cache/omnibus/cache':" omnibus.rb
-    - /usr/local/bin/gsed -i "s:^git_cache_dir.*:git_cache_dir '/var/cache/omnibus/git_cache':" omnibus.rb
-    - sudo bundle exec omnibus build cinc-auditor --override append_timestamp:false
-    - mkdir -p ${CI_PROJECT_DIR}/data/mac_os_x/10.15
-    - sudo chown -R omnibus:omnibus pkg
-    - mv -v pkg/cinc*dmg* ${CI_PROJECT_DIR}/data/mac_os_x/10.15/
-    - sudo bundle exec omnibus clean cinc-auditor
-    - sudo rm -rf /opt/cinc-auditor/*
+  extends: .package:macos
   cache:
     key: macos:10.15
+  tags:
+    - macos-10.15
+  variables:
+    PLATFORM_VER: "10.15"
+
+package:opensuse-15:x86_64:
+  extends: .package:opensuse
+  image: cincproject/omnibus-opensuse:15
+  cache:
+    key: opensuse:15:x86_64
+  tags:
+    - docker-x86_64
+  variables:
+    PLATFORM_VER: "15"
 
 package:windows-2012r2:
-  extends: .package
+  extends: .package:windows
   tags:
     - windows-x64
-  script:
-    - $ErrorActionPreference = "Stop"
-    - C:\omnibus\load-omnibus-toolchain.ps1
-    - cd inspec\omnibus
-    - bundle install --without development --path ${CI_PROJECT_DIR}/bundle/vendor
-    - bundle exec omnibus build cinc-auditor --override append_timestamp:false
-    - mkdir.exe -p ${CI_PROJECT_DIR}/data/windows/2012r2
-    - mv.exe -v pkg/cinc-auditor* ${CI_PROJECT_DIR}/data/windows/2012r2
-    - bundle exec omnibus clean cinc-auditor
   cache:
-    key: windows:2012r2
+    key: windows-2012r2
+  variables:
+    PLATFORM_VER: "2012r2"
 
-.test:
-  stage: test
-  tags:
-    - osuosl
-  script:
-    - cinc-auditor version
-    - cinc-auditor detect
-    - cinc-auditor exec test-baseline
-
-.test-windows:
-  tags:
-    - windows-x64
-  before_script:
-    - ./scripts/install-cinc-auditor.ps1
-  script:
-    - $ErrorActionPreference = "Stop"
-    - $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
-    - echo $env:PATH
-    - cinc-auditor version
-    - cinc-auditor detect
-    - cinc-auditor exec test-baseline
-  after_script:
-    - ./scripts/uninstall-cinc-auditor.ps1
-
-test:debian-8:
-  extends: .test
-  image: cincproject/omnibus-debian:8
-  dependencies:
-    - package:debian-8
-  before_script:
-    - dpkg -i data/debian/8/cinc-auditor*.deb
-
-test:debian-9:
-  extends: .test
-  image: cincproject/omnibus-debian:9
-  dependencies:
-    - package:debian-9
-  before_script:
-    - dpkg -i data/debian/9/cinc-auditor*.deb
-
-test:debian-10:
-  extends: .test
-  image: cincproject/omnibus-debian:10
-  dependencies:
-    - package:debian-10
-  before_script:
-    - dpkg -i data/debian/10/cinc-auditor*.deb
-
-test:ubuntu-16.04:
-  extends: .test
+package:ubuntu-16.04:x86_64:
+  extends: .package:ubuntu
   image: cincproject/omnibus-ubuntu:16.04
-  dependencies:
-    - package:ubuntu-16.04
-  before_script:
-    - dpkg -i data/ubuntu/16.04/cinc-auditor*.deb
+  cache:
+    key: ubuntu:16.04:x86_64
+  tags:
+    - docker-x86_64
+  variables:
+    PLATFORM_VER: "16.04"
 
-test:ubuntu-18.04:
-  extends: .test
+package:ubuntu-18.04:x86_64:
+  extends: .package:ubuntu
   image: cincproject/omnibus-ubuntu:18.04
-  dependencies:
-    - package:ubuntu-18.04
-  before_script:
-    - dpkg -i data/ubuntu/18.04/cinc-auditor*.deb
+  cache:
+    key: ubuntu:18.04:x86_64
+  tags:
+    - docker-x86_64
+  variables:
+    PLATFORM_VER: "18.04"
 
-test:ubuntu-20.04:
-  extends: .test
+package:ubuntu-20.04:x86_64:
+  extends: .package:ubuntu
   image: cincproject/omnibus-ubuntu:20.04
-  dependencies:
-    - package:ubuntu-20.04
-  before_script:
-    - dpkg -i data/ubuntu/20.04/cinc-auditor*.deb
+  cache:
+    key: ubuntu:20.04:x86_64
+  tags:
+    - docker-x86_64
+  variables:
+    PLATFORM_VER: "20.04"
 
-test:centos-6:
-  extends: .test
+# Test stage
+
+test:amazonlinux-2:x86_64:
+  extends: .test:amazonlinux
+  image: cincproject/omnibus-amazonlinux:2
+  dependencies:
+    - package:amazonlinux-2:x86_64
+  tags:
+    - docker-x86_64
+  variables:
+    PLATFORM_VER: "2"
+
+test:amazonlinux-2:aarch64:
+  extends: .test:amazonlinux
+  image: cincproject/omnibus-amazonlinux:2
+  dependencies:
+    - package:amazonlinux-2:aarch64
+  tags:
+    - docker-aarch64
+  variables:
+    PLATFORM_VER: "2"
+
+test:centos-6:x86_64:
+  extends: .test:centos
   image: cincproject/omnibus-centos:6
   dependencies:
-    - package:centos-6
-  before_script:
-    - yum -y install data/el/6/cinc-auditor*.rpm
+    - package:centos-6:x86_64
+  tags:
+    - docker-x86_64
+  variables:
+    PLATFORM_VER: "6"
 
-test:centos-7:
-  extends: .test
+test:centos-7:x86_64:
+  extends: .test:centos
   image: cincproject/omnibus-centos:7
   dependencies:
-    - package:centos-7
-  before_script:
-    - yum -y install data/el/7/cinc-auditor*.rpm
+    - package:centos-7:x86_64
+  tags:
+    - docker-x86_64
+  variables:
+    PLATFORM_VER: "7"
 
-test:centos-8:
-  extends: .test
+test:centos-7:aarch64:
+  extends: .test:centos
+  image: cincproject/omnibus-centos:7
+  dependencies:
+    - package:centos-7:aarch64
+  tags:
+    - docker-aarch64
+  variables:
+    PLATFORM_VER: "7"
+
+test:centos-8:x86_64:
+  extends: .test:centos
   image: cincproject/omnibus-centos:8
   dependencies:
-    - package:centos-8
-  before_script:
-    - yum -y install data/el/8/cinc-auditor*.rpm
+    - package:centos-8:x86_64
+  tags:
+    - docker-x86_64
+  variables:
+    PLATFORM_VER: "8"
 
-test:opensuse-15:
-  extends: .test
-  image: cincproject/omnibus-opensuse:15
+test:centos-8:aarch64:
+  extends: .test:centos
+  image: cincproject/omnibus-centos:8
   dependencies:
-    - package:opensuse-15
-  before_script:
-    - rpm -iU data/sles/15/cinc-auditor*.rpm
+    - package:centos-8:aarch64
+  tags:
+    - docker-aarch64
+  variables:
+    PLATFORM_VER: "8"
+
+test:debian-8:x86_64:
+  extends: .test:debian
+  image: cincproject/omnibus-debian:8
+  dependencies:
+    - package:debian-8:x86_64
+  tags:
+    - docker-x86_64
+  variables:
+    PLATFORM_VER: "8"
+
+test:debian-9:x86_64:
+  extends: .test:debian
+  image: cincproject/omnibus-debian:9
+  dependencies:
+    - package:debian-9:x86_64
+  tags:
+    - docker-x86_64
+  variables:
+    PLATFORM_VER: "9"
+
+test:debian-10:x86_64:
+  extends: .test:debian
+  image: cincproject/omnibus-debian:10
+  dependencies:
+    - package:debian-10:x86_64
+  tags:
+    - docker-x86_64
+  variables:
+    PLATFORM_VER: "10"
 
 test:macos-10.14:
-  extends: .test
+  extends: .test:macos
   tags:
     - macos-10.14
   dependencies:
     - package:macos-10.14
-  script:
-    - sudo scripts/install-cinc-auditor-macos.sh
-    - cinc-auditor version
-    - cinc-auditor detect
-    - cinc-auditor exec test-baseline
-    - sudo scripts/uninstall-cinc-auditor-macos.sh
+  variables:
+    PLATFORM_VER: "10.14"
 
 test:macos-10.15:
-  extends: .test
+  extends: .test:macos
   tags:
     - macos-10.15
   dependencies:
     - package:macos-10.15
-  script:
-    - sudo scripts/install-cinc-auditor-macos.sh
-    - cinc-auditor version
-    - cinc-auditor detect
-    - cinc-auditor exec test-baseline
-    - sudo scripts/uninstall-cinc-auditor-macos.sh
+  variables:
+    PLATFORM_VER: "10.15"
+
+test:opensuse-15:x86_64:
+  extends: .test:opensuse
+  image: cincproject/omnibus-opensuse:15
+  dependencies:
+    - package:opensuse-15:x86_64
+  tags:
+    - docker-x86_64
+  variables:
+    PLATFORM_VER: "15"
+
+test:ubuntu-16.04:x86_64:
+  extends: .test:ubuntu
+  image: cincproject/omnibus-ubuntu:16.04
+  dependencies:
+    - package:ubuntu-16.04:x86_64
+  tags:
+    - docker-x86_64
+  variables:
+    PLATFORM_VER: "16.04"
+
+test:ubuntu-18.04:x86_64:
+  extends: .test:ubuntu
+  image: cincproject/omnibus-ubuntu:18.04
+  dependencies:
+    - package:ubuntu-18.04:x86_64
+  tags:
+    - docker-x86_64
+  variables:
+    PLATFORM_VER: "18.04"
+
+test:ubuntu-20.04:x86_64:
+  extends: .test:ubuntu
+  image: cincproject/omnibus-ubuntu:20.04
+  dependencies:
+    - package:ubuntu-20.04:x86_64
+  tags:
+    - docker-x86_64
+  variables:
+    PLATFORM_VER: "20.04"
 
 test:windows-2012r2:
-  extends: .test-windows
+  extends: .test:windows
   dependencies:
     - package:windows-2012r2
+  variables:
+    PLATFORM_VER: "2012r2"
 
 .ssh-setup:
   before_script:
@@ -358,20 +395,24 @@ deploy:
       when: manual
     - when: never
   tags:
-    - osuosl
+    - docker-x86_64
   dependencies:
-    - package:debian-8
-    - package:debian-9
-    - package:debian-10
-    - package:ubuntu-16.04
-    - package:ubuntu-18.04
-    - package:ubuntu-20.04
-    - package:centos-6
-    - package:centos-7
-    - package:centos-8
-    - package:opensuse-15
+    - package:amazonlinux-2:x86_64
+    - package:amazonlinux-2:aarch64
+    - package:centos-6:x86_64
+    - package:centos-7:x86_64
+    - package:centos-7:aarch64
+    - package:centos-8:x86_64
+    - package:centos-8:aarch64
+    - package:debian-8:x86_64
+    - package:debian-9:x86_64
+    - package:debian-10:x86_64
     - package:macos-10.14
     - package:macos-10.15
+    - package:opensuse-15:x86_64
+    - package:ubuntu-16.04:x86_64
+    - package:ubuntu-18.04:x86_64
+    - package:ubuntu-20.04:x86_64
     - package:windows-2012r2
   script:
     - ssh cinc@${DOWNLOADS_HOST} "mkdir -p /data/incoming/files/${CHANNEL}/cinc-auditor/$(cat VERSION)/"
@@ -386,7 +427,7 @@ deploy-gems:
       when: manual
     - when: never
   tags:
-    - osuosl
+    - docker-x86_64
   dependencies:
     - patch
   script:
@@ -420,7 +461,7 @@ publish-docker:
       when: on_success
     - when: never
   tags:
-    - osuosl
+    - docker-x86_64
   dependencies:
     - patch
   script:

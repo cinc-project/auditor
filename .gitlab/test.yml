@@ -1,0 +1,67 @@
+.test:
+  stage: test
+  script:
+    - cinc-auditor version
+    - cinc-auditor detect
+    - cinc-auditor exec test-baseline
+
+.test:amazonlinux:
+  extends: .test
+  before_script:
+    - yum -y install data/amazon/${PLATFORM_VER}/cinc*.rpm
+  after_script:
+    - yum -y remove cinc
+
+.test:centos:
+  extends: .test
+  before_script:
+    - yum -y install data/el/${PLATFORM_VER}/cinc-auditor*.rpm
+  after_script:
+    - yum -y remove cinc-auditor
+
+.test:debian:
+  extends: .test
+  before_script:
+    - dpkg -i data/debian/${PLATFORM_VER}/cinc-auditor*.deb
+  after_script:
+    - apt-get -y remove cinc-auditor
+
+.test:macos:
+  extends: .test
+  before_script:
+    - sudo scripts/install-cinc-auditor-macos.sh
+  script:
+    - cinc-auditor version
+    - cinc-auditor detect
+    - cinc-auditor exec test-baseline
+  after_script:
+    - sudo scripts/uninstall-cinc-auditor-macos.sh
+
+.test:opensuse:
+  extends: .test
+  before_script:
+    - zypper install -y --allow-unsigned-rpm data/sles/${PLATFORM_VER}/cinc-auditor*.rpm
+  after_script:
+    - zypper rm -y cinc-auditor
+
+.test:ubuntu:
+  extends: .test
+  before_script:
+    - dpkg -i data/ubuntu/${PLATFORM_VER}/cinc-auditor*.deb
+  after_script:
+    - apt-get -y remove cinc-auditor
+
+.test:windows:
+  tags:
+    - windows-x64
+  before_script:
+    - ./scripts/install-cinc-auditor.ps1
+  script:
+    - $ErrorActionPreference = "Stop"
+    - $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
+    - echo $env:PATH
+    - cinc-auditor version
+    - cinc-auditor detect
+    - cinc-auditor exec test-baseline
+  after_script:
+    - ./scripts/uninstall-cinc-auditor.ps1
