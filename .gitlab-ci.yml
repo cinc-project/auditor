@@ -10,6 +10,7 @@ stages:
 variables:
   ORIGIN: https://github.com/inspec/inspec.git
   REF: master
+  CINC_REF: stable/cinc
   CHANNEL: unstable
   CINC_PRODUCT: cinc-auditor
 
@@ -39,6 +40,74 @@ patch:
     expire_in: 1mo
     paths:
       - inspec/
+
+.bio_setup:
+  before_script:
+    - scripts/install-biome.sh
+
+# Needs HAB_AUTH_TOKEN and HAB_ORIGIN environment variables set.
+package:bio:linux:
+  stage: package
+  extends:
+    - .bio_setup
+  tags:
+    - docker-x86_64
+  needs:
+    - patch
+  script:
+    - bio pkg build ./inspec
+  variables:
+    HAB_ORIGIN: cinc
+    HAB_NONINTERACTIVE: "true"
+  artifacts:
+    paths:
+      - results/*.hart
+
+test:bio:linux:
+  stage: test
+  extends:
+    - .bio_setup
+  tags:
+    - docker-x86_64
+  needs:
+    - package:bio:linux
+  variables:
+    HAB_TEST: "true"
+  script:
+    - bio install results/*.hart  --binlink
+    - export CINC_PATH=$(bio pkg path cinc/cinc-auditor)
+    - ln -s $CINC_PATH /opt/cinc-auditor
+    - cinc-auditor version
+    - cinc-auditor detect
+    - cinc-auditor exec test-baseline
+
+deploy:bio:linux:
+  stage: deploy
+  extends:
+    - .bio_setup
+  tags:
+    - docker-x86_64
+  needs:
+    - package:bio:linux
+    - test:bio:linux
+  script:
+    - bio pkg upload results/*.hart
+
+publish:bio:linux:
+  needs:
+    - package:bio:linux 
+    - deploy:bio:linux
+  extends:
+    - .bio_setup
+  stage: publish
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "web"
+      when: on_success
+    - when: never
+  script:
+    - bio pkg install core/jq-static -b
+    - export PKG=$(bio pkg info results/*.hart -j | jq '[.origin,.name,.version,.release] | join("/")')
+    - bio pkg promote $PKG $CHANNEL
 
 # Package stage
 
