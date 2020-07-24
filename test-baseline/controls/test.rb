@@ -24,7 +24,7 @@ if os.unix?
       it { should be_symlink }
       its(:link_path) { should eq '/opt/cinc-auditor/bin/cinc-auditor-wrapper' }
     end
-  else
+  elsif ENV['HAB_TEST'].nil?
     describe file('/usr/bin/inspec') do
       it { should be_symlink }
       its(:link_path) { should eq '/opt/cinc-auditor/bin/cinc-auditor-wrapper' }

@@ -19,7 +19,9 @@
 
 # This will patch InSpec using Cinc branded patches
 git_patch() {
-  if [ "${REF}" == "master" -o -z "${REF}" ] ; then
+  if [ -n "${2}" ] ; then
+    CINC_BRANCH="${2}"
+  elif [ "${REF}" == "master" -o -z "${REF}" ] ; then
     CINC_BRANCH="stable/cinc"
   else
     CINC_BRANCH="stable/cinc-${REF}"
@@ -38,7 +40,7 @@ git config --global user.email || git config --global user.email "maintainers@ci
 echo "Cloning ${REF:-master} branch from ${ORIGIN:-https://github.com/inspec/inspec.git}"
 git clone -q -b ${REF:-master} ${ORIGIN:-https://github.com/inspec/inspec.git}
 cd inspec
-git_patch inspec
+git_patch inspec ${CINC_REF}
 mkdir -p inspec-bin/lib/inspec
 cp lib/inspec/dist.rb inspec-bin/lib/inspec/
 cd $TOP_DIR

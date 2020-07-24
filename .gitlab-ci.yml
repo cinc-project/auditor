@@ -10,6 +10,7 @@ stages:
 variables:
   ORIGIN: https://github.com/inspec/inspec.git
   REF: master
+  CINC_REF: stable/cinc
   CHANNEL: unstable
   CINC_PRODUCT: cinc-auditor
 
@@ -40,6 +41,10 @@ patch:
     paths:
       - inspec/
 
+.bio_setup:
+  before_script:
+    - scripts/install-biome.sh
+
 # Package stage
 
 package:amazonlinux-2:x86_64:
@@ -49,6 +54,8 @@ package:amazonlinux-2:x86_64:
     key: amazonlinux:2:x86_64
   tags:
     - docker-x86_64
+  needs:
+    - patch
   variables:
     PLATFORM_VER: "2"
 
@@ -59,8 +66,28 @@ package:amazonlinux-2:aarch64:
     key: amazonlinux:2:aarch64
   tags:
     - docker-aarch64
+  needs:
+    - patch
   variables:
     PLATFORM_VER: "2"
+
+# Needs HAB_AUTH_TOKEN and HAB_ORIGIN environment variables set.
+package:bio:linux:
+  stage: package
+  extends:
+    - .bio_setup
+  tags:
+    - docker-x86_64
+  needs:
+    - patch
+  script:
+    - bio pkg build ./inspec
+  variables:
+    HAB_ORIGIN: cinc
+    HAB_NONINTERACTIVE: "true"
+  artifacts:
+    paths:
+      - results/*.hart
 
 package:centos-6:x86_64:
   extends: .package:centos
@@ -69,6 +96,8 @@ package:centos-6:x86_64:
     key: centos:6:x86_64
   tags:
     - docker-x86_64
+  needs:
+    - patch
   variables:
     PLATFORM_VER: "6"
 
@@ -79,6 +108,8 @@ package:centos-7:x86_64:
     key: centos:7:x86_64
   tags:
     - docker-x86_64
+  needs:
+    - patch
   variables:
     PLATFORM_VER: "7"
 
@@ -89,6 +120,8 @@ package:centos-7:aarch64:
     key: centos:7:aarch64
   tags:
     - docker-aarch64
+  needs:
+    - patch
   variables:
     PLATFORM_VER: "7"
 
@@ -99,6 +132,8 @@ package:centos-8:x86_64:
     key: centos:8:x86_64
   tags:
     - docker-x86_64
+  needs:
+    - patch
   variables:
     PLATFORM_VER: "8"
 
@@ -109,6 +144,8 @@ package:centos-8:aarch64:
     key: centos:8:aarch64
   tags:
     - docker-aarch64
+  needs:
+    - patch
   variables:
     PLATFORM_VER: "8"
 
@@ -119,6 +156,8 @@ package:debian-8:x86_64:
     key: debian:8:x86_64
   tags:
     - docker-x86_64
+  needs:
+    - patch
   variables:
     PLATFORM_VER: "8"
 
@@ -129,6 +168,8 @@ package:debian-9:x86_64:
     key: debian:9:x86_64
   tags:
     - docker-x86_64
+  needs:
+    - patch
   variables:
     PLATFORM_VER: "9"
 
@@ -139,6 +180,8 @@ package:debian-10:x86_64:
     key: debian:10:x86_64
   tags:
     - docker-x86_64
+  needs:
+    - patch
   variables:
     PLATFORM_VER: "10"
 
@@ -148,6 +191,8 @@ package:macos-10.14:
     key: macos:10.14
   tags:
     - macos-10.14
+  needs:
+    - patch
   variables:
     PLATFORM_VER: "10.14"
 
@@ -157,6 +202,8 @@ package:macos-10.15:
     key: macos:10.15
   tags:
     - macos-10.15
+  needs:
+    - patch
   variables:
     PLATFORM_VER: "10.15"
 
@@ -167,15 +214,19 @@ package:opensuse-15:x86_64:
     key: opensuse:15:x86_64
   tags:
     - docker-x86_64
+  needs:
+    - patch
   variables:
     PLATFORM_VER: "15"
 
 package:windows-2012r2:
   extends: .package:windows
-  tags:
-    - windows-x64
   cache:
     key: windows-2012r2
+  tags:
+    - windows-x64
+  needs:
+    - patch
   variables:
     PLATFORM_VER: "2012r2"
 
@@ -186,6 +237,8 @@ package:ubuntu-16.04:x86_64:
     key: ubuntu:16.04:x86_64
   tags:
     - docker-x86_64
+  needs:
+    - patch
   variables:
     PLATFORM_VER: "16.04"
 
@@ -196,6 +249,8 @@ package:ubuntu-18.04:x86_64:
     key: ubuntu:18.04:x86_64
   tags:
     - docker-x86_64
+  needs:
+    - patch
   variables:
     PLATFORM_VER: "18.04"
 
@@ -206,6 +261,8 @@ package:ubuntu-20.04:x86_64:
     key: ubuntu:20.04:x86_64
   tags:
     - docker-x86_64
+  needs:
+    - patch
   variables:
     PLATFORM_VER: "20.04"
 
@@ -214,7 +271,7 @@ package:ubuntu-20.04:x86_64:
 test:amazonlinux-2:x86_64:
   extends: .test:amazonlinux
   image: cincproject/omnibus-amazonlinux:2
-  dependencies:
+  needs:
     - package:amazonlinux-2:x86_64
   tags:
     - docker-x86_64
@@ -224,17 +281,35 @@ test:amazonlinux-2:x86_64:
 test:amazonlinux-2:aarch64:
   extends: .test:amazonlinux
   image: cincproject/omnibus-amazonlinux:2
-  dependencies:
+  needs:
     - package:amazonlinux-2:aarch64
   tags:
     - docker-aarch64
   variables:
     PLATFORM_VER: "2"
 
+test:bio:linux:
+  stage: test
+  extends:
+    - .bio_setup
+  tags:
+    - docker-x86_64
+  needs:
+    - package:bio:linux
+  variables:
+    HAB_TEST: "true"
+  script:
+    - bio install results/*.hart  --binlink
+    - export CINC_PATH=$(bio pkg path cinc/cinc-auditor)
+    - ln -s $CINC_PATH /opt/cinc-auditor
+    - cinc-auditor version
+    - cinc-auditor detect
+    - cinc-auditor exec test-baseline
+
 test:centos-6:x86_64:
   extends: .test:centos
   image: cincproject/omnibus-centos:6
-  dependencies:
+  needs:
     - package:centos-6:x86_64
   tags:
     - docker-x86_64
@@ -244,7 +319,7 @@ test:centos-6:x86_64:
 test:centos-7:x86_64:
   extends: .test:centos
   image: cincproject/omnibus-centos:7
-  dependencies:
+  needs:
     - package:centos-7:x86_64
   tags:
     - docker-x86_64
@@ -254,7 +329,7 @@ test:centos-7:x86_64:
 test:centos-7:aarch64:
   extends: .test:centos
   image: cincproject/omnibus-centos:7
-  dependencies:
+  needs:
     - package:centos-7:aarch64
   tags:
     - docker-aarch64
@@ -264,7 +339,7 @@ test:centos-7:aarch64:
 test:centos-8:x86_64:
   extends: .test:centos
   image: cincproject/omnibus-centos:8
-  dependencies:
+  needs:
     - package:centos-8:x86_64
   tags:
     - docker-x86_64
@@ -274,7 +349,7 @@ test:centos-8:x86_64:
 test:centos-8:aarch64:
   extends: .test:centos
   image: cincproject/omnibus-centos:8
-  dependencies:
+  needs:
     - package:centos-8:aarch64
   tags:
     - docker-aarch64
@@ -284,7 +359,7 @@ test:centos-8:aarch64:
 test:debian-8:x86_64:
   extends: .test:debian
   image: cincproject/omnibus-debian:8
-  dependencies:
+  needs:
     - package:debian-8:x86_64
   tags:
     - docker-x86_64
@@ -294,7 +369,7 @@ test:debian-8:x86_64:
 test:debian-9:x86_64:
   extends: .test:debian
   image: cincproject/omnibus-debian:9
-  dependencies:
+  needs:
     - package:debian-9:x86_64
   tags:
     - docker-x86_64
@@ -304,7 +379,7 @@ test:debian-9:x86_64:
 test:debian-10:x86_64:
   extends: .test:debian
   image: cincproject/omnibus-debian:10
-  dependencies:
+  needs:
     - package:debian-10:x86_64
   tags:
     - docker-x86_64
@@ -315,7 +390,7 @@ test:macos-10.14:
   extends: .test:macos
   tags:
     - macos-10.14
-  dependencies:
+  needs:
     - package:macos-10.14
   variables:
     PLATFORM_VER: "10.14"
@@ -324,7 +399,7 @@ test:macos-10.15:
   extends: .test:macos
   tags:
     - macos-10.15
-  dependencies:
+  needs:
     - package:macos-10.15
   variables:
     PLATFORM_VER: "10.15"
@@ -332,7 +407,7 @@ test:macos-10.15:
 test:opensuse-15:x86_64:
   extends: .test:opensuse
   image: cincproject/omnibus-opensuse:15
-  dependencies:
+  needs:
     - package:opensuse-15:x86_64
   tags:
     - docker-x86_64
@@ -342,7 +417,7 @@ test:opensuse-15:x86_64:
 test:ubuntu-16.04:x86_64:
   extends: .test:ubuntu
   image: cincproject/omnibus-ubuntu:16.04
-  dependencies:
+  needs:
     - package:ubuntu-16.04:x86_64
   tags:
     - docker-x86_64
@@ -352,7 +427,7 @@ test:ubuntu-16.04:x86_64:
 test:ubuntu-18.04:x86_64:
   extends: .test:ubuntu
   image: cincproject/omnibus-ubuntu:18.04
-  dependencies:
+  needs:
     - package:ubuntu-18.04:x86_64
   tags:
     - docker-x86_64
@@ -362,7 +437,7 @@ test:ubuntu-18.04:x86_64:
 test:ubuntu-20.04:x86_64:
   extends: .test:ubuntu
   image: cincproject/omnibus-ubuntu:20.04
-  dependencies:
+  needs:
     - package:ubuntu-20.04:x86_64
   tags:
     - docker-x86_64
@@ -371,7 +446,7 @@ test:ubuntu-20.04:x86_64:
 
 test:windows-2012r2:
   extends: .test:windows
-  dependencies:
+  needs:
     - package:windows-2012r2
   variables:
     PLATFORM_VER: "2012r2"
@@ -419,6 +494,22 @@ deploy:
     - rsync -avH --delete data/ cinc@${DOWNLOADS_HOST}:/data/incoming/files/${CHANNEL}/cinc-auditor/$(cat VERSION)/
     - ssh cinc@${DOWNLOADS_HOST} "chmod 755 /data/incoming/files/${CHANNEL}/cinc-auditor/$(cat VERSION)/"
 
+deploy:bio:linux:
+  stage: deploy
+  # Only run if this is triggered from the web
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "web"
+      when: on_success
+    - when: never
+  extends:
+    - .bio_setup
+  tags:
+    - docker-x86_64
+  dependencies:
+    - package:bio:linux
+  script:
+    - bio pkg upload results/*.hart
+
 deploy-gems:
   stage: deploy
   # Only run if this is triggered from the web
@@ -464,10 +555,28 @@ publish-docker:
     - docker-x86_64
   dependencies:
     - patch
+    - deploy-gems
   script:
     - ./docker.sh
   variables:
     DOCKER_TLS_CERTDIR: "/certs"
+
+publish:bio:linux:
+  # Only run if this is triggered from the web
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "web"
+      when: on_success
+    - when: never
+  dependencies:
+    - package:bio:linux
+    - deploy:bio:linux
+  extends:
+    - .bio_setup
+  stage: publish
+  script:
+    - bio pkg install core/jq-static -b
+    - export PKG=$(bio pkg info results/*.hart -j | jq '[.origin,.name,.version,.release] | join("/")')
+    - bio pkg promote $PKG $CHANNEL
 
 .cleanup:
   stage: cleanup
