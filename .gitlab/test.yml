@@ -52,6 +52,7 @@
     - apt-get -y remove cinc-auditor
 
 .test:windows:
+  stage: test
   tags:
     - windows-x64
   before_script:
