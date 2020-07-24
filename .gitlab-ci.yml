@@ -10,7 +10,6 @@ stages:
 variables:
   ORIGIN: https://github.com/inspec/inspec.git
   REF: master
-  CINC_REF: stable/cinc
   CHANNEL: unstable
   CINC_PRODUCT: cinc-auditor
 
