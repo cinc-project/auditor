@@ -566,6 +566,8 @@ publish:bio:linux:
     - if: $CI_PIPELINE_SOURCE == "web"
       when: on_success
     - when: never
+  tags:
+    - docker-x86_64
   dependencies:
     - package:bio:linux
     - deploy:bio:linux
