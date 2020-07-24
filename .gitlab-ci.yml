@@ -43,6 +43,9 @@ patch:
 .bio_setup:
   before_script:
     - scripts/install-biome.sh
+  variables:
+    HAB_ORIGIN: cinc
+    HAB_NONINTERACTIVE: "true"
 
 # Package stage
 
@@ -81,9 +84,6 @@ package:bio:linux:
     - patch
   script:
     - bio pkg build ./inspec
-  variables:
-    HAB_ORIGIN: cinc
-    HAB_NONINTERACTIVE: "true"
   artifacts:
     paths:
       - results/*.hart
