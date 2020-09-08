@@ -24,7 +24,7 @@ control 'cinc-auditor-windows' do
     its('exit_status') { should eq 0 }
   end
 
-  describe command 'C:\cinc-project\cinc\bin\inspec version' do
+  describe command 'C:\cinc-project\cinc-auditor\bin\inspec version' do
     its('exit_status') { should eq 0 }
     # Wrapper is broken in windows
     # its('stdout') { should match /^Redirecting to cinc-auditor/ }
