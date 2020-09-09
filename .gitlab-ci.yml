@@ -303,7 +303,10 @@ test:bio:linux:
     - ln -s $CINC_PATH /opt/cinc-auditor
     - cinc-auditor version
     - cinc-auditor detect
-    - cinc-auditor exec test-baseline
+    - cinc-auditor exec test-baseline --no-distinct-exit --reporter cli junit:junit.xml
+  artifacts:
+    reports:
+      junit: junit.xml
 
 test:centos-6:x86_64:
   extends: .test:centos

@@ -1,2 +1,10 @@
 name: test-baseline
+title: Cinc Auditor trademark validation
+maintainer: Cinc maintainers
+copyright: Cinc Maintainerss
+copyright_email: maintainers@cinc.sh
+license: Apache-2.0
+summary: Validate cinc auditor binaries outputs and others executable
 version: 0.0.1
+supports:
+  platform: os
