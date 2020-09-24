@@ -606,4 +606,4 @@ cleanup:windows-2012r2:
   tags:
     - windows-x64
   script:
-    - Remove-Item -Recurse -Force C:\builds\cinc\distribution\auditor
+    - Remove-Item -Recurse -Force C:\builds\cinc-project\distribution\auditor
