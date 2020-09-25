@@ -1,5 +1,5 @@
 #!/bin/sh
 
-echo "Redirecting to cinc-auditor..."
+echo "Redirecting to cinc-auditor..." >&2
 
 exec /opt/cinc-auditor/bin/cinc-auditor "$@"
