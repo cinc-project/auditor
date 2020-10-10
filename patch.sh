@@ -44,7 +44,6 @@ git_patch inspec ${CINC_REF}
 mkdir -p inspec-bin/lib/inspec
 cp lib/inspec/dist.rb inspec-bin/lib/inspec/
 cd $TOP_DIR
-cp -rp cinc-auditor/* inspec/
 
 echo "cache_dir '${TOP_DIR}/cache'" >> inspec/omnibus/omnibus.rb
 mkdir -p ${TOP_DIR}/cache
