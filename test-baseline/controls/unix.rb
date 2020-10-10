@@ -16,7 +16,7 @@ control 'cinc-*nix' do
 
   describe command('inspec --version') do
     its(:exit_status) { should eq 0 }
-    its(:stdout) { should include 'Redirecting to cinc-auditor...' }
+    its(:stderr) { should include 'Redirecting to cinc-auditor...' }
   end
 
   describe file('/opt/cinc-auditor/bin/cinc-auditor-wrapper') do

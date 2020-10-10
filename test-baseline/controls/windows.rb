@@ -24,9 +24,10 @@ control 'cinc-auditor-windows' do
     its('exit_status') { should eq 0 }
   end
 
-  describe command 'C:\cinc-project\cinc-auditor\bin\inspec version' do
+  describe command 'C:\cinc-project\cinc-auditor\bin\inspec detect' do
     its('exit_status') { should eq 0 }
-    # Wrapper is broken in windows
-    # its('stdout') { should match /^Redirecting to cinc-auditor/ }
+    # stderr test disabled because of Train bug https://github.com/inspec/train/issues/288 
+    # its(:stderr) { should match /^Redirecting to cinc-auditor/ }
+    its(:stdout) { should match /Platform Details/ }
   end
 end
