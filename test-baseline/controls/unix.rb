@@ -16,13 +16,12 @@ control 'cinc-*nix' do
 
   describe command('inspec --version') do
     its(:exit_status) { should eq 0 }
-    its(:stderr) { should include 'Redirecting to cinc-auditor...' }
+    its(:stderr) { should include 'Redirecting to cinc-auditor' }
   end
 
   describe file('/opt/cinc-auditor/bin/cinc-auditor-wrapper') do
     it { should be_file }
     its(:mode) { should cmp '0755' }
-    its(:content) { should include 'Redirecting to cinc-auditor...' }
   end
   
   if os.name == 'mac_os_x'
@@ -33,7 +32,7 @@ control 'cinc-*nix' do
   elsif ENV['HAB_TEST'].nil?
     describe file('/usr/bin/inspec') do
       it { should be_symlink }
-      its(:link_path) { should eq '/opt/cinc-auditor/bin/cinc-auditor-wrapper' }
+      its(:link_path) { should eq '/opt/cinc-auditor/bin/inspec' }
     end
   end
 end
