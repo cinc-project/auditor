@@ -205,6 +205,17 @@ package:macos-10.15:
   variables:
     PLATFORM_VER: "10.15"
 
+package:macos-11.0:
+  extends: .package:macos
+  cache:
+    key: macos:11.0
+  tags:
+    - macos-11.0
+  needs:
+    - patch
+  variables:
+    PLATFORM_VER: "11.0"
+
 package:opensuse-15:x86_64:
   extends: .package:opensuse
   image: cincproject/omnibus-opensuse:15
@@ -405,6 +416,15 @@ test:macos-10.15:
   variables:
     PLATFORM_VER: "10.15"
 
+test:macos-11.0:
+  extends: .test:macos
+  tags:
+    - macos-11.0
+  needs:
+    - package:macos-11.0
+  variables:
+    PLATFORM_VER: "11.0"
+
 test:opensuse-15:x86_64:
   extends: .test:opensuse
   image: cincproject/omnibus-opensuse:15
@@ -485,6 +505,7 @@ deploy:
     - package:debian-10:x86_64
     - package:macos-10.14
     - package:macos-10.15
+    - package:macos-11.0
     - package:opensuse-15:x86_64
     - package:ubuntu-16.04:x86_64
     - package:ubuntu-18.04:x86_64
@@ -600,6 +621,11 @@ cleanup:macos-10.15:
   extends: .cleanup
   tags:
     - macos-10.15
+
+cleanup:macos-11.0:
+  extends: .cleanup
+  tags:
+    - macos-11.0
 
 cleanup:windows-2012r2:
   extends: .cleanup
