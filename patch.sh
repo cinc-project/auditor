@@ -45,13 +45,3 @@ mkdir -p inspec-bin/lib/inspec
 cp lib/inspec/dist.rb inspec-bin/lib/inspec/
 cd $TOP_DIR
 cp -rp cinc-auditor/* inspec/
-
-echo "cache_dir '${TOP_DIR}/cache'" >> inspec/omnibus/omnibus.rb
-mkdir -p ${TOP_DIR}/cache
-if [ "${GIT_CACHE}" == "true" ] ; then
-  mkdir -p ${TOP_DIR}/cache/git_cache
-  echo "git_cache_dir '${TOP_DIR}/cache/git_cache'" >> inspec/omnibus/omnibus.rb
-  echo "use_git_caching true" >> inspec/omnibus/omnibus.rb
-else
-  echo "git cache has been disabled"
-fi

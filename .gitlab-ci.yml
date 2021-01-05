@@ -587,7 +587,7 @@ publish:bio:linux:
   when: always
   script:
     - sudo rm -rf inspec/
-    - sudo rm -rf /builds/cinc-project/distribution/auditor/
+    - sudo rm -rf ${CI_PROJECT_DIR}/cinc-project/distribution/auditor/
 
 cleanup:macos-10.14:
   extends: .cleanup
@@ -603,10 +603,3 @@ cleanup:macos-11.0:
   extends: .cleanup
   tags:
     - macos-11.0
-
-cleanup:windows-2012r2:
-  extends: .cleanup
-  tags:
-    - windows-x64
-  script:
-    - Remove-Item -Recurse -Force C:\builds\cinc-project\distribution\auditor
