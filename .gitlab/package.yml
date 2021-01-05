@@ -75,6 +75,8 @@
     - $ErrorActionPreference = "Stop"
     - C:\omnibus\load-omnibus-toolchain.ps1
     - bash caching.sh
+    # Temporary workaround for https://github.com/ffi/ffi/issues/868
+    - sed -i -e 's/1.13.0/1.14.2/' inspec/Gemfile
     - cd inspec\omnibus
     - bundle install --without development --path ${CI_PROJECT_DIR}/bundle/vendor
     - bundle exec omnibus build cinc-auditor --override append_timestamp:false
