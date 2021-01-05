@@ -87,18 +87,6 @@ package:bio:linux:
     paths:
       - results/*.hart
 
-package:centos-6:x86_64:
-  extends: .package:centos
-  image: cincproject/omnibus-centos:6
-  cache:
-    key: centos:6:x86_64
-  tags:
-    - docker-x86_64
-  needs:
-    - patch
-  variables:
-    PLATFORM_VER: "6"
-
 package:centos-7:x86_64:
   extends: .package:centos
   image: cincproject/omnibus-centos:7
@@ -205,6 +193,17 @@ package:macos-10.15:
   variables:
     PLATFORM_VER: "10.15"
 
+package:macos-11.0:
+  extends: .package:macos
+  cache:
+    key: macos:11.0
+  tags:
+    - macos-11.0
+  needs:
+    - patch
+  variables:
+    PLATFORM_VER: "11.0"
+
 package:opensuse-15:x86_64:
   extends: .package:opensuse
   image: cincproject/omnibus-opensuse:15
@@ -307,16 +306,6 @@ test:bio:linux:
     reports:
       junit: junit.xml
 
-test:centos-6:x86_64:
-  extends: .test:centos
-  image: cincproject/omnibus-centos:6
-  needs:
-    - package:centos-6:x86_64
-  tags:
-    - docker-x86_64
-  variables:
-    PLATFORM_VER: "6"
-
 test:centos-7:x86_64:
   extends: .test:centos
   image: cincproject/omnibus-centos:7
@@ -405,6 +394,15 @@ test:macos-10.15:
   variables:
     PLATFORM_VER: "10.15"
 
+test:macos-11.0:
+  extends: .test:macos
+  tags:
+    - macos-11.0
+  needs:
+    - package:macos-11.0
+  variables:
+    PLATFORM_VER: "11.0"
+
 test:opensuse-15:x86_64:
   extends: .test:opensuse
   image: cincproject/omnibus-opensuse:15
@@ -475,7 +473,6 @@ deploy:
   dependencies:
     - package:amazonlinux-2:x86_64
     - package:amazonlinux-2:aarch64
-    - package:centos-6:x86_64
     - package:centos-7:x86_64
     - package:centos-7:aarch64
     - package:centos-8:x86_64
@@ -485,6 +482,7 @@ deploy:
     - package:debian-10:x86_64
     - package:macos-10.14
     - package:macos-10.15
+    - package:macos-11.0
     - package:opensuse-15:x86_64
     - package:ubuntu-16.04:x86_64
     - package:ubuntu-18.04:x86_64
@@ -589,7 +587,7 @@ publish:bio:linux:
   when: always
   script:
     - sudo rm -rf inspec/
-    - sudo rm -rf /builds/cinc-project/distribution/auditor/
+    - sudo rm -rf ${CI_PROJECT_DIR}/cinc-project/distribution/auditor/
 
 cleanup:macos-10.14:
   extends: .cleanup
@@ -601,9 +599,7 @@ cleanup:macos-10.15:
   tags:
     - macos-10.15
 
-cleanup:windows-2012r2:
+cleanup:macos-11.0:
   extends: .cleanup
   tags:
-    - windows-x64
-  script:
-    - Remove-Item -Recurse -Force C:\builds\cinc-project\distribution\auditor
+    - macos-11.0
