@@ -20,9 +20,40 @@ $DOCKER_TOKEN
 EOF
 cat /tmp/docker-token | docker login --username $DOCKER_USERNAME --password-stdin
 rm -rf /tmp/docker-token
-set -x
 cd inspec
+
 VERSION="$(cat VERSION)"
+MAJ="$(cat VERSION | cut -d '.' -f 1)"
+MIN="$(cat VERSION | cut -d '.' -f 2)"
+# Point directly to OSUOSL master mirror
+URL="http://ftp-osl.osuosl.org/pub/cinc/files/${CHANNEL}/cinc-auditor/${VERSION}/el/7/cinc-auditor-${VERSION}-1.el7.x86_64.rpm"
+COUNT=0
+SLEEP=10
+MAX_COUNT=300
+
+# The Dockerfile pulls a built rpm from a URL instead of using the source. The
+# following ensures that we wait until the RPM has been deployed onto our
+# mirrors. By default, it will try the URL, wait 10 seconds if it fails and keep
+# doing that for 5 minutes. If nothing happens within those five minutes, then
+# something is obviously wrong and exits with 1.
+while [ ${COUNT} -le ${MAX_COUNT} ] ; do
+  if [ ${COUNT} -ge ${MAX_COUNT} ] ; then
+    echo "Exceeded ${MAX_COUNT} seconds, giving up..."
+    exit 1
+  fi
+  curl --output /dev/null --silent --head --fail "$URL"
+  STATUS=$?
+  if [ "${STATUS}" -eq 0 ] ; then
+    echo "${URL} ready!"
+    break
+  else
+    echo "${URL} is not ready, waiting for ${SLEEP} seconds... (${COUNT}/${MAX_COUNT})"
+    sleep ${SLEEP}
+    COUNT=`expr ${COUNT} + ${SLEEP}`
+  fi
+done
+
+set -x
 docker build --pull --no-cache -t cincproject/auditor:${VERSION} .
 docker tag cincproject/auditor:${VERSION} cincproject/auditor:latest
 docker push cincproject/auditor:${VERSION}
