@@ -555,8 +555,10 @@ publish-docker:
   dependencies:
     - patch
     - deploy-gems
+  before_script:
+    - apk add curl bash
   script:
-    - ./docker.sh
+    - bash docker.sh
   variables:
     DOCKER_TLS_CERTDIR: "/certs"
 
