@@ -204,6 +204,17 @@ package:macos-11:
   variables:
     PLATFORM_VER: "11"
 
+package:macos-11:aarch64:
+  extends: .package:macos
+  cache:
+    key: macos:11:aarch64
+  tags:
+    - macos-11-aarch64
+  needs:
+    - patch
+  variables:
+    PLATFORM_VER: "11"
+
 package:opensuse-15:x86_64:
   extends: .package:opensuse
   image: cincproject/omnibus-opensuse:15
@@ -238,18 +249,6 @@ package:windows-2012r2:
     - patch
   variables:
     PLATFORM_VER: "2012r2"
-
-package:ubuntu-16.04:x86_64:
-  extends: .package:ubuntu
-  image: cincproject/omnibus-ubuntu:16.04
-  cache:
-    key: ubuntu:16.04:x86_64
-  tags:
-    - docker-x86_64
-  needs:
-    - patch
-  variables:
-    PLATFORM_VER: "16.04"
 
 package:ubuntu-18.04:x86_64:
   extends: .package:ubuntu
@@ -439,6 +438,15 @@ test:macos-11:
   variables:
     PLATFORM_VER: "11"
 
+test:macos-11:aarch64:
+  extends: .test:macos
+  tags:
+    - macos-11-aarch64
+  needs:
+    - package:macos-11:aarch64
+  variables:
+    PLATFORM_VER: "11"
+
 test:opensuse-15:x86_64:
   extends: .test:opensuse
   image: cincproject/omnibus-opensuse:15
@@ -458,16 +466,6 @@ test:opensuse-15:aarch64:
     - docker-aarch64
   variables:
     PLATFORM_VER: "15"
-
-test:ubuntu-16.04:x86_64:
-  extends: .test:ubuntu
-  image: cincproject/omnibus-ubuntu:16.04
-  needs:
-    - package:ubuntu-16.04:x86_64
-  tags:
-    - docker-x86_64
-  variables:
-    PLATFORM_VER: "16.04"
 
 test:ubuntu-18.04:x86_64:
   extends: .test:ubuntu
@@ -549,9 +547,9 @@ deploy:
     - package:macos-10.14
     - package:macos-10.15
     - package:macos-11
+    - package:macos-11:aarch64
     - package:opensuse-15:x86_64
     - package:opensuse-15:aarch64
-    - package:ubuntu-16.04:x86_64
     - package:ubuntu-18.04:x86_64
     - package:ubuntu-18.04:aarch64
     - package:ubuntu-20.04:x86_64
