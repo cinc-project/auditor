@@ -13,6 +13,7 @@ variables:
   CHANNEL: unstable
   CINC_PRODUCT: cinc-auditor
   GIT_CACHE: "true"
+  OMNIBUS_FIPS_MODE: "true"
 
 workflow:
   rules:
@@ -71,6 +72,7 @@ package:amazonlinux-2:aarch64:
     - patch
   variables:
     PLATFORM_VER: "2"
+    OMNIBUS_FIPS_MODE: "false"
 
 # Needs HAB_AUTH_TOKEN and HAB_ORIGIN environment variables set.
 package:bio:linux:
@@ -110,6 +112,7 @@ package:centos-7:aarch64:
     - patch
   variables:
     PLATFORM_VER: "7"
+    OMNIBUS_FIPS_MODE: "false"
 
 package:centos-8:x86_64:
   extends: .package:centos
@@ -134,6 +137,7 @@ package:centos-8:aarch64:
     - patch
   variables:
     PLATFORM_VER: "8"
+    OMNIBUS_FIPS_MODE: "false"
 
 package:debian-9:x86_64:
   extends: .package:debian
@@ -170,6 +174,7 @@ package:debian-10:aarch64:
     - patch
   variables:
     PLATFORM_VER: "10"
+    OMNIBUS_FIPS_MODE: "false"
 
 package:macos-10.14:
   extends: .package:macos
@@ -238,6 +243,7 @@ package:opensuse-15:aarch64:
     - patch
   variables:
     PLATFORM_VER: "15"
+    OMNIBUS_FIPS_MODE: "false"
 
 package:windows-2012r2:
   extends: .package:windows
@@ -273,6 +279,7 @@ package:ubuntu-18.04:aarch64:
     - patch
   variables:
     PLATFORM_VER: "18.04"
+    OMNIBUS_FIPS_MODE: "false"
 
 package:ubuntu-20.04:x86_64:
   extends: .package:ubuntu
@@ -297,6 +304,7 @@ package:ubuntu-20.04:aarch64:
     - patch
   variables:
     PLATFORM_VER: "20.04"
+    OMNIBUS_FIPS_MODE: "false"
 
 # Test stage
 
@@ -333,7 +341,11 @@ test:bio:linux:
   script:
     - bio install results/*.hart  --binlink
     - export CINC_PATH=$(bio pkg path cinc/cinc-auditor)
+    - export GEM_PATH=${CINC_PATH}/vendor:$GEM_PATH
     - ln -s $CINC_PATH /opt/cinc-auditor
+    - mkdir /opt/cinc-auditor/embedded
+    - ln -s /opt/cinc-auditor/bin /opt/cinc-auditor/embedded/bin
+    - ln -s $(bio pkg path core/ruby26)/bin/ruby /opt/cinc-auditor/embedded/bin/ruby
     - cinc-auditor version
     - cinc-auditor detect
     - cinc-auditor exec test-baseline --no-distinct-exit --reporter cli junit:junit.xml
