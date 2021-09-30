@@ -21,7 +21,7 @@
 git_patch() {
   if [ -n "${2}" ] ; then
     CINC_BRANCH="${2}"
-  elif [ "${REF}" == "master" -o -z "${REF}" ] ; then
+  elif [ "${REF}" == "main" -o -z "${REF}" ] ; then
     CINC_BRANCH="stable/cinc"
   else
     CINC_BRANCH="stable/cinc-${REF}"
@@ -37,8 +37,8 @@ set -ex
 # remove any previous builds
 rm -rf inspec bundle
 git config --global user.email || git config --global user.email "maintainers@cinc.sh"
-echo "Cloning ${REF:-master} branch from ${ORIGIN:-https://github.com/inspec/inspec.git}"
-git clone -q -b ${REF:-master} ${ORIGIN:-https://github.com/inspec/inspec.git}
+echo "Cloning ${REF:-main} branch from ${ORIGIN:-https://github.com/inspec/inspec.git}"
+git clone -q -b ${REF:-main} ${ORIGIN:-https://github.com/inspec/inspec.git}
 cd inspec
 git_patch inspec ${CINC_REF}
 mkdir -p inspec-bin/lib/inspec
