@@ -49,7 +49,7 @@
     - cd inspec/omnibus
     - bundle install --without development --path ${CI_PROJECT_DIR}/bundle/vendor
     - sudo rm -rf /var/cache/omnibus/pkg/*
-    - sudo bundle exec omnibus build cinc-auditor --override append_timestamp:false
+    - sudo -E bundle exec omnibus build cinc-auditor --override append_timestamp:false
     - mkdir -p ${CI_PROJECT_DIR}/data/mac_os_x/${PLATFORM_VER}
     - sudo chown -R omnibus:omnibus pkg
     - mv -v pkg/cinc*dmg* ${CI_PROJECT_DIR}/data/mac_os_x/${PLATFORM_VER}/
