@@ -12,7 +12,7 @@ variables:
   REF: main
   CHANNEL: unstable
   CINC_PRODUCT: cinc-auditor
-  GIT_CACHE: "true"
+  GIT_CACHE: "false"
   OMNIBUS_FIPS_MODE: "true"
 
 workflow:
