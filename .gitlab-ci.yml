@@ -370,7 +370,7 @@ test:bio:linux:
     - ln -s $CINC_PATH /opt/cinc-auditor
     - mkdir /opt/cinc-auditor/embedded
     - ln -s /opt/cinc-auditor/bin /opt/cinc-auditor/embedded/bin
-    - ln -s $(bio pkg path core/ruby27)/bin/ruby /opt/cinc-auditor/embedded/bin/ruby
+    - ln -s $(bio pkg path core/ruby30)/bin/ruby /opt/cinc-auditor/embedded/bin/ruby
     - cinc-auditor version
     - cinc-auditor detect
     - cinc-auditor exec test-baseline --no-distinct-exit --reporter cli junit:junit.xml
