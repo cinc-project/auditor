@@ -57,5 +57,4 @@ set -x
 docker build --pull --no-cache -t cincproject/auditor:${VERSION} .
 docker tag cincproject/auditor:${VERSION} cincproject/auditor:latest
 docker push cincproject/auditor:${VERSION}
-docker push cincproject/auditor:latest
 rm -rf ${HOME}/.docker
