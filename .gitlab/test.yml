@@ -60,7 +60,7 @@
 .test:windows:
   stage: test
   tags:
-    - windows-x64
+    - windows-x64-ucrt64
   before_script:
     - ./scripts/install-cinc-auditor.ps1
   script:

@@ -264,7 +264,7 @@ package:windows-2012r2:
   cache:
     key: windows-2012r2
   tags:
-    - windows-x64
+    - windows-x64-ucrt64
   needs:
     - patch
   variables:
