@@ -248,6 +248,17 @@ package:macos-11:
   variables:
     PLATFORM_VER: "11"
 
+package:macos-12:
+  extends: .package:macos
+  cache:
+    key: macos:12:cinc-auditor-4
+  tags:
+    - macos-12
+  needs:
+    - patch
+  variables:
+    PLATFORM_VER: "12"
+
 package:macos-11:aarch64:
   extends: .package:macos
   cache:
@@ -569,6 +580,15 @@ test:macos-11:
   variables:
     PLATFORM_VER: "11"
 
+test:macos-12:
+  extends: .test:macos
+  tags:
+    - macos-12
+  needs:
+    - package:macos-12
+  variables:
+    PLATFORM_VER: "12"
+
 test:macos-11:aarch64:
   extends: .test:macos
   tags:
@@ -721,6 +741,7 @@ deploy:
     - package:debian-11:aarch64
     - package:macos-10.15
     - package:macos-11
+    - package:macos-12
     - package:macos-11:aarch64
     - package:opensuse-15:x86_64
     - package:opensuse-15:aarch64
