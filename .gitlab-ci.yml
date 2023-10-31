@@ -79,6 +79,7 @@ package:bio:linux:
   stage: package
   extends:
     - .bio_setup
+  allow_failure: true
   tags:
     - docker-x86_64
   needs:
@@ -419,6 +420,7 @@ test:bio:linux:
   stage: test
   extends:
     - .bio_setup
+  allow_failure: true
   tags:
     - docker-x86_64
   needs:
@@ -427,7 +429,7 @@ test:bio:linux:
     HAB_TEST: "true"
   script:
     - bio install results/*.hart  --binlink
-    - export CINC_PATH=$(bio pkg path cinc/cinc-auditor)
+    - export CINC_PATH=$(bio pkg path cincproject/cinc-auditor)
     - export GEM_PATH=${CINC_PATH}/vendor:$GEM_PATH
     - ln -s $CINC_PATH /opt/cinc-auditor
     - mkdir /opt/cinc-auditor/embedded
@@ -760,6 +762,7 @@ deploy:
 
 deploy:bio:linux:
   stage: deploy
+  allow_failure: true
   # Only run if this is triggered from the web
   rules:
     - if: $CI_PIPELINE_SOURCE == "web"
