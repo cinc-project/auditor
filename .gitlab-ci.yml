@@ -215,6 +215,31 @@ package:debian-11:aarch64:
     PLATFORM_VER: "11"
     OMNIBUS_FIPS_MODE: "false"
 
+package:debian-12:x86_64:
+  extends: .package:debian
+  image: cincproject/omnibus-debian:12
+  cache:
+    key: debian:12:x86_64
+  tags:
+    - docker-x86_64
+  needs:
+    - patch
+  variables:
+    PLATFORM_VER: "12"
+
+package:debian-12:aarch64:
+  extends: .package:debian
+  image: cincproject/omnibus-debian:12
+  cache:
+    key: debian:12:aarch64
+  tags:
+    - docker-aarch64
+  needs:
+    - patch
+  variables:
+    PLATFORM_VER: "12"
+    OMNIBUS_FIPS_MODE: "false"
+
 package:macos-10.15:
   extends: .package:macos
   cache:
