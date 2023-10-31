@@ -164,18 +164,6 @@ package:centos-9:aarch64:
     PLATFORM_VER: "9"
     OMNIBUS_FIPS_MODE: "false"
 
-package:debian-9:x86_64:
-  extends: .package:debian
-  image: cincproject/omnibus-debian:9
-  cache:
-    key: debian:9:x86_64:cinc-auditor-5
-  tags:
-    - docker-x86_64
-  needs:
-    - patch
-  variables:
-    PLATFORM_VER: "9"
-
 package:debian-10:x86_64:
   extends: .package:debian
   image: cincproject/omnibus-debian:10
@@ -512,16 +500,6 @@ test:centos-9:aarch64:
   variables:
     PLATFORM_VER: "9"
 
-test:debian-9:x86_64:
-  extends: .test:debian
-  image: cincproject/omnibus-debian:9
-  needs:
-    - package:debian-9:x86_64
-  tags:
-    - docker-x86_64
-  variables:
-    PLATFORM_VER: "9"
-
 test:debian-10:x86_64:
   extends: .test:debian
   image: cincproject/omnibus-debian:10
@@ -734,7 +712,6 @@ deploy:
     - package:centos-8:aarch64
     - package:centos-9:x86_64
     - package:centos-9:aarch64
-    - package:debian-9:x86_64
     - package:debian-10:x86_64
     - package:debian-10:aarch64
     - package:debian-11:x86_64
