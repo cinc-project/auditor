@@ -893,3 +893,8 @@ cleanup:macos-11:
   extends: .cleanup
   tags:
     - macos-11
+
+cleanup:macos-12:
+  extends: .cleanup
+  tags:
+    - macos-12
