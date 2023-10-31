@@ -540,6 +540,26 @@ test:debian-11:aarch64:
   variables:
     PLATFORM_VER: "11"
 
+test:debian-12:x86_64:
+  extends: .test:debian
+  image: cincproject/omnibus-debian:12
+  needs:
+    - package:debian-12:x86_64
+  tags:
+    - docker-x86_64
+  variables:
+    PLATFORM_VER: "12"
+
+test:debian-12:aarch64:
+  extends: .test:debian
+  image: cincproject/omnibus-debian:12
+  needs:
+    - package:debian-12:aarch64
+  tags:
+    - docker-aarch64
+  variables:
+    PLATFORM_VER: "12"
+
 test:macos-10.15:
   extends: .test:macos
   tags:
@@ -716,10 +736,12 @@ deploy:
     - package:debian-10:aarch64
     - package:debian-11:x86_64
     - package:debian-11:aarch64
+    - package:debian-12:x86_64
+    - package:debian-12:aarch64
     - package:macos-10.15
     - package:macos-11
-    - package:macos-12
     - package:macos-11:aarch64
+    - package:macos-12
     - package:opensuse-15:x86_64
     - package:opensuse-15:aarch64
     - package:rhel-7:s390x
