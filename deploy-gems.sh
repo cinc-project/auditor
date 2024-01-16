@@ -19,13 +19,8 @@
 TOP_DIR="$(pwd)"
 export PATH="/opt/omnibus-toolchain/embedded/bin/:${PATH}"
 
-package_cloud_push () {
-  package_cloud push cinc-project/${CHANNEL:-unstable} $@
-}
-
 source /home/omnibus/load-omnibus-toolchain.sh
 set -x
-gem install -N package_cloud
 cd inspec
 gem build inspec-core.gemspec
 gem build inspec.gemspec
@@ -33,7 +28,7 @@ cd inspec-bin
 gem build cinc-auditor-bin.gemspec
 gem build cinc-auditor-core-bin.gemspec
 cd $TOP_DIR
-package_cloud_push inspec/inspec-core-[0-9]*.gem
-package_cloud_push inspec/inspec-[0-9]*.gem
-package_cloud_push inspec/inspec-bin/cinc-auditor-bin-[0-9]*.gem
-package_cloud_push inspec/inspec-bin/cinc-auditor-core-bin-[0-9]*.gem
+gem push inspec/inspec-core-[0-9]*.gem --host https://rubygems.cinc.sh
+gem push inspec/inspec-[0-9]*.gem --host https://rubygems.cinc.sh
+gem push inspec/inspec-bin/cinc-auditor-bin-[0-9]*.gem --host https://rubygems.cinc.sh
+gem push inspec/inspec-bin/cinc-auditor-core-bin-[0-9]*.gem --host https://rubygems.cinc.sh
