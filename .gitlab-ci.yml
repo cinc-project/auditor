@@ -74,6 +74,31 @@ package:amazonlinux-2:aarch64:
     PLATFORM_VER: "2"
     OMNIBUS_FIPS_MODE: "false"
 
+package:amazonlinux-2023:x86_64:
+  extends: .package:amazonlinux
+  image: cincproject/omnibus-amazonlinux:2023
+  cache:
+    key: amazonlinux:2023:x86_64
+  tags:
+    - docker-x86_64
+  needs:
+    - patch
+  variables:
+    PLATFORM_VER: "2023"
+
+package:amazonlinux-2023:aarch64:
+  extends: .package:amazonlinux
+  image: cincproject/omnibus-amazonlinux:2023
+  cache:
+    key: amazonlinux:2023:aarch64
+  tags:
+    - docker-aarch64-v8.2-a
+  needs:
+    - patch
+  variables:
+    PLATFORM_VER: "2023"
+    OMNIBUS_FIPS_MODE: "false"
+
 # Needs HAB_AUTH_TOKEN and HAB_ORIGIN environment variables set.
 package:bio:linux:
   stage: package
@@ -441,6 +466,27 @@ test:amazonlinux-2:aarch64:
   variables:
     PLATFORM_VER: "2"
 
+test:amazonlinux-2023:x86_64:
+  extends: .test:amazonlinux
+  image: cincproject/omnibus-amazonlinux:2023
+  needs:
+    - package:amazonlinux-2023:x86_64
+  tags:
+    - docker-x86_64
+  variables:
+    PLATFORM_VER: "2023"
+
+test:amazonlinux-2023:aarch64:
+  extends: .test:amazonlinux
+  image: cincproject/omnibus-amazonlinux:2023
+  needs:
+    - package:amazonlinux-2023:aarch64
+  tags:
+    - docker-aarch64-v8.2-a
+  variables:
+    PLATFORM_VER: "2023"
+    OMNIBUS_FIPS_MODE: "false"
+
 test:bio:linux:
   stage: test
   extends:
@@ -753,6 +799,8 @@ deploy:
   dependencies:
     - package:amazonlinux-2:x86_64
     - package:amazonlinux-2:aarch64
+    - package:amazonlinux-2023:x86_64
+    - package:amazonlinux-2023:aarch64
     - package:centos-7:x86_64
     - package:centos-7:aarch64
     - package:centos-8:x86_64
