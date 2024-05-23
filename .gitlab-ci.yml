@@ -273,16 +273,38 @@ package:macos-12:
   variables:
     PLATFORM_VER: "12"
 
-package:macos-11:aarch64:
+package:macos-12:aarch64:
   extends: .package:macos
   cache:
-    key: macos:11:aarch64:cinc-auditor-5
+    key: macos:12:aarch64:cinc-auditor-5
   tags:
-    - macos-11-aarch64
+    - macos-12-aarch64
   needs:
     - patch
   variables:
-    PLATFORM_VER: "11"
+    PLATFORM_VER: "12"
+
+package:macos-13:
+  extends: .package:macos
+  cache:
+    key: macos:13:cinc-auditor-5
+  tags:
+    - macos-13
+  needs:
+    - patch
+  variables:
+    PLATFORM_VER: "13"
+
+package:macos-13:aarch64:
+  extends: .package:macos
+  cache:
+    key: macos:13:aarch64:cinc-auditor-5
+  tags:
+    - macos-13-aarch64
+  needs:
+    - patch
+  variables:
+    PLATFORM_VER: "13"
 
 package:opensuse-15:x86_64:
   extends: .package:opensuse
@@ -614,14 +636,32 @@ test:macos-12:
   variables:
     PLATFORM_VER: "12"
 
-test:macos-11:aarch64:
+test:macos-12:aarch64:
   extends: .test:macos
   tags:
-    - macos-11-aarch64
+    - macos-12-aarch64
   needs:
-    - package:macos-11:aarch64
+    - package:macos-12:aarch64
   variables:
-    PLATFORM_VER: "11"
+    PLATFORM_VER: "12"
+
+test:macos-13:
+  extends: .test:macos
+  tags:
+    - macos-13
+  needs:
+    - package:macos-13
+  variables:
+    PLATFORM_VER: "13"
+
+test:macos-13:aarch64:
+  extends: .test:macos
+  tags:
+    - macos-13-aarch64
+  needs:
+    - package:macos-13:aarch64
+  variables:
+    PLATFORM_VER: "13"
 
 test:opensuse-15:x86_64:
   extends: .test:opensuse
@@ -767,8 +807,10 @@ deploy:
     - package:debian-12:aarch64
     - package:macos-10.15
     - package:macos-11
-    - package:macos-11:aarch64
     - package:macos-12
+    - package:macos-12:aarch64
+    - package:macos-13
+    - package:macos-13:aarch64
     - package:opensuse-15:x86_64
     - package:opensuse-15:aarch64
     - package:rhel-7:s390x
@@ -898,3 +940,18 @@ cleanup:macos-12:
   extends: .cleanup
   tags:
     - macos-12
+
+cleanup:macos-12-aarch64:
+  extends: .cleanup
+  tags:
+    - macos-12-aarch64
+
+cleanup:macos-13:
+  extends: .cleanup
+  tags:
+    - macos-13
+
+cleanup:macos-13-aarch64:
+  extends: .cleanup
+  tags:
+    - macos-13-aarch64
