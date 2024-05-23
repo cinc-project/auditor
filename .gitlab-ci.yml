@@ -9,7 +9,7 @@ stages:
 
 variables:
   ORIGIN: https://github.com/inspec/inspec.git
-  REF: main
+  REF: inspec-5
   CHANNEL: unstable
   CINC_PRODUCT: cinc-auditor
   GIT_CACHE: "false"
