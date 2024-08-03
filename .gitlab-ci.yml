@@ -49,29 +49,29 @@ patch:
 
 # Package stage
 
-package:amazonlinux-2:x86_64:
+package:amazonlinux-2023:x86_64:
   extends: .package:amazonlinux
-  image: cincproject/omnibus-amazonlinux:2
+  image: cincproject/omnibus-amazonlinux:2023
   cache:
-    key: amazonlinux:2:x86_64:cinc-auditor-5
+    key: amazonlinux:2023:x86_64:cinc-auditor-5
   tags:
     - docker-x86_64
   needs:
     - patch
   variables:
-    PLATFORM_VER: "2"
+    PLATFORM_VER: "2023"
 
-package:amazonlinux-2:aarch64:
+package:amazonlinux-2023:aarch64:
   extends: .package:amazonlinux
-  image: cincproject/omnibus-amazonlinux:2
+  image: cincproject/omnibus-amazonlinux:2023
   cache:
-    key: amazonlinux:2:aarch64:cinc-auditor-5
+    key: amazonlinux:2023:aarch64:cinc-auditor-5
   tags:
-    - docker-aarch64
+    - docker-aarch64-v8.2-a
   needs:
     - patch
   variables:
-    PLATFORM_VER: "2"
+    PLATFORM_VER: "2023"
     OMNIBUS_FIPS_MODE: "false"
 
 # Needs HAB_AUTH_TOKEN and HAB_ORIGIN environment variables set.
@@ -90,36 +90,11 @@ package:bio:linux:
     paths:
       - results/*.hart
 
-package:centos-7:x86_64:
-  extends: .package:centos
-  image: cincproject/omnibus-centos:7
-  cache:
-    key: centos:7:x86_64:cinc-auditor-5
-  tags:
-    - docker-x86_64
-  needs:
-    - patch
-  variables:
-    PLATFORM_VER: "7"
-
-package:centos-7:aarch64:
-  extends: .package:centos
-  image: cincproject/omnibus-centos:7
-  cache:
-    key: centos:7:aarch64:cinc-auditor-5
-  tags:
-    - docker-aarch64
-  needs:
-    - patch
-  variables:
-    PLATFORM_VER: "7"
-    OMNIBUS_FIPS_MODE: "false"
-
 package:centos-8:x86_64:
   extends: .package:centos
-  image: cincproject/omnibus-centos-stream:8
+  image: cincproject/omnibus-almalinux:8
   cache:
-    key: centos-stream:8:x86_64:cinc-auditor-5
+    key: centos:8:x86_64:cinc-auditor-5
   tags:
     - docker-x86_64
   needs:
@@ -129,9 +104,9 @@ package:centos-8:x86_64:
 
 package:centos-8:aarch64:
   extends: .package:centos
-  image: cincproject/omnibus-centos-stream:8
+  image: cincproject/omnibus-almalinux:8
   cache:
-    key: centos-stream:8:aarch64:cinc-auditor-5
+    key: centos:8:aarch64:cinc-auditor-5
   tags:
     - docker-aarch64
   needs:
@@ -140,11 +115,35 @@ package:centos-8:aarch64:
     PLATFORM_VER: "8"
     OMNIBUS_FIPS_MODE: "false"
 
+package:centos-8:s390x:
+  extends: .package:centos
+  image: cincproject/omnibus-almalinux:8
+  cache:
+    key: centos:8:s390x
+  tags:
+    - docker-s390x
+  needs:
+    - patch
+  variables:
+    PLATFORM_VER: "8"
+
+package:centos-9:s390x:
+  extends: .package:centos
+  image: cincproject/omnibus-almalinux:9
+  cache:
+    key: centos:9:s390x
+  tags:
+    - docker-s390x
+  needs:
+    - patch
+  variables:
+    PLATFORM_VER: "9"
+
 package:centos-9:x86_64:
   extends: .package:centos
-  image: cincproject/omnibus-centos-stream:9
+  image: cincproject/omnibus-almalinux:9
   cache:
-    key: centos-stream:9:x86_64:cinc-auditor-5
+    key: centos:9:x86_64:cinc-auditor-5
   tags:
     - docker-x86_64
   needs:
@@ -154,40 +153,15 @@ package:centos-9:x86_64:
 
 package:centos-9:aarch64:
   extends: .package:centos
-  image: cincproject/omnibus-centos-stream:9
+  image: cincproject/omnibus-almalinux:9
   cache:
-    key: centos-stream:9:aarch64:cinc-auditor-5
+    key: centos:9:aarch64:cinc-auditor-5
   tags:
     - docker-aarch64
   needs:
     - patch
   variables:
     PLATFORM_VER: "9"
-    OMNIBUS_FIPS_MODE: "false"
-
-package:debian-10:x86_64:
-  extends: .package:debian
-  image: cincproject/omnibus-debian:10
-  cache:
-    key: debian:10:x86_64:cinc-auditor-5
-  tags:
-    - docker-x86_64
-  needs:
-    - patch
-  variables:
-    PLATFORM_VER: "10"
-
-package:debian-10:aarch64:
-  extends: .package:debian
-  image: cincproject/omnibus-debian:10
-  cache:
-    key: debian:10:aarch64:cinc-auditor-5
-  tags:
-    - docker-aarch64
-  needs:
-    - patch
-  variables:
-    PLATFORM_VER: "10"
     OMNIBUS_FIPS_MODE: "false"
 
 package:debian-11:x86_64:
@@ -239,17 +213,6 @@ package:debian-12:aarch64:
   variables:
     PLATFORM_VER: "12"
     OMNIBUS_FIPS_MODE: "false"
-
-package:macos-10.15:
-  extends: .package:macos
-  cache:
-    key: macos:10.15:cinc-auditor-5
-  tags:
-    - macos-10.15
-  needs:
-    - patch
-  variables:
-    PLATFORM_VER: "10.15"
 
 package:macos-11:
   extends: .package:macos
@@ -342,55 +305,6 @@ package:windows-2012r2:
   variables:
     PLATFORM_VER: "2012r2"
 
-package:rhel-7:s390x:
-  extends: .package:centos
-  image: cincproject/omnibus-rhel:7
-  cache:
-    key: rhel:7:s390x:cinc-auditor-5
-  tags:
-    - docker-s390x
-  needs:
-    - patch
-  variables:
-    PLATFORM_VER: "7"
-
-package:rhel-8:s390x:
-  extends: .package:centos
-  image: cincproject/omnibus-rhel:8
-  cache:
-    key: rhel:8:s390x:cinc-auditor-5
-  tags:
-    - docker-s390x
-  needs:
-    - patch
-  variables:
-    PLATFORM_VER: "8"
-
-package:ubuntu-18.04:x86_64:
-  extends: .package:ubuntu
-  image: cincproject/omnibus-ubuntu:18.04
-  cache:
-    key: ubuntu:18.04:x86_64:cinc-auditor-5
-  tags:
-    - docker-x86_64
-  needs:
-    - patch
-  variables:
-    PLATFORM_VER: "18.04"
-
-package:ubuntu-18.04:aarch64:
-  extends: .package:ubuntu
-  image: cincproject/omnibus-ubuntu:18.04
-  cache:
-    key: ubuntu:18.04:aarch64:cinc-auditor-5
-  tags:
-    - docker-aarch64
-  needs:
-    - patch
-  variables:
-    PLATFORM_VER: "18.04"
-    OMNIBUS_FIPS_MODE: "false"
-
 package:ubuntu-20.04:x86_64:
   extends: .package:ubuntu
   image: cincproject/omnibus-ubuntu:20.04
@@ -441,27 +355,53 @@ package:ubuntu-22.04:aarch64:
     PLATFORM_VER: "22.04"
     OMNIBUS_FIPS_MODE: "false"
 
+package:ubuntu-24.04:x86_64:
+  extends: .package:ubuntu
+  image: cincproject/omnibus-ubuntu:24.04
+  cache:
+    key: ubuntu:24.04:x86_64
+  tags:
+    - docker-x86_64
+  needs:
+    - patch
+  variables:
+    PLATFORM_VER: "24.04"
+
+package:ubuntu-24.04:aarch64:
+  extends: .package:ubuntu
+  image: cincproject/omnibus-ubuntu:24.04
+  cache:
+    key: ubuntu:24.04:aarch64
+  tags:
+    - docker-aarch64
+  needs:
+    - patch
+  variables:
+    PLATFORM_VER: "24.04"
+    OMNIBUS_FIPS_MODE: "false"
+
 # Test stage
 
-test:amazonlinux-2:x86_64:
+test:amazonlinux-2023:x86_64:
   extends: .test:amazonlinux
-  image: cincproject/omnibus-amazonlinux:2
+  image: cincproject/omnibus-amazonlinux:2023
   needs:
-    - package:amazonlinux-2:x86_64
+    - package:amazonlinux-2023:x86_64
   tags:
     - docker-x86_64
   variables:
-    PLATFORM_VER: "2"
+    PLATFORM_VER: "2023"
 
-test:amazonlinux-2:aarch64:
+test:amazonlinux-2023:aarch64:
   extends: .test:amazonlinux
-  image: cincproject/omnibus-amazonlinux:2
+  image: cincproject/omnibus-amazonlinux:2023
   needs:
-    - package:amazonlinux-2:aarch64
+    - package:amazonlinux-2023:aarch64
   tags:
-    - docker-aarch64
+    - docker-aarch64-v8.2-a
   variables:
-    PLATFORM_VER: "2"
+    PLATFORM_VER: "2023"
+    OMNIBUS_FIPS_MODE: "false"
 
 test:bio:linux:
   stage: test
@@ -489,29 +429,9 @@ test:bio:linux:
     reports:
       junit: junit.xml
 
-test:centos-7:x86_64:
-  extends: .test:centos
-  image: cincproject/omnibus-centos:7
-  needs:
-    - package:centos-7:x86_64
-  tags:
-    - docker-x86_64
-  variables:
-    PLATFORM_VER: "7"
-
-test:centos-7:aarch64:
-  extends: .test:centos
-  image: cincproject/omnibus-centos:7
-  needs:
-    - package:centos-7:aarch64
-  tags:
-    - docker-aarch64
-  variables:
-    PLATFORM_VER: "7"
-
 test:centos-8:x86_64:
   extends: .test:centos
-  image: cincproject/omnibus-centos-stream:8
+  image: cincproject/omnibus-almalinux:8
   needs:
     - package:centos-8:x86_64
   tags:
@@ -521,7 +441,7 @@ test:centos-8:x86_64:
 
 test:centos-8:aarch64:
   extends: .test:centos
-  image: cincproject/omnibus-centos-stream:8
+  image: cincproject/omnibus-almalinux:8
   needs:
     - package:centos-8:aarch64
   tags:
@@ -529,9 +449,29 @@ test:centos-8:aarch64:
   variables:
     PLATFORM_VER: "8"
 
+test:centos-8:s390x:
+  extends: .test:centos
+  image: cincproject/omnibus-almalinux:8
+  needs:
+    - package:centos-8:s390x
+  tags:
+    - docker-s390x
+  variables:
+    PLATFORM_VER: "8"
+
+test:centos-9:s390x:
+  extends: .test:centos
+  image: cincproject/omnibus-almalinux:9
+  needs:
+    - package:centos-9:s390x
+  tags:
+    - docker-s390x
+  variables:
+    PLATFORM_VER: "9"
+
 test:centos-9:x86_64:
   extends: .test:centos
-  image: cincproject/omnibus-centos-stream:9
+  image: cincproject/omnibus-almalinux:9
   needs:
     - package:centos-9:x86_64
   tags:
@@ -541,33 +481,13 @@ test:centos-9:x86_64:
 
 test:centos-9:aarch64:
   extends: .test:centos
-  image: cincproject/omnibus-centos-stream:9
+  image: cincproject/omnibus-almalinux:9
   needs:
     - package:centos-9:aarch64
   tags:
     - docker-aarch64
   variables:
     PLATFORM_VER: "9"
-
-test:debian-10:x86_64:
-  extends: .test:debian
-  image: cincproject/omnibus-debian:10
-  needs:
-    - package:debian-10:x86_64
-  tags:
-    - docker-x86_64
-  variables:
-    PLATFORM_VER: "10"
-
-test:debian-10:aarch64:
-  extends: .test:debian
-  image: cincproject/omnibus-debian:10
-  needs:
-    - package:debian-10:aarch64
-  tags:
-    - docker-aarch64
-  variables:
-    PLATFORM_VER: "10"
 
 test:debian-11:x86_64:
   extends: .test:debian
@@ -608,15 +528,6 @@ test:debian-12:aarch64:
     - docker-aarch64
   variables:
     PLATFORM_VER: "12"
-
-test:macos-10.15:
-  extends: .test:macos
-  tags:
-    - macos-10.15
-  needs:
-    - package:macos-10.15
-  variables:
-    PLATFORM_VER: "10.15"
 
 test:macos-11:
   extends: .test:macos
@@ -683,46 +594,6 @@ test:opensuse-15:aarch64:
   variables:
     PLATFORM_VER: "15"
 
-test:rhel-7:s390x:
-  extends: .test:centos
-  image: cincproject/omnibus-rhel:7
-  needs:
-    - package:rhel-7:s390x
-  tags:
-    - docker-s390x
-  variables:
-    PLATFORM_VER: "7"
-
-test:rhel-8:s390x:
-  extends: .test:centos
-  image: cincproject/omnibus-rhel:8
-  needs:
-    - package:rhel-8:s390x
-  tags:
-    - docker-s390x
-  variables:
-    PLATFORM_VER: "8"
-
-test:ubuntu-18.04:x86_64:
-  extends: .test:ubuntu
-  image: cincproject/omnibus-ubuntu:18.04
-  needs:
-    - package:ubuntu-18.04:x86_64
-  tags:
-    - docker-x86_64
-  variables:
-    PLATFORM_VER: "18.04"
-
-test:ubuntu-18.04:aarch64:
-  extends: .test:ubuntu
-  image: cincproject/omnibus-ubuntu:18.04
-  needs:
-    - package:ubuntu-18.04:aarch64
-  tags:
-    - docker-aarch64
-  variables:
-    PLATFORM_VER: "18.04"
-
 test:ubuntu-20.04:x86_64:
   extends: .test:ubuntu
   image: cincproject/omnibus-ubuntu:20.04
@@ -763,6 +634,26 @@ test:ubuntu-22.04:aarch64:
   variables:
     PLATFORM_VER: "22.04"
 
+test:ubuntu-24.04:x86_64:
+  extends: .test:ubuntu
+  image: cincproject/omnibus-ubuntu:24.04
+  needs:
+    - package:ubuntu-24.04:x86_64
+  tags:
+    - docker-x86_64
+  variables:
+    PLATFORM_VER: "24.04"
+
+test:ubuntu-24.04:aarch64:
+  extends: .test:ubuntu
+  image: cincproject/omnibus-ubuntu:24.04
+  needs:
+    - package:ubuntu-24.04:aarch64
+  tags:
+    - docker-aarch64
+  variables:
+    PLATFORM_VER: "24.04"
+
 test:windows-2012r2:
   extends: .test:windows
   needs:
@@ -791,21 +682,18 @@ deploy:
   tags:
     - docker-x86_64
   dependencies:
-    - package:amazonlinux-2:x86_64
-    - package:amazonlinux-2:aarch64
-    - package:centos-7:x86_64
-    - package:centos-7:aarch64
-    - package:centos-8:x86_64
+    - package:amazonlinux-2023:x86_64
+    - package:amazonlinux-2023:aarch64
     - package:centos-8:aarch64
-    - package:centos-9:x86_64
+    - package:centos-8:s390x
+    - package:centos-8:x86_64
     - package:centos-9:aarch64
-    - package:debian-10:x86_64
-    - package:debian-10:aarch64
+    - package:centos-9:x86_64
+    - package:centos-9:s390x
     - package:debian-11:x86_64
     - package:debian-11:aarch64
     - package:debian-12:x86_64
     - package:debian-12:aarch64
-    - package:macos-10.15
     - package:macos-11
     - package:macos-12
     - package:macos-12:aarch64
@@ -813,14 +701,12 @@ deploy:
     - package:macos-13:aarch64
     - package:opensuse-15:x86_64
     - package:opensuse-15:aarch64
-    - package:rhel-7:s390x
-    - package:rhel-8:s390x
-    - package:ubuntu-18.04:x86_64
-    - package:ubuntu-18.04:aarch64
     - package:ubuntu-20.04:x86_64
     - package:ubuntu-20.04:aarch64
     - package:ubuntu-22.04:x86_64
     - package:ubuntu-22.04:aarch64
+    - package:ubuntu-24.04:x86_64
+    - package:ubuntu-24.04:aarch64
     - package:windows-2012r2
   script:
     - ssh cinc@${DOWNLOADS_HOST} "mkdir -p /data/incoming/files/${CHANNEL}/cinc-auditor/$(cat VERSION)/"
@@ -925,11 +811,6 @@ publish:bio:linux:
   script:
     - sudo rm -rf inspec/
     - sudo rm -rf ${CI_PROJECT_DIR}/cinc-project/distribution/auditor/
-
-cleanup:macos-10.15:
-  extends: .cleanup
-  tags:
-    - macos-10.15
 
 cleanup:macos-11:
   extends: .cleanup
