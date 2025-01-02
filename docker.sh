@@ -54,8 +54,12 @@ while [ ${COUNT} -le ${MAX_COUNT} ] ; do
 done
 
 set -x
-docker build --pull --no-cache -t cincproject/auditor:${VERSION} .
-docker tag cincproject/auditor:${VERSION} cincproject/auditor:latest
-docker push cincproject/auditor:${VERSION}
-docker push cincproject/auditor:latest
+docker buildx build --platform linux/amd64,linux/arm64 \
+  --build-arg ARCH=amd64 --build-arg ARCH=aarch64 \
+  --build-arg VERSION=${VERSION} --build-arg VERSION=${VERSION} \
+  -t cincproject/auditor:${VERSION} \
+  -t cincproject/auditor:latest \
+  -t cincproject/auditor:${MAJ}.${MIN} \
+  -t cincproject/auditor:${MAJ} \
+  --push .
 rm -rf ${HOME}/.docker
