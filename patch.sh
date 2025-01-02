@@ -2,7 +2,7 @@
 #
 # Author:: Artem Sidorenko <artem@posteo.de>
 # Author:: Lance Albertson <lance@osuosl.org>
-# Copyright:: Copyright 2019-2020, Cinc Project
+# Copyright:: Copyright 2019-2025, Cinc Project
 # License:: Apache License, Version 2.0
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -35,7 +35,7 @@ TOP_DIR="$(pwd)"
 source /home/omnibus/load-omnibus-toolchain.sh
 set -ex
 # remove any previous builds
-rm -rf inspec bundle
+rm -rf inspec
 git config --global user.email || git config --global user.email "maintainers@cinc.sh"
 echo "Cloning ${REF:-inspec-5} branch from ${ORIGIN:-https://github.com/inspec/inspec.git}"
 git clone -q -b ${REF:-inspec-5} ${ORIGIN:-https://github.com/inspec/inspec.git}

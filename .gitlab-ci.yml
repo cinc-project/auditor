@@ -12,7 +12,6 @@ variables:
   REF: inspec-5
   CHANNEL: unstable
   CINC_PRODUCT: cinc-auditor
-  GIT_CACHE: "false"
   OMNIBUS_FIPS_MODE: "true"
 
 workflow:
@@ -40,20 +39,26 @@ patch:
     paths:
       - inspec/
 
-.bio_setup:
-  before_script:
-    - scripts/install-biome.sh
-  variables:
-    HAB_ORIGIN: cinc
-    HAB_NONINTERACTIVE: "true"
-
 # Package stage
+
+package:source:
+  stage: package
+  needs:
+    - patch
+  tags:
+    - docker-x86_64
+  script:
+    - ./build-source.sh cinc-auditor inspec
+  artifacts:
+    expire_in: 1mo
+    paths:
+      - source/*
 
 package:amazonlinux-2023:x86_64:
   extends: .package:amazonlinux
   image: cincproject/omnibus-amazonlinux:2023
   cache:
-    key: amazonlinux:2023:x86_64:cinc-auditor-5
+    key: amazonlinux-2023-x86_64-cinc-auditor-5
   tags:
     - docker-x86_64
   needs:
@@ -65,7 +70,7 @@ package:amazonlinux-2023:aarch64:
   extends: .package:amazonlinux
   image: cincproject/omnibus-amazonlinux:2023
   cache:
-    key: amazonlinux:2023:aarch64:cinc-auditor-5
+    key: amazonlinux-2023-aarch64-cinc-auditor-5
   tags:
     - docker-aarch64-v8.2-a
   needs:
@@ -74,27 +79,11 @@ package:amazonlinux-2023:aarch64:
     PLATFORM_VER: "2023"
     OMNIBUS_FIPS_MODE: "false"
 
-# Needs HAB_AUTH_TOKEN and HAB_ORIGIN environment variables set.
-package:bio:linux:
-  stage: package
-  extends:
-    - .bio_setup
-  allow_failure: true
-  tags:
-    - docker-x86_64
-  needs:
-    - patch
-  script:
-    - bio pkg build ./inspec
-  artifacts:
-    paths:
-      - results/*.hart
-
 package:centos-8:x86_64:
   extends: .package:centos
   image: cincproject/omnibus-almalinux:8
   cache:
-    key: centos:8:x86_64:cinc-auditor-5
+    key: centos-8-x86_64-cinc-auditor-5
   tags:
     - docker-x86_64
   needs:
@@ -106,7 +95,7 @@ package:centos-8:aarch64:
   extends: .package:centos
   image: cincproject/omnibus-almalinux:8
   cache:
-    key: centos:8:aarch64:cinc-auditor-5
+    key: centos-8-aarch64-cinc-auditor-5
   tags:
     - docker-aarch64
   needs:
@@ -119,7 +108,7 @@ package:centos-8:s390x:
   extends: .package:centos
   image: cincproject/omnibus-almalinux:8
   cache:
-    key: centos:8:s390x
+    key: centos-8-s390x-cinc-auditor-5
   tags:
     - docker-s390x
   needs:
@@ -131,7 +120,7 @@ package:centos-9:s390x:
   extends: .package:centos
   image: cincproject/omnibus-almalinux:9
   cache:
-    key: centos:9:s390x
+    key: centos-9-s390x-cinc-auditor-5
   tags:
     - docker-s390x
   needs:
@@ -143,7 +132,7 @@ package:centos-9:x86_64:
   extends: .package:centos
   image: cincproject/omnibus-almalinux:9
   cache:
-    key: centos:9:x86_64:cinc-auditor-5
+    key: centos-9-x86_64-cinc-auditor-5
   tags:
     - docker-x86_64
   needs:
@@ -155,7 +144,7 @@ package:centos-9:aarch64:
   extends: .package:centos
   image: cincproject/omnibus-almalinux:9
   cache:
-    key: centos:9:aarch64:cinc-auditor-5
+    key: centos-9-aarch64-cinc-auditor-5
   tags:
     - docker-aarch64
   needs:
@@ -168,7 +157,7 @@ package:debian-11:x86_64:
   extends: .package:debian
   image: cincproject/omnibus-debian:11
   cache:
-    key: debian:11:x86_64:cinc-auditor-5
+    key: debian-11-x86_64-cinc-auditor-5
   tags:
     - docker-x86_64
   needs:
@@ -180,7 +169,7 @@ package:debian-11:aarch64:
   extends: .package:debian
   image: cincproject/omnibus-debian:11
   cache:
-    key: debian:11:aarch64:cinc-auditor-5
+    key: debian-11-aarch64:cinc-auditor-5
   tags:
     - docker-aarch64
   needs:
@@ -193,7 +182,7 @@ package:debian-12:x86_64:
   extends: .package:debian
   image: cincproject/omnibus-debian:12
   cache:
-    key: debian:12:x86_64:cinc-auditor-5
+    key: debian-12-x86_64-cinc-auditor-5
   tags:
     - docker-x86_64
   needs:
@@ -205,7 +194,7 @@ package:debian-12:aarch64:
   extends: .package:debian
   image: cincproject/omnibus-debian:12
   cache:
-    key: debian:12:aarch64:cinc-auditor-5
+    key: debian-12-aarch64-cinc-auditor-5
   tags:
     - docker-aarch64
   needs:
@@ -217,7 +206,7 @@ package:debian-12:aarch64:
 package:macos-11:
   extends: .package:macos
   cache:
-    key: macos:11:cinc-auditor-5
+    key: macos-11-cinc-auditor-5
   tags:
     - macos-11
   needs:
@@ -228,7 +217,7 @@ package:macos-11:
 package:macos-12:
   extends: .package:macos
   cache:
-    key: macos:12:cinc-auditor-5
+    key: macos-12-cinc-auditor-5
   tags:
     - macos-12
   needs:
@@ -239,7 +228,7 @@ package:macos-12:
 package:macos-12:aarch64:
   extends: .package:macos
   cache:
-    key: macos:12:aarch64:cinc-auditor-5
+    key: macos-12-aarch64-cinc-auditor-5
   tags:
     - macos-12-aarch64
   needs:
@@ -250,7 +239,7 @@ package:macos-12:aarch64:
 package:macos-13:
   extends: .package:macos
   cache:
-    key: macos:13:cinc-auditor-5
+    key: macos-13-cinc-auditor-5
   tags:
     - macos-13
   needs:
@@ -261,7 +250,7 @@ package:macos-13:
 package:macos-13:aarch64:
   extends: .package:macos
   cache:
-    key: macos:13:aarch64:cinc-auditor-5
+    key: macos-13-aarch64-cinc-auditor-5
   tags:
     - macos-13-aarch64
   needs:
@@ -273,7 +262,7 @@ package:opensuse-15:x86_64:
   extends: .package:opensuse
   image: cincproject/omnibus-opensuse:15
   cache:
-    key: opensuse:15:x86_64:cinc-auditor-5
+    key: opensuse-15-x86_64-cinc-auditor-5
   tags:
     - docker-x86_64
   needs:
@@ -285,7 +274,7 @@ package:opensuse-15:aarch64:
   extends: .package:opensuse
   image: cincproject/omnibus-opensuse:15
   cache:
-    key: opensuse:15:aarch64:cinc-auditor-5
+    key: opensuse-15-aarch64-cinc-auditor-5
   tags:
     - docker-aarch64
   needs:
@@ -294,22 +283,22 @@ package:opensuse-15:aarch64:
     PLATFORM_VER: "15"
     OMNIBUS_FIPS_MODE: "false"
 
-package:windows-2012r2:
+package:windows-2016:
   extends: .package:windows
   cache:
-    key: windows-2012r2:cinc-auditor-5
+    key: windows-2016-cinc-auditor-5
   tags:
-    - windows-x64-ucrt64
+    - windows-2016
   needs:
     - patch
   variables:
-    PLATFORM_VER: "2012r2"
+    PLATFORM_VER: "2016"
 
 package:ubuntu-20.04:x86_64:
   extends: .package:ubuntu
   image: cincproject/omnibus-ubuntu:20.04
   cache:
-    key: ubuntu:20.04:x86_64:cinc-auditor-5
+    key: ubuntu-20.04-x86_64-cinc-auditor-5
   tags:
     - docker-x86_64
   needs:
@@ -321,7 +310,7 @@ package:ubuntu-20.04:aarch64:
   extends: .package:ubuntu
   image: cincproject/omnibus-ubuntu:20.04
   cache:
-    key: ubuntu:20.04:aarch64:cinc-auditor-5
+    key: ubuntu-20.04-aarch64-cinc-auditor-5
   tags:
     - docker-aarch64
   needs:
@@ -334,7 +323,7 @@ package:ubuntu-22.04:x86_64:
   extends: .package:ubuntu
   image: cincproject/omnibus-ubuntu:22.04
   cache:
-    key: ubuntu:22.04:x86_64:cinc-auditor-5
+    key: ubuntu-22.04-x86_64-cinc-auditor-5
   tags:
     - docker-x86_64
   needs:
@@ -346,7 +335,7 @@ package:ubuntu-22.04:aarch64:
   extends: .package:ubuntu
   image: cincproject/omnibus-ubuntu:22.04
   cache:
-    key: ubuntu:22.04:aarch64:cinc-auditor-5
+    key: ubuntu-22.04-aarch64-cinc-auditor-5
   tags:
     - docker-aarch64
   needs:
@@ -359,7 +348,7 @@ package:ubuntu-24.04:x86_64:
   extends: .package:ubuntu
   image: cincproject/omnibus-ubuntu:24.04
   cache:
-    key: ubuntu:24.04:x86_64
+    key: ubuntu-24.04-x86_64-cinc-auditor-5
   tags:
     - docker-x86_64
   needs:
@@ -371,7 +360,7 @@ package:ubuntu-24.04:aarch64:
   extends: .package:ubuntu
   image: cincproject/omnibus-ubuntu:24.04
   cache:
-    key: ubuntu:24.04:aarch64
+    key: ubuntu-24.04-aarch64-cinc-auditor-5
   tags:
     - docker-aarch64
   needs:
@@ -402,32 +391,6 @@ test:amazonlinux-2023:aarch64:
   variables:
     PLATFORM_VER: "2023"
     OMNIBUS_FIPS_MODE: "false"
-
-test:bio:linux:
-  stage: test
-  extends:
-    - .bio_setup
-  allow_failure: true
-  tags:
-    - docker-x86_64
-  needs:
-    - package:bio:linux
-  variables:
-    HAB_TEST: "true"
-  script:
-    - bio install results/*.hart  --binlink
-    - export CINC_PATH=$(bio pkg path cincproject/cinc-auditor)
-    - export GEM_PATH=${CINC_PATH}/vendor:$GEM_PATH
-    - ln -s $CINC_PATH /opt/cinc-auditor
-    - mkdir /opt/cinc-auditor/embedded
-    - ln -s /opt/cinc-auditor/bin /opt/cinc-auditor/embedded/bin
-    - ln -s $(bio pkg path core/ruby30)/bin/ruby /opt/cinc-auditor/embedded/bin/ruby
-    - cinc-auditor version
-    - cinc-auditor detect
-    - cinc-auditor exec test-baseline --no-distinct-exit --reporter cli junit:junit.xml
-  artifacts:
-    reports:
-      junit: junit.xml
 
 test:centos-8:x86_64:
   extends: .test:centos
@@ -654,12 +617,26 @@ test:ubuntu-24.04:aarch64:
   variables:
     PLATFORM_VER: "24.04"
 
-test:windows-2012r2:
+test:windows-2016:
   extends: .test:windows
   needs:
-    - package:windows-2012r2
+    - package:windows-2016
   variables:
-    PLATFORM_VER: "2012r2"
+    PLATFORM_VER: "2016"
+
+test:sources:
+  image: cincproject/docker-auditor
+  stage: test
+  needs:
+    - package:source
+  tags:
+    - docker-x86_64
+  script:
+    - apk add bash outils-sha256
+    - cinc-auditor exec test/integration/cinc-sources --no-distinct-exit --reporter cli junit:junit.xml
+  artifacts:
+    reports:
+      junit: junit.xml
 
 .ssh-setup:
   before_script:
@@ -701,34 +678,16 @@ deploy:
     - package:macos-13:aarch64
     - package:opensuse-15:x86_64
     - package:opensuse-15:aarch64
+    - package:source
     - package:ubuntu-20.04:x86_64
     - package:ubuntu-20.04:aarch64
     - package:ubuntu-22.04:x86_64
     - package:ubuntu-22.04:aarch64
     - package:ubuntu-24.04:x86_64
     - package:ubuntu-24.04:aarch64
-    - package:windows-2012r2
+    - package:windows-2016
   script:
-    - ssh cinc@${DOWNLOADS_HOST} "mkdir -p /data/incoming/files/${CHANNEL}/cinc-auditor/$(cat VERSION)/"
-    - rsync -avH --delete data/ cinc@${DOWNLOADS_HOST}:/data/incoming/files/${CHANNEL}/cinc-auditor/$(cat VERSION)/
-    - ssh cinc@${DOWNLOADS_HOST} "chmod 755 /data/incoming/files/${CHANNEL}/cinc-auditor/$(cat VERSION)/"
-
-deploy:bio:linux:
-  stage: deploy
-  allow_failure: true
-  # Only run if this is triggered from the web
-  rules:
-    - if: $CI_PIPELINE_SOURCE == "web"
-      when: manual
-    - when: never
-  extends:
-    - .bio_setup
-  tags:
-    - docker-x86_64
-  dependencies:
-    - package:bio:linux
-  script:
-    - bio pkg upload results/*.hart
+    - bash deploy.sh
 
 deploy-gems:
   stage: deploy
@@ -778,29 +737,28 @@ publish-docker:
     - deploy-gems
   before_script:
     - apk add curl bash
+    - eval $(ssh-agent -s)
+    - echo "${BUILDX_SSH_PRIVATE_KEY}" | tr -d '\r' | ssh-add -q - > /dev/null
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - echo "${BUILDX_SSH_KNOWN_HOSTS}" > ~/.ssh/known_hosts
+    - chmod 644 ~/.ssh/known_hosts
+    - docker context create amd64
+    - docker context use amd64
+    - docker buildx create --name $BUILDER_NAME --use amd64 --platform linux/amd64 --config buildkitd.toml
+    - docker context create arm64 --docker "host=ssh://${BUILDX_ARM64}"
+    - docker buildx create --name $BUILDER_NAME --append arm64 --platform linux/arm64 --config buildkitd.toml
   script:
     - bash docker.sh
+    - docker buildx ls --no-trunc
+    - docker buildx stop $BUILDER_NAME
+    - docker buildx rm -f $BUILDER_NAME
   variables:
+    DOCKER_DRIVER: overlay2
+    DOCKER_TLS_VERIFY: 1
+    DOCKER_CERT_PATH: "/certs/client"
     DOCKER_TLS_CERTDIR: "/certs"
-
-publish:bio:linux:
-  # Only run if this is triggered from the web
-  rules:
-    - if: $CI_PIPELINE_SOURCE == "web"
-      when: on_success
-    - when: never
-  tags:
-    - docker-x86_64
-  dependencies:
-    - package:bio:linux
-    - deploy:bio:linux
-  extends:
-    - .bio_setup
-  stage: publish
-  script:
-    - bio pkg install core/jq-static -b
-    - export PKG=$(bio pkg info results/*.hart -j | jq  -r '[.origin,.name,.version,.release] | join("/")')
-    - bio pkg promote $PKG $CHANNEL
+    BUILDER_NAME: "${CI_PROJECT_PATH_SLUG}-${CI_PIPELINE_ID}-${CI_JOB_NAME_SLUG}"
 
 .cleanup:
   stage: cleanup

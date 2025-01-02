@@ -1,6 +1,6 @@
-#!/bin/bash -e
-#
-# Author:: Lance Albertson <lance@osuosl.org>
+#!/bin/sh
+
+# Author:: Antonio Terceiro <terceiro@debian.org>
 # Copyright:: Copyright 2020-2025, Cinc Project
 # License:: Apache License, Version 2.0
 #
@@ -16,16 +16,27 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+set -eu
+
+# Positional parameters:
+# $1 = cinc product short name [cinc|cinc-auditor|cinc-workstation]
+# $2 = $1's upstream counterpart repository name on disk [chef|inspec|chef-workstation]
+product=$1
+upstream_product=$2
+
 TOP_DIR="$(pwd)"
 export CI_PROJECT_DIR=${CI_PROJECT_DIR:-${TOP_DIR}}
-source /home/omnibus/load-omnibus-toolchain.sh
-set -ex
-mkdir -p ${TOP_DIR}/cache/git_cache
-echo "cache_dir '${TOP_DIR}/cache'" >> inspec/omnibus/omnibus.rb
-echo "git_cache_dir '${TOP_DIR}/cache/git_cache'" >> inspec/omnibus/omnibus.rb
-echo "use_git_caching true" >> inspec/omnibus/omnibus.rb
-cd inspec/omnibus
-bundle config set --local path ${CI_PROJECT_DIR}/bundle/vendor
-bundle config set --local without 'development'
-bundle install
-bundle exec omnibus build cinc-auditor -l ${OMNIBUS_LOG_LEVEL:-info} --override append_timestamp:false
+
+set -x
+
+version=$(cat inspec/VERSION)
+destdir="${CI_PROJECT_DIR}/source/"
+tarball="${product}-${version}.tar.xz"
+mkdir -p "${destdir}"
+
+cp README.md ${upstream_product}/README.cinc
+cd $upstream_product
+git archive --prefix=${product}-${version}/ HEAD | xz > ${destdir}/${tarball}
+cd $destdir
+sha256sum $tarball > $tarball.sha256sum
+sha512sum $tarball > $tarball.sha512sum
