@@ -717,6 +717,7 @@ publish:
   script:
     - sudo mkdir -p /data/mirror/files/${CHANNEL}/cinc-auditor
     - sudo /usr/bin/rsync -avH /data/incoming/files/${CHANNEL}/cinc-auditor/ /data/mirror/files/${CHANNEL}/cinc-auditor/
+    - sudo /usr/bin/rsync -avH /data/incoming/source/${CHANNEL}/cinc-auditor/ /data/mirror/source/${CHANNEL}/cinc-auditor/
     - sudo -E -u cinc /usr/local/bin/update-cinc-api
     - ssh -q cinc@${MIRROR_HOST} "~/sync-from-master"
 
