@@ -5,11 +5,8 @@
   dependencies:
     - patch
   script:
-    - source /home/omnibus/load-omnibus-toolchain.sh
-    - bash caching.sh
+    - bash build.sh
     - cd inspec/omnibus
-    - bundle install --without development --path ${CI_PROJECT_DIR}/bundle/vendor
-    - bundle exec omnibus build cinc-auditor --override append_timestamp:false
     - mkdir ${CI_PROJECT_DIR}/data
     - mv -v pkg/cinc-auditor* ${CI_PROJECT_DIR}/data/
     - cp ../VERSION ${CI_PROJECT_DIR}/
@@ -17,6 +14,7 @@
     paths:
       - cache/*
       - bundle/vendor/*
+    when: always
   artifacts:
     expire_in: 1mo
     paths:
@@ -44,17 +42,11 @@
 .package:macos:
   extends: .package
   script:
-    - source /Users/omnibus/load-omnibus-toolchain.sh
-    - bash caching.sh
-    - cd inspec/omnibus
-    - bundle install --without development --path ${CI_PROJECT_DIR}/bundle/vendor
-    - sudo rm -rf /var/cache/omnibus/pkg/*
-    - sudo -E bundle exec omnibus build cinc-auditor --override append_timestamp:false
-    - mkdir -p ${CI_PROJECT_DIR}/data/mac_os_x/${PLATFORM_VER}
-    - sudo chown -R omnibus:omnibus pkg
-    - mv -v pkg/cinc*dmg* ${CI_PROJECT_DIR}/data/mac_os_x/${PLATFORM_VER}/
+    - bash build-macos.sh
   after_script:
-    - sudo chown -R omnibus cache/
+    - mkdir -p ${CI_PROJECT_DIR}/data/mac_os_x/${PLATFORM_VER}
+    - mv -v ${CI_PROJECT_DIR}/data/cinc*dmg* ${CI_PROJECT_DIR}/data/mac_os_x/${PLATFORM_VER}/
+    - sudo chown -R omnibus:omnibus cache/ bundle/
     - sudo rm -rf /opt/cinc-auditor/
   variables:
     OMNIBUS_FIPS_MODE: "false"
@@ -76,12 +68,9 @@
   script:
     - $ErrorActionPreference = "Stop"
     - C:\omnibus\load-omnibus-toolchain.ps1
-    - bash caching.sh
-    - cd inspec\omnibus
-    - bundle install --without development --path ${CI_PROJECT_DIR}/bundle/vendor
-    - bundle exec omnibus build cinc-auditor --override append_timestamp:false
-    - mkdir.exe -p ${CI_PROJECT_DIR}/data/windows/${PLATFORM_VER}
-    - mv.exe -v pkg/cinc-auditor* ${CI_PROJECT_DIR}/data/windows/${PLATFORM_VER}
+    - bash build-windows.sh
   after_script:
     - $ErrorActionPreference = "Stop"
+    - mkdir.exe -p ${CI_PROJECT_DIR}/data/windows/${PLATFORM_VER}
+    - mv.exe -v ${CI_PROJECT_DIR}/data/cinc* ${CI_PROJECT_DIR}/data/windows/${PLATFORM_VER}
     - Remove-Item -Recurse -Force C:\cinc-project
