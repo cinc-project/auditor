@@ -57,6 +57,13 @@
   after_script:
     - apt-get -y remove cinc-auditor
 
+.test:rockylinux:
+  extends: .test
+  before_script:
+    - yum -y install data/rocky/${PLATFORM_VER}/cinc*.rpm
+  after_script:
+    - yum -y remove cinc
+
 .test:windows:
   stage: test
   tags:
