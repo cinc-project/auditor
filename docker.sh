@@ -55,8 +55,7 @@ done
 
 set -x
 docker buildx build --platform linux/amd64,linux/arm64 --no-cache \
-  --build-arg ARCH=amd64 --build-arg ARCH=aarch64 \
-  --build-arg VERSION=${VERSION} --build-arg VERSION=${VERSION} \
+  --build-arg VERSION=${VERSION} \
   -t cincproject/auditor:${VERSION} \
   -t cincproject/auditor:${MAJ}.${MIN} \
   -t cincproject/auditor:${MAJ} \
