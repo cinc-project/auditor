@@ -28,6 +28,9 @@ cd inspec/omnibus
 bundle config set --local path ${CI_PROJECT_DIR}/bundle/vendor
 bundle config set --local without 'development'
 bundle install
+if [ -n "${AWS_ACCESS_KEY_ID}" ] ; then
+  bundle exec omnibus cache populate
+fi
 sudo rm -rf /var/cache/omnibus/pkg/*
 sudo -E bundle exec omnibus build cinc-auditor -l ${OMNIBUS_LOG_LEVEL} --override append_timestamp:false
 sudo chown -R omnibus:omnibus pkg
