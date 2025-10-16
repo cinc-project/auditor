@@ -9,7 +9,7 @@ stages:
 
 variables:
   ORIGIN: https://github.com/inspec/inspec.git
-  REF: main
+  REF: inspec-7
   CHANNEL: unstable
   CINC_PRODUCT: cinc-auditor
   OMNIBUS_FIPS_MODE: "true"
@@ -58,7 +58,7 @@ package:amazonlinux-2023:x86_64:
   extends: .package:amazonlinux
   image: cincproject/omnibus-amazonlinux:2023
   cache:
-    key: amazonlinux-2023-x86_64
+    key: amazonlinux-2023-x86_64-cinc-auditor-7
   tags:
     - docker-x86_64
   needs:
@@ -70,7 +70,7 @@ package:amazonlinux-2023:aarch64:
   extends: .package:amazonlinux
   image: cincproject/omnibus-amazonlinux:2023
   cache:
-    key: amazonlinux-2023-aarch64
+    key: amazonlinux-2023-aarch64-cinc-auditor-7
   tags:
     - docker-aarch64-v8.2-a
   needs:
@@ -83,7 +83,7 @@ package:centos-8:x86_64:
   extends: .package:centos
   image: cincproject/omnibus-almalinux:8
   cache:
-    key: centos-8-x86_64
+    key: centos-8-x86_64-cinc-auditor-7
   tags:
     - docker-x86_64
   needs:
@@ -95,7 +95,7 @@ package:centos-8:aarch64:
   extends: .package:centos
   image: cincproject/omnibus-almalinux:8
   cache:
-    key: centos-8-aarch64
+    key: centos-8-aarch64-cinc-auditor-7
   tags:
     - docker-aarch64
   needs:
@@ -108,7 +108,7 @@ package:centos-8:s390x:
   extends: .package:centos
   image: cincproject/omnibus-almalinux:8
   cache:
-    key: centos-8-s390x
+    key: centos-8-s390x-cinc-auditor-7
   tags:
     - docker-s390x
   needs:
@@ -120,7 +120,7 @@ package:centos-9:s390x:
   extends: .package:centos
   image: cincproject/omnibus-almalinux:9
   cache:
-    key: centos-9-s390x
+    key: centos-9-s390x-cinc-auditor-7
   tags:
     - docker-s390x
   needs:
@@ -132,7 +132,7 @@ package:centos-9:x86_64:
   extends: .package:centos
   image: cincproject/omnibus-almalinux:9
   cache:
-    key: centos-9-x86_64
+    key: centos-9-x86_64-cinc-auditor-7
   tags:
     - docker-x86_64
   needs:
@@ -144,7 +144,7 @@ package:centos-9:aarch64:
   extends: .package:centos
   image: cincproject/omnibus-almalinux:9
   cache:
-    key: centos-9-aarch64
+    key: centos-9-aarch64-cinc-auditor-7
   tags:
     - docker-aarch64
   needs:
@@ -157,7 +157,7 @@ package:debian-11:x86_64:
   extends: .package:debian
   image: cincproject/omnibus-debian:11
   cache:
-    key: debian-11-x86_64
+    key: debian-11-x86_64-cinc-auditor-7
   tags:
     - docker-x86_64
   needs:
@@ -169,7 +169,7 @@ package:debian-11:aarch64:
   extends: .package:debian
   image: cincproject/omnibus-debian:11
   cache:
-    key: debian-11-aarch64
+    key: debian-11-aarch64-cinc-auditor-7
   tags:
     - docker-aarch64
   needs:
@@ -182,7 +182,7 @@ package:debian-12:x86_64:
   extends: .package:debian
   image: cincproject/omnibus-debian:12
   cache:
-    key: debian-12-x86_64
+    key: debian-12-x86_64-cinc-auditor-7
   tags:
     - docker-x86_64
   needs:
@@ -194,7 +194,7 @@ package:debian-12:aarch64:
   extends: .package:debian
   image: cincproject/omnibus-debian:12
   cache:
-    key: debian-12-aarch64
+    key: debian-12-aarch64-cinc-auditor-7
   tags:
     - docker-aarch64
   needs:
@@ -206,7 +206,7 @@ package:debian-12:aarch64:
 package:macos-12:
   extends: .package:macos
   cache:
-    key: macos-12
+    key: macos-12-cinc-auditor-7
   tags:
     - macos-12
   needs:
@@ -217,7 +217,7 @@ package:macos-12:
 package:macos-12:aarch64:
   extends: .package:macos
   cache:
-    key: macos-12-aarch64
+    key: macos-12-aarch64-cinc-auditor-7
   tags:
     - macos-12-aarch64
   needs:
@@ -228,7 +228,7 @@ package:macos-12:aarch64:
 package:macos-13:
   extends: .package:macos
   cache:
-    key: macos-13
+    key: macos-13-cinc-auditor-7
   tags:
     - macos-13
   needs:
@@ -239,7 +239,7 @@ package:macos-13:
 package:macos-13:aarch64:
   extends: .package:macos
   cache:
-    key: macos-13-aarch64
+    key: macos-13-aarch64-cinc-auditor-7
   tags:
     - macos-13-aarch64
   needs:
@@ -250,7 +250,7 @@ package:macos-13:aarch64:
 package:macos-14:
   extends: .package:macos
   cache:
-    key: macos-14-cinc-auditor-5
+    key: macos-14-cinc-auditor-7
   tags:
     - macos-14
   needs:
@@ -261,7 +261,7 @@ package:macos-14:
 package:macos-14:aarch64:
   extends: .package:macos
   cache:
-    key: macos-14-aarch64-cinc-auditor-5
+    key: macos-14-aarch64-cinc-auditor-7
   tags:
     - macos-14-aarch64
   needs:
@@ -272,7 +272,7 @@ package:macos-14:aarch64:
 package:macos-15:
   extends: .package:macos
   cache:
-    key: macos-15-cinc-auditor-5
+    key: macos-15-cinc-auditor-7
   tags:
     - macos-15
   needs:
@@ -283,7 +283,7 @@ package:macos-15:
 package:macos-15:aarch64:
   extends: .package:macos
   cache:
-    key: macos-15-aarch64-cinc-auditor-5
+    key: macos-15-aarch64-cinc-auditor-7
   tags:
     - macos-15-aarch64
   needs:
@@ -295,7 +295,7 @@ package:opensuse-15:x86_64:
   extends: .package:opensuse
   image: cincproject/omnibus-opensuse:15
   cache:
-    key: opensuse-15-x86_64
+    key: opensuse-15-x86_64-cinc-auditor-7
   tags:
     - docker-x86_64
   needs:
@@ -307,7 +307,7 @@ package:opensuse-15:aarch64:
   extends: .package:opensuse
   image: cincproject/omnibus-opensuse:15
   cache:
-    key: opensuse-15-aarch64
+    key: opensuse-15-aarch64-cinc-auditor-7
   tags:
     - docker-aarch64
   needs:
@@ -320,7 +320,7 @@ package:rockylinux-8:x86_64:
   extends: .package:rockylinux
   image: cincproject/omnibus-rockylinux:8
   cache:
-    key: rockylinux-8-x86_64
+    key: rockylinux-8-x86_64-cinc-auditor-7
   tags:
     - docker-x86_64
   variables:
@@ -330,7 +330,7 @@ package:rockylinux-8:aarch64:
   extends: .package:rockylinux
   image: cincproject/omnibus-rockylinux:8
   cache:
-    key: rockylinux-8-aarch64
+    key: rockylinux-8-aarch64-cinc-auditor-7
   tags:
     - docker-aarch64
   variables:
@@ -341,7 +341,7 @@ package:rockylinux-9:x86_64:
   extends: .package:rockylinux
   image: cincproject/omnibus-rockylinux:9
   cache:
-    key: rockylinux-9-x86_64
+    key: rockylinux-9-x86_64-cinc-auditor-7
   tags:
     - docker-x86_64
   variables:
@@ -351,7 +351,7 @@ package:rockylinux-9:aarch64:
   extends: .package:rockylinux
   image: cincproject/omnibus-rockylinux:9
   cache:
-    key: rockylinux-9-aarch64
+    key: rockylinux-9-aarch64-cinc-auditor-7
   tags:
     - docker-aarch64
   variables:
@@ -361,7 +361,7 @@ package:rockylinux-9:aarch64:
 package:windows-2016:
   extends: .package:windows
   cache:
-    key: windows-2016
+    key: windows-2016-cinc-auditor-7
   tags:
     - windows-2016
   needs:
@@ -373,7 +373,7 @@ package:ubuntu-20.04:x86_64:
   extends: .package:ubuntu
   image: cincproject/omnibus-ubuntu:20.04
   cache:
-    key: ubuntu-20.04-x86_64
+    key: ubuntu-20.04-x86_64-cinc-auditor-7
   tags:
     - docker-x86_64
   needs:
@@ -385,7 +385,7 @@ package:ubuntu-20.04:aarch64:
   extends: .package:ubuntu
   image: cincproject/omnibus-ubuntu:20.04
   cache:
-    key: ubuntu-20.04-aarch64
+    key: ubuntu-20.04-aarch64-cinc-auditor-7
   tags:
     - docker-aarch64
   needs:
@@ -398,7 +398,7 @@ package:ubuntu-22.04:x86_64:
   extends: .package:ubuntu
   image: cincproject/omnibus-ubuntu:22.04
   cache:
-    key: ubuntu-22.04-x86_64
+    key: ubuntu-22.04-x86_64-cinc-auditor-7
   tags:
     - docker-x86_64
   needs:
@@ -410,7 +410,7 @@ package:ubuntu-22.04:aarch64:
   extends: .package:ubuntu
   image: cincproject/omnibus-ubuntu:22.04
   cache:
-    key: ubuntu-22.04-aarch64
+    key: ubuntu-22.04-aarch64-cinc-auditor-7
   tags:
     - docker-aarch64
   needs:
@@ -423,7 +423,7 @@ package:ubuntu-24.04:x86_64:
   extends: .package:ubuntu
   image: cincproject/omnibus-ubuntu:24.04
   cache:
-    key: ubuntu-24.04-x86_64
+    key: ubuntu-24.04-x86_64-cinc-auditor-7
   tags:
     - docker-x86_64
   needs:
@@ -435,7 +435,7 @@ package:ubuntu-24.04:aarch64:
   extends: .package:ubuntu
   image: cincproject/omnibus-ubuntu:24.04
   cache:
-    key: ubuntu-24.04-aarch64
+    key: ubuntu-24.04-aarch64-cinc-auditor-7
   tags:
     - docker-aarch64
   needs:
