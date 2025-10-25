@@ -54,10 +54,4 @@ while [ ${COUNT} -le ${MAX_COUNT} ] ; do
 done
 
 set -x
-docker buildx build --platform linux/amd64,linux/arm64 --no-cache \
-  --build-arg VERSION=${VERSION} \
-  -t cincproject/auditor:${VERSION} \
-  -t cincproject/auditor:latest \
-  -t cincproject/auditor:${MAJ}.${MIN} \
-  -t cincproject/auditor:${MAJ} \
-  --push .
+docker buildx bake -f ../docker-bake.hcl --push
