@@ -171,7 +171,7 @@ package:centos-10:x86_64:
   cache:
     key: centos-10-x86_64-cinc-auditor-5
   tags:
-    - docker-x86_64
+    - docker-x86_64-v3
   needs:
     - patch
   variables:
@@ -426,7 +426,7 @@ package:rockylinux-10:x86_64:
   cache:
     key: rockylinux-10-x86_64-cinc-auditor-5
   tags:
-    - docker-x86_64
+    - docker-x86_64-v3
   variables:
     PLATFORM_VER: "10"
 
@@ -626,7 +626,7 @@ test:centos-10:x86_64:
   needs:
     - package:centos-10:x86_64
   tags:
-    - docker-x86_64
+    - docker-x86_64-v3
   variables:
     PLATFORM_VER: "10"
 
@@ -838,7 +838,7 @@ test:rockylinux-10:x86_64:
   needs:
     - package:rockylinux-10:x86_64
   tags:
-    - docker-x86_64
+    - docker-x86_64-v3
   variables:
     PLATFORM_VER: "10"
 
