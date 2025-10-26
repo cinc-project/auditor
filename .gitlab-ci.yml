@@ -153,6 +153,43 @@ package:centos-9:aarch64:
     PLATFORM_VER: "9"
     OMNIBUS_FIPS_MODE: "false"
 
+package:centos-10:s390x:
+  extends: .package:centos
+  image: cincproject/omnibus-almalinux:10
+  cache:
+    key: centos-10-s390x-cinc-auditor-7
+  tags:
+    - docker-s390x
+  needs:
+    - patch
+  variables:
+    PLATFORM_VER: "10"
+
+package:centos-10:x86_64:
+  extends: .package:centos
+  image: cincproject/omnibus-almalinux:10
+  cache:
+    key: centos-10-x86_64-cinc-auditor-7
+  tags:
+    - docker-x86_64
+  needs:
+    - patch
+  variables:
+    PLATFORM_VER: "10"
+
+package:centos-10:aarch64:
+  extends: .package:centos
+  image: cincproject/omnibus-almalinux:10
+  cache:
+    key: centos-10-aarch64-cinc-auditor-7
+  tags:
+    - docker-aarch64
+  needs:
+    - patch
+  variables:
+    PLATFORM_VER: "10"
+    OMNIBUS_FIPS_MODE: "false"
+
 package:debian-11:x86_64:
   extends: .package:debian
   image: cincproject/omnibus-debian:11
@@ -201,6 +238,31 @@ package:debian-12:aarch64:
     - patch
   variables:
     PLATFORM_VER: "12"
+    OMNIBUS_FIPS_MODE: "false"
+
+package:debian-13:x86_64:
+  extends: .package:debian
+  image: cincproject/omnibus-debian:13
+  cache:
+    key: debian-13-x86_64-cinc-auditor-7
+  tags:
+    - docker-x86_64
+  needs:
+    - patch
+  variables:
+    PLATFORM_VER: "13"
+
+package:debian-13:aarch64:
+  extends: .package:debian
+  image: cincproject/omnibus-debian:13
+  cache:
+    key: debian-13-aarch64-cinc-auditor-7
+  tags:
+    - docker-aarch64
+  needs:
+    - patch
+  variables:
+    PLATFORM_VER: "13"
     OMNIBUS_FIPS_MODE: "false"
 
 package:macos-12:
@@ -356,6 +418,27 @@ package:rockylinux-9:aarch64:
     - docker-aarch64
   variables:
     PLATFORM_VER: "9"
+    OMNIBUS_FIPS_MODE: "false"
+
+package:rockylinux-10:x86_64:
+  extends: .package:rockylinux
+  image: cincproject/omnibus-rockylinux:10
+  cache:
+    key: rockylinux-10-x86_64-cinc-auditor-7
+  tags:
+    - docker-x86_64
+  variables:
+    PLATFORM_VER: "10"
+
+package:rockylinux-10:aarch64:
+  extends: .package:rockylinux
+  image: cincproject/omnibus-rockylinux:10
+  cache:
+    key: rockylinux-10-aarch64-cinc-auditor-7
+  tags:
+    - docker-aarch64
+  variables:
+    PLATFORM_VER: "10"
     OMNIBUS_FIPS_MODE: "false"
 
 package:windows-2016:
@@ -527,6 +610,36 @@ test:centos-9:aarch64:
   variables:
     PLATFORM_VER: "9"
 
+test:centos-10:s390x:
+  extends: .test:centos
+  image: cincproject/omnibus-almalinux:10
+  needs:
+    - package:centos-10:s390x
+  tags:
+    - docker-s390x
+  variables:
+    PLATFORM_VER: "10"
+
+test:centos-10:x86_64:
+  extends: .test:centos
+  image: cincproject/omnibus-almalinux:10
+  needs:
+    - package:centos-10:x86_64
+  tags:
+    - docker-x86_64
+  variables:
+    PLATFORM_VER: "10"
+
+test:centos-10:aarch64:
+  extends: .test:centos
+  image: cincproject/omnibus-almalinux:10
+  needs:
+    - package:centos-10:aarch64
+  tags:
+    - docker-aarch64
+  variables:
+    PLATFORM_VER: "10"
+
 test:debian-11:x86_64:
   extends: .test:debian
   image: cincproject/omnibus-debian:11
@@ -566,6 +679,26 @@ test:debian-12:aarch64:
     - docker-aarch64
   variables:
     PLATFORM_VER: "12"
+
+test:debian-13:x86_64:
+  extends: .test:debian
+  image: cincproject/omnibus-debian:13
+  needs:
+    - package:debian-13:x86_64
+  tags:
+    - docker-x86_64
+  variables:
+    PLATFORM_VER: "13"
+
+test:debian-13:aarch64:
+  extends: .test:debian
+  image: cincproject/omnibus-debian:13
+  needs:
+    - package:debian-13:aarch64
+  tags:
+    - docker-aarch64
+  variables:
+    PLATFORM_VER: "13"
 
 test:macos-12:
   extends: .test:macos
@@ -699,6 +832,26 @@ test:rockylinux-9:aarch64:
   variables:
     PLATFORM_VER: "9"
 
+test:rockylinux-10:x86_64:
+  extends: .test:rockylinux
+  image: cincproject/omnibus-rockylinux:10
+  needs:
+    - package:rockylinux-10:x86_64
+  tags:
+    - docker-x86_64
+  variables:
+    PLATFORM_VER: "10"
+
+test:rockylinux-10:aarch64:
+  extends: .test:rockylinux
+  image: cincproject/omnibus-rockylinux:10
+  needs:
+    - package:rockylinux-10:aarch64
+  tags:
+    - docker-aarch64
+  variables:
+    PLATFORM_VER: "10"
+
 test:ubuntu-20.04:x86_64:
   extends: .test:ubuntu
   image: cincproject/omnibus-ubuntu:20.04
@@ -809,10 +962,15 @@ deploy:
     - package:centos-9:aarch64
     - package:centos-9:x86_64
     - package:centos-9:s390x
+    - package:centos-10:aarch64
+    - package:centos-10:x86_64
+    - package:centos-10:s390x
     - package:debian-11:x86_64
     - package:debian-11:aarch64
     - package:debian-12:x86_64
     - package:debian-12:aarch64
+    - package:debian-13:x86_64
+    - package:debian-13:aarch64
     - package:macos-12
     - package:macos-12:aarch64
     - package:macos-13
@@ -827,6 +985,8 @@ deploy:
     - package:rockylinux-8:x86_64
     - package:rockylinux-9:aarch64
     - package:rockylinux-9:x86_64
+    - package:rockylinux-10:aarch64
+    - package:rockylinux-10:x86_64
     - package:source
     - package:ubuntu-20.04:x86_64
     - package:ubuntu-20.04:aarch64
