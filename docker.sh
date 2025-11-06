@@ -22,9 +22,9 @@ cat /tmp/docker-token | docker login --username $DOCKER_USERNAME --password-stdi
 rm -rf /tmp/docker-token
 cd inspec
 
-VERSION="$(cat VERSION)"
-MAJ="$(cat VERSION | cut -d '.' -f 1)"
-MIN="$(cat VERSION | cut -d '.' -f 2)"
+export VERSION="$(cat VERSION)"
+export MAJ="$(cat VERSION | cut -d '.' -f 1)"
+export MIN="$(cat VERSION | cut -d '.' -f 2)"
 # Point directly to OSUOSL master mirror
 URL="http://ftp-osl.osuosl.org/pub/cinc/files/${CHANNEL}/cinc-auditor/${VERSION}/el/8/cinc-auditor-${VERSION}-1.el8.x86_64.rpm"
 COUNT=0
