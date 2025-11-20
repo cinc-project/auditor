@@ -41,7 +41,8 @@ echo "Cloning ${REF:-main} branch from ${ORIGIN:-https://github.com/inspec/inspe
 git clone -q -b ${REF:-main} ${ORIGIN:-https://github.com/inspec/inspec.git}
 cd inspec
 git_patch inspec ${CINC_REF}
-mkdir -p inspec-bin/lib/inspec
-cp lib/inspec/dist.rb inspec-bin/lib/inspec/
+# Note: inspec-bin/cinc-auditor-bin no longer needs its own copy of dist.rb
+# as it depends on inspec-core which already contains the patched version.
+# Removing the duplicate copy eliminates Ruby constant redefinition warnings.
 cd $TOP_DIR
 cp -rp cinc-auditor/* inspec/
