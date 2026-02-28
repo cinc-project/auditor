@@ -190,31 +190,6 @@ package:centos-10:aarch64:
     PLATFORM_VER: "10"
     OMNIBUS_FIPS_MODE: "false"
 
-package:debian-11:x86_64:
-  extends: .package:debian
-  image: cincproject/omnibus-debian:11
-  cache:
-    key: debian-11-x86_64-cinc-auditor-5
-  tags:
-    - docker-x86_64
-  needs:
-    - patch
-  variables:
-    PLATFORM_VER: "11"
-
-package:debian-11:aarch64:
-  extends: .package:debian
-  image: cincproject/omnibus-debian:11
-  cache:
-    key: debian-11-aarch64:cinc-auditor-5
-  tags:
-    - docker-aarch64
-  needs:
-    - patch
-  variables:
-    PLATFORM_VER: "11"
-    OMNIBUS_FIPS_MODE: "false"
-
 package:debian-12:x86_64:
   extends: .package:debian
   image: cincproject/omnibus-debian:12
@@ -264,28 +239,6 @@ package:debian-13:aarch64:
   variables:
     PLATFORM_VER: "13"
     OMNIBUS_FIPS_MODE: "false"
-
-package:macos-12:
-  extends: .package:macos
-  cache:
-    key: macos-12-cinc-auditor-5
-  tags:
-    - macos-12
-  needs:
-    - patch
-  variables:
-    PLATFORM_VER: "12"
-
-package:macos-12:aarch64:
-  extends: .package:macos
-  cache:
-    key: macos-12-aarch64-cinc-auditor-5
-  tags:
-    - macos-12-aarch64
-  needs:
-    - patch
-  variables:
-    PLATFORM_VER: "12"
 
 package:macos-13:
   extends: .package:macos
@@ -352,6 +305,28 @@ package:macos-15:aarch64:
     - patch
   variables:
     PLATFORM_VER: "15"
+
+package:macos-26:
+  extends: .package:macos
+  cache:
+    key: macos-26-cinc-auditor-5
+  tags:
+    - macos-26
+  needs:
+    - patch
+  variables:
+    PLATFORM_VER: "26"
+
+package:macos-26:aarch64:
+  extends: .package:macos
+  cache:
+    key: macos-26-aarch64-cinc-auditor-5
+  tags:
+    - macos-26-aarch64
+  needs:
+    - patch
+  variables:
+    PLATFORM_VER: "26"
 
 package:opensuse-15:x86_64:
   extends: .package:opensuse
@@ -640,26 +615,6 @@ test:centos-10:aarch64:
   variables:
     PLATFORM_VER: "10"
 
-test:debian-11:x86_64:
-  extends: .test:debian
-  image: cincproject/omnibus-debian:11
-  needs:
-    - package:debian-11:x86_64
-  tags:
-    - docker-x86_64
-  variables:
-    PLATFORM_VER: "11"
-
-test:debian-11:aarch64:
-  extends: .test:debian
-  image: cincproject/omnibus-debian:11
-  needs:
-    - package:debian-11:aarch64
-  tags:
-    - docker-aarch64
-  variables:
-    PLATFORM_VER: "11"
-
 test:debian-12:x86_64:
   extends: .test:debian
   image: cincproject/omnibus-debian:12
@@ -699,24 +654,6 @@ test:debian-13:aarch64:
     - docker-aarch64
   variables:
     PLATFORM_VER: "13"
-
-test:macos-12:
-  extends: .test:macos
-  tags:
-    - macos-12
-  needs:
-    - package:macos-12
-  variables:
-    PLATFORM_VER: "12"
-
-test:macos-12:aarch64:
-  extends: .test:macos
-  tags:
-    - macos-12-aarch64
-  needs:
-    - package:macos-12:aarch64
-  variables:
-    PLATFORM_VER: "12"
 
 test:macos-13:
   extends: .test:macos
@@ -771,6 +708,24 @@ test:macos-15:aarch64:
     - package:macos-15:aarch64
   variables:
     PLATFORM_VER: "15"
+
+test:macos-26:
+  extends: .test:macos
+  tags:
+    - macos-26
+  needs:
+    - package:macos-26
+  variables:
+    PLATFORM_VER: "26"
+
+test:macos-26:aarch64:
+  extends: .test:macos
+  tags:
+    - macos-26-aarch64
+  needs:
+    - package:macos-26:aarch64
+  variables:
+    PLATFORM_VER: "26"
 
 test:opensuse-15:x86_64:
   extends: .test:opensuse
@@ -965,20 +920,18 @@ deploy:
     - package:centos-10:aarch64
     - package:centos-10:x86_64
     - package:centos-10:s390x
-    - package:debian-11:x86_64
-    - package:debian-11:aarch64
     - package:debian-12:x86_64
     - package:debian-12:aarch64
     - package:debian-13:x86_64
     - package:debian-13:aarch64
-    - package:macos-12
-    - package:macos-12:aarch64
     - package:macos-13
     - package:macos-13:aarch64
     - package:macos-14
     - package:macos-14:aarch64
     - package:macos-15
     - package:macos-15:aarch64
+    - package:macos-26
+    - package:macos-26:aarch64
     - package:opensuse-15:x86_64
     - package:opensuse-15:aarch64
     - package:rockylinux-8:aarch64
@@ -1080,16 +1033,6 @@ publish-docker:
     - sudo rm -rf inspec/
     - sudo rm -rf ${CI_PROJECT_DIR}/cinc-project/distribution/auditor/
 
-cleanup:macos-12:
-  extends: .cleanup
-  tags:
-    - macos-12
-
-cleanup:macos-12-aarch64:
-  extends: .cleanup
-  tags:
-    - macos-12-aarch64
-
 cleanup:macos-13:
   extends: .cleanup
   tags:
@@ -1119,3 +1062,13 @@ cleanup:macos-15-aarch64:
   extends: .cleanup
   tags:
     - macos-15-aarch64
+
+cleanup:macos-26:
+  extends: .cleanup
+  tags:
+    - macos-26
+
+cleanup:macos-26-aarch64:
+  extends: .cleanup
+  tags:
+    - macos-26-aarch64
