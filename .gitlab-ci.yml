@@ -265,7 +265,7 @@ package:macos-13:aarch64:
 package:macos-14:
   extends: .package:macos
   cache:
-    key: macos-14-cinc-auditor-5
+    key: macos-14
   tags:
     - macos-14
   needs:
@@ -276,7 +276,7 @@ package:macos-14:
 package:macos-14:aarch64:
   extends: .package:macos
   cache:
-    key: macos-14-aarch64-cinc-auditor-5
+    key: macos-14-aarch64
   tags:
     - macos-14-aarch64
   needs:
@@ -287,7 +287,7 @@ package:macos-14:aarch64:
 package:macos-15:
   extends: .package:macos
   cache:
-    key: macos-15-cinc-auditor-5
+    key: macos-15
   tags:
     - macos-15
   needs:
@@ -298,7 +298,7 @@ package:macos-15:
 package:macos-15:aarch64:
   extends: .package:macos
   cache:
-    key: macos-15-aarch64-cinc-auditor-5
+    key: macos-15-aarch64
   tags:
     - macos-15-aarch64
   needs:
@@ -309,7 +309,7 @@ package:macos-15:aarch64:
 package:macos-26:
   extends: .package:macos
   cache:
-    key: macos-26-cinc-auditor-5
+    key: macos-26
   tags:
     - macos-26
   needs:
@@ -320,7 +320,7 @@ package:macos-26:
 package:macos-26:aarch64:
   extends: .package:macos
   cache:
-    key: macos-26-aarch64-cinc-auditor-5
+    key: macos-26-aarch64
   tags:
     - macos-26-aarch64
   needs:
