@@ -79,4 +79,4 @@
     - $ErrorActionPreference = "Stop"
     - mkdir.exe -p ${CI_PROJECT_DIR}/data/windows/${PLATFORM_VER}
     - mv.exe -v ${CI_PROJECT_DIR}/data/cinc* ${CI_PROJECT_DIR}/data/windows/${PLATFORM_VER}
-    - Remove-Item -Recurse -Force C:\cinc-project
+    - Remove-Item -Recurse -Force C:\cinc-project\cinc-auditor

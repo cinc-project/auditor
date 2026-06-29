@@ -1,7 +1,7 @@
 $ErrorActionPreference = "Stop"
-if (Test-Path C:\cinc-project) {
-    Write-Host "Found existing directory C:\cinc-project, removing.."
-    Remove-Item -Recurse -Force C:\cinc-project
+if (Test-Path C:\cinc-project\cinc-auditor) {
+    Write-Host "Found existing directory C:\cinc-project\cinc-auditor, removing.."
+    Remove-Item -Recurse -Force C:\cinc-project\cinc-auditor
 }
 Write-Host "Finding MSI..."
 $msi = gci -recurse -filter '*.msi' $env:CI_PROJECT_DIR/data/windows/ | select -expand FullName
@@ -11,8 +11,8 @@ $p.WaitForExit()
 if ($p.ExitCode -ne 0) {
     throw "msiexec was not successful. Received exit code $($p.ExitCode)"
 }
-if (Test-Path C:\cinc-project) {
+if (Test-Path C:\cinc-project\cinc-auditor) {
     Write-Host "MSI Installed successfully!"
 } else {
-    throw "MSI was installed however C:\cinc-project does not exist"
+    throw "MSI was installed however C:\cinc-project\cinc-auditor does not exist"
 }
