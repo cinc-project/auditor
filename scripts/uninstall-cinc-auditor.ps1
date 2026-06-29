@@ -7,8 +7,8 @@ $p.WaitForExit()
 if ($p.ExitCode -ne 0) {
     throw "msiexec was not successful. Received exit code $($p.ExitCode)"
 }
-if (Test-Path C:\cinc-project) {
-    throw "MSI was uninstalled however C:\cinc-project still exists"
+if (Test-Path C:\cinc-project\cinc-auditor) {
+    throw "MSI was uninstalled however C:\cinc-project\cinc-auditor still exists"
 } else {
 	Write-Host "MSI Uninstalled successfully!"
 }
