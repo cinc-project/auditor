@@ -27,8 +27,10 @@ gem build inspec.gemspec
 cd inspec-bin
 gem build cinc-auditor-bin.gemspec
 gem build cinc-auditor-core-bin.gemspec
+gem build inspec-bin.gemspec
 cd $TOP_DIR
 gem push inspec/inspec-core-[0-9]*.gem --host https://rubygems.cinc.sh
 gem push inspec/inspec-[0-9]*.gem --host https://rubygems.cinc.sh
 gem push inspec/inspec-bin/cinc-auditor-bin-[0-9]*.gem --host https://rubygems.cinc.sh
 gem push inspec/inspec-bin/cinc-auditor-core-bin-[0-9]*.gem --host https://rubygems.cinc.sh
+gem push inspec/inspec-bin/inspec-bin-[0-9]*.gem --host https://rubygems.cinc.sh
