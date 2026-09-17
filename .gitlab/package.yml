@@ -69,6 +69,8 @@
     - mkdir -p ${CI_PROJECT_DIR}/data/ubuntu/${PLATFORM_VER}
     - mv -v ${CI_PROJECT_DIR}/data/*.{deb,json} ${CI_PROJECT_DIR}/data/ubuntu/${PLATFORM_VER}/
 
+# Runs in the cincproject/omnibus-windows container; the image ships the
+# toolchain loader at the same path the pet builder had.
 .package:windows:
   extends: .package
   script:
@@ -79,4 +81,5 @@
     - $ErrorActionPreference = "Stop"
     - mkdir.exe -p ${CI_PROJECT_DIR}/data/windows/${PLATFORM_VER}
     - mv.exe -v ${CI_PROJECT_DIR}/data/cinc* ${CI_PROJECT_DIR}/data/windows/${PLATFORM_VER}
-    - Remove-Item -Recurse -Force C:\cinc-project\cinc-auditor
+    # Last: kills leftover MSYS2 processes the runner would otherwise wait on.
+    - ./scripts/reap-msys2-processes.ps1
