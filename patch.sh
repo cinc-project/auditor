@@ -28,6 +28,15 @@ git_patch() {
   fi
   echo "Patching ${1} from ${CINC_BRANCH}..."
   git remote add -f --no-tags -t ${CINC_BRANCH} cinc https://gitlab.com/cinc-project/${1}.git
+  # Upstream's omnibus/ is a private submodule; give it Cinc's tree first so
+  # upstream bumping that gitlink can't conflict with the merge.
+  if git ls-tree HEAD omnibus | grep -q '^160000'; then
+    git rm -q --cached omnibus
+    rm -rf omnibus
+    [ -f .gitmodules ] && git rm -q -f .gitmodules
+    git checkout "cinc/${CINC_BRANCH}" -- omnibus
+    git commit -q -m "Replace private omnibus submodule with Cinc's tree"
+  fi
   git merge --no-edit cinc/${CINC_BRANCH}
 }
 
