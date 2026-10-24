@@ -1005,7 +1005,8 @@ deploy-gems:
     - when: never
   tags:
     - docker-x86_64
-  dependencies:
+  # needs, not stage order: a gem-only republish plays this right after patch.
+  needs:
     - patch
   script:
     - ./deploy-gems.sh
