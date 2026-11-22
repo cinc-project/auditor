@@ -69,3 +69,8 @@ ignore:
   # Scoped to the exact version. (reviewed 2026-11-21)
   - vulnerability: CVE-2026-132825
     package: { name: ruby, version: "3.1.7p261" }
+  # GHSA-8474-xrp6-wh69 (activesupport safe_constantize DoS) is fixed only in
+  # activesupport 8.0.5.2 and later. train 3.16.5, the latest, pins activesupport
+  # ~> 7.2, which has no fixed release, so Auditor cannot move. (reviewed 2026-11-22)
+  - vulnerability: GHSA-8474-xrp6-wh69
+    package: { name: activesupport, version: "7.2.3.2", type: gem }
