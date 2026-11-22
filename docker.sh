@@ -26,7 +26,10 @@ export VERSION="$(cat VERSION)"
 export MAJ="$(cat VERSION | cut -d '.' -f 1)"
 export MIN="$(cat VERSION | cut -d '.' -f 2)"
 # Point directly to OSUOSL master mirror
-URL="http://ftp-osl.osuosl.org/pub/cinc/files/${CHANNEL}/cinc-auditor/${VERSION}/el/8/cinc-auditor-${VERSION}-1.el8.x86_64.rpm"
+# A respin publishes the same VERSION with a higher package iteration; default
+# to 1, also when the pipeline variable is set but empty.
+export BUILD_ITERATION="${BUILD_ITERATION:-1}"
+URL="http://ftp-osl.osuosl.org/pub/cinc/files/${CHANNEL}/cinc-auditor/${VERSION}/el/8/cinc-auditor-${VERSION}-${BUILD_ITERATION}.el8.x86_64.rpm"
 COUNT=0
 SLEEP=10
 MAX_COUNT=300
