@@ -41,3 +41,18 @@ ignore:
     package: { name: erb, version: "2.2.3", type: gem }
   - vulnerability: GHSA-g857-hhfv-j68w
     package: { name: zlib, version: "2.1.1", type: gem }
+  # GHSA-8474-xrp6-wh69 (activesupport safe_constantize DoS) is fixed only in
+  # activesupport 8.0.5.2 and later, which needs Ruby 3.2, and train pins
+  # activesupport ~> 7.2, which has no fixed release. (reviewed 2026-11-22)
+  - vulnerability: GHSA-8474-xrp6-wh69
+    package: { name: activesupport, version: "7.2.3.1", type: gem }
+  # uri 0.12.4 is a frozen default gem of Ruby 3.1.7. omnibus-software patches its code
+  # (ruby-3.1-uri-userinfo-order.patch, the 0.12.5 fix), but the gem version stays the
+  # same, so grype still matches it. (reviewed 2026-11-22)
+  - vulnerability: GHSA-j4pr-3wm6-xx2r
+    package: { name: uri, version: "0.12.4", type: gem }
+  # excon 0.112.0 (GHSA-48rx-c7pg-q66r) is fixed in 1.5.0, but k8s-ruby 0.17.2 pins excon
+  # below 1.0 and inspec.gemspec caps train-kubernetes below 0.3.1, so the 5.x line cannot
+  # move without changing its Kubernetes plugin. (reviewed 2026-11-22)
+  - vulnerability: GHSA-48rx-c7pg-q66r
+    package: { name: excon, version: "0.112.0", type: gem }
